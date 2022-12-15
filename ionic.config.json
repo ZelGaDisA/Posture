@@ -1,0 +1,8 @@
+{
+  "name": "HealthAppOrange",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react",
+  "id": "a820bac7"
+}
