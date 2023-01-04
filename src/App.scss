@@ -1,0 +1,72 @@
+*{
+    -webkit-user-drag:none;
+    -moz-user-drag:none;
+    -o-user-drag:none;
+    user-drag:none;
+    user-select: none;
+}
+
+ion-checkbox {
+    --size: 24px;
+    --background-checked:  #00A499;
+    --background:  #ffffff;
+    --checkmark-color:  #ffffff;
+}
+
+ion-checkbox::part(container) {
+    border-radius: 4px;
+    border: 2px solid #00A499;
+}
+
+
+#loading{
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    background:  #ffffff;
+
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+
+    h1{
+        font-size: 2rem;
+        color: black;
+    }
+}
+
+#video{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -9999;
+}
+
+.alert-button-role-cancel {
+    --ion-color-primary: #B9BCC8;
+}
+
+.alert-button-role-confirm{
+    --ion-color-primary: #B00020;
+}
+
+.alert-button-role-confirm{
+    --ion-color-primary: #B00020;
+}
+
+.alert-title{
+    --ion-text-color: rgba(0, 0, 0, 0.87);
+    text-align: left;
+
+}
+
+.alert-message{
+    --ion-text-color: #666666;
+    padding: 0;
+}
+
