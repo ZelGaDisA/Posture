@@ -1,0 +1,8 @@
+{
+  "name": "Simple Posture",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+
+}
