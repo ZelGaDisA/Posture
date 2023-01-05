@@ -1,0 +1,219 @@
+.client-header{
+    width: 100vw;
+    height: 50px;
+    
+    margin-top: 10px;
+    margin-bottom: 30px;
+
+    background: rgba($color: #ffffff, $alpha: 1);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    z-index: 2;
+
+    &__text{
+        position: relative;
+        color: #000;
+    }
+
+    .buttBack{
+        position: absolute;
+        left: 20px;
+        fill: black;
+        filter: brightness(0%);
+    }
+
+    .buttSave{
+        position: absolute;
+        right: 20px;
+        transform: rotate(90deg);
+        filter: brightness(0%);
+
+        padding: 10px;
+    }
+}
+
+.cardsBox-list{
+    width: 90vw;
+    max-width: 400px;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto ;
+
+    &-el{
+        list-style: none;
+        min-width: 62px;
+        min-height: 62px;
+
+        border-radius: 8px;
+        display: flex;
+        text-align: center;
+        justify-content: center;
+        border: 1px solid rgba($color: #dbdbdb, $alpha: 1);
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        transition: 0.2s ease;
+
+        background: white;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+
+        position: relative;
+        .blackPeople{
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            margin: 0 auto;
+            img{
+                height: 20px;
+            }
+            
+        }
+        &-statusIcon{
+            position: absolute;
+            right: 6px;
+            top: 6px;
+            width: 20px;
+            height: 20px;
+        }
+
+        &-manIcon{
+            height: 30px;
+        }
+
+        p{
+            margin: 0;
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 17px;
+            padding: 4px 0 0 0 ;
+            color: black;
+        }
+
+        &.selected{
+            border: 3px solid rgba($color: #00A499, $alpha: 1);
+        }
+
+        .greenText{
+            color: #00A499;
+        }
+        .blackText{
+            color: black;
+        }
+    }
+}
+
+.sessionsBox{
+    height: calc(100vh - 70px);
+    margin-top: 20px;
+    width: 100vw;
+    background-color: rgb(255, 255, 255);
+
+    &-list{
+        padding: 0;
+        background: rgb(255, 255, 255);
+        .emptySessions{
+            color: #000;
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            p{
+                color: #000;
+            }
+        }
+        &__el{
+            color:rgb(0, 0, 0);
+            height: 50px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            &-Label{
+                padding-left: 16px;
+                transition: 0.1s ease;
+                width: calc(100vw - 100px);
+                &:active{
+                    opacity: 0.2;
+                }
+                &.all{
+                    padding-left: 30px;
+                    width: calc(100vw - 70px);
+                }
+                
+            }
+            &-Checkbox{
+                color:rgb(0, 0, 0);
+                background: none;
+                --background:rgb(255, 255, 255);
+                --border-style: none;
+                margin-left: 16px;
+            }
+            .deleteSession-Button{
+                width: 50px;
+                z-index: 999;
+                display: flex;
+                justify-content: center;
+                text-align: center;
+                &:active{
+                    img{
+                        width: 24px;
+                        height: 24px;
+                        opacity: 0.2;
+                    }
+                }
+                img{
+                    width: 24px;
+                    height: 24px;
+                    transition: 0.1s ease;
+                }
+            }
+        }
+    }
+}
+
+
+.client-IonContent{
+    background-color: rgb(255, 255, 255);
+}
+
+
+.comparisonBox{
+    position: absolute;
+    bottom: 2vh;
+    left: 2vw;
+    color: black;
+    width: 96vw;
+    &-el{
+        border-bottom: 10px solid;
+        border-image-slice: 1;
+        border-width: 2px;
+        border-image-source: linear-gradient(to right, rgb(0, 67, 63), rgb(0, 148, 133));
+
+        display: flex;
+        justify-content: space-between;
+        p{
+            padding: 0;
+            margin: 10px 5px;
+            text-align-last: left;
+        }
+        .name{
+            color: rgb(0, 80, 70);
+        }
+        .before{
+            color: rgb(0, 90, 80);
+        }
+        .after{
+            color: rgb(0, 100, 90);
+        }
+        .comparison{
+            color: rgb(0, 110, 100);
+        }
+
+    }
+}
