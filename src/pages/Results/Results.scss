@@ -1,0 +1,196 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+body{
+    margin: 0;
+}
+
+.header{
+    width: 100vw;
+    height: 10vh;
+    background-color: white;
+    color: black;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 130%;
+}
+
+.content{
+    width: 100vw;
+    height: 100vh;
+}
+
+.footer{
+    width: 100vw;
+    height: 10vh;
+}
+
+
+.content-inner{
+    height: 101px;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+}
+
+.results-text{ 
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 130%;
+    margin: 0;
+    color: black;
+}
+
+
+
+.results-bottom{
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 0;
+    bottom: 5%;
+    
+    .results-button {
+        --border-width: 2px;
+        --border-radius: 22px;
+        --color-2: #00A499;
+        --color-1: #00A499;
+        
+        font-weight: bold;
+        letter-spacing: 1px;
+        color: #ddd;
+        width: 90%;
+        height: 50px;
+        position: relative;
+        background: linear-gradient(to right, var(--color-1), var(--color-2)),
+        linear-gradient(to right, var(--color-1), var(--color-2));
+        background-position: var(--border-radius) 0, var(--border-radius) 100%;
+        background-repeat: no-repeat;
+        background-size: calc(100% - var(--border-radius) - var(--border-radius))
+        var(--border-width);
+        padding: 14px 24px;
+        border-radius: var(--border-radius);
+        border: none;
+        transition: all 0.2s ease-out;
+        filter: drop-shadow(0px 4px 14px rgba(0, 0, 0, 0.12));
+
+        &:active {
+            opacity: 0;
+        }
+
+        &:before,
+        &:after {
+        content: "";
+        display: block;
+        position: absolute;
+        width: var(--border-radius);
+        top: 0;
+        bottom: 0;
+        }
+        &:before {
+            left: 0;
+            border: var(--border-width) solid var(--color-1);
+            border-top-left-radius: var(--border-radius);
+            border-bottom-left-radius: var(--border-radius);
+            border-right-color: transparent;
+        }
+        &:after {
+            right: 0;
+            border: var(--border-width) solid var(--color-2);
+            border-top-right-radius: var(--border-radius);
+            border-bottom-right-radius: var(--border-radius);
+            border-left-color: transparent;
+        }
+
+        &-text{
+            color: var(--color-1);
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 600;
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 16px;
+
+            text-transform: uppercase;
+            margin: 0;
+        }
+    }
+    
+}
+
+.frameList{
+    margin-top: 40px;
+    max-width: 100vw;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    list-style: none;
+    position: relative;
+    padding: 0;
+    &-li{
+        width: calc(50vw - 16px - 8px);
+        max-width: 240px;
+        max-height: calc((50vw - 16px - 8px) / 0.889);
+        margin-bottom: 8px;
+        margin-right: 8px;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        &-image{
+            width: 100%;
+            height: 100%;
+
+            &.good{
+                box-shadow: 0px 4px 14px rgba(0, 80, 37, 0.12);
+                border-radius: 4px;
+            }
+            &.bad{
+                box-shadow: 0px 4px 14px rgba(142, 100, 1, 0.12);
+            }
+            &.empty{
+                
+            }
+        }
+        &-statusIcon{
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            width: 20px;
+            height: 20px;
+        }
+        &-statusButton{
+            position: absolute;
+            bottom: 35px;
+            width: calc((50vw - 16px - 8px) / 1.5);
+            height: 32px;
+            background: linear-gradient(91.58deg, #009E94 15.07%, #00B594 86.17%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+            p{
+                font-family: 'Inter';
+                font-style: normal;
+                font-weight: 500;
+                font-size: 14px;
+                line-height: 130%;
+                color: white;
+                margin: 0;
+            }
+        }
+
+    }
+}
+
+.hiddenBox{
+    display: none;
+}
