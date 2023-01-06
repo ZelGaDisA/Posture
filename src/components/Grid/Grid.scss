@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap');
+
+ul{
+    list-style: none;
+}
+
+#svgBox{
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    background: none;
+
+}
+
+.poseGridSVG{
+    position: absolute;
+    left:0;
+    right: 0;
+    z-index: -2;
+    width: 100vw;
+    height: 100vh;
+}
+
+.point_after{
+    fill: red;
+}
+
+.subLine{
+    stroke-width: 2;
+    &-black{
+        stroke: rgb(0, 0, 0);
+        stroke-width: 1.741304px;
+    }
+}
+.subLine-row, .subLine-culumn{
+    stroke-width: 0.741304px;
+    stroke: rgba(0, 0, 0, 0.3);
+}
+
+.line{
+    width: 10px;
+    height: 10px;
+}
+.rect{
+    fill: rgba(200,200,200,0.2);
+    border-radius: 10px;
+}
+.rect-text {
+    fill: #5b99ea;
+
+    font-family: "Lato";
+    font-style: normal;
+    font-weight: bold;
+
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.textBox{
+    font-family: "Lato";
+    font-style: normal;
+    font-weight: bold;
+
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+
+    &.angle{
+        font-size: 18px;
+    }
+}
