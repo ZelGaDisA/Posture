@@ -1,18 +1,18 @@
 //import
 import './CapacitorCam.scss';
 
-import {useEffect, useState} from "react";
-import {IonContent, IonPage, IonButton, useIonAlert} from "@ionic/react";
-import {useHistory} from "react-router-dom";
-
+import { useEffect, useState } from "react";
+import { IonContent, IonPage, IonButton, useIonAlert } from "@ionic/react";
+import { useHistory } from "react-router-dom";
+import { RootState } from 'store/store';
 import { tryGetPose } from "functions/tryGetPose";
-import { AccelInterface }from "components/Interfaces/AccelInterface";
+import { AccelInterface } from "components/Interfaces/AccelInterface";
+import { CGPoint, Images } from 'store/types';
 
 //REDUX
-import {useDispatch, useSelector} from "react-redux";
-import { setIsLoading,setIsRetakeOnePhoto, setResultSideNumber } from "store/slices/app";
-
-import { saveDataToSession, addImagesPath, addImagesStatus, addImagesAngle, clearResults, addImagesLandmarks } from "store/slices/sessions";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsLoading, setIsReading, setIsRetakeOnePhoto, setResultSideNumber } from "store/slices/app";
+import { addImage } from "store/slices/sessions";
 
 //IMAGES
 import circleButton from "images/roundGreenButton.svg";
@@ -34,34 +34,36 @@ export default function CapacitorCam() {
     const history = useHistory()
     const [presentAlert] = useIonAlert();
 
-    const images = useSelector((state) => state.sessions.session.images)
-    const accel = useSelector(state => state.app.accel)
+    const images: Images = useSelector((state: RootState) => state.sessions.images)
+    const session = useSelector((state: RootState) => state.sessions.session)
+    const accel = useSelector((state: RootState) => state.app.accel)
 
-    const isRetakeOnePhoto = useSelector((state) => state.app.isRetakeOnePhoto);
-    const resultSideNumber = useSelector((state) => state.app.resultSideNumber); 
+    const isRetakeOnePhoto = useSelector((state: RootState) => state.app.isRetakeOnePhoto);
+    const resultSideNumber = useSelector((state: RootState) => state.app.resultSideNumber);
 
     const [selectedMenuItemIndex, setSelectedMenuItemIndex] = useState(0)
 
-    const [lastImage,setLastImage] = useState(null)
-    const [lastIndex,setLastIndex] = useState(null)
+    const [lastImage, setLastImage] = useState<string | null>(null)
+    const [lastIndex, setLastIndex] = useState(-1)
     const sides = ['front', 'right', 'back', 'left']
-    const blackMan = [blackFrontMan,  blackRightMan, blackFrontMan, blackLeftMan]
-    const greenMan = [greenFrontMan,  greenRightMan, greenFrontMan, greenLeftMan]
+    const blackMan = [blackFrontMan, blackRightMan, blackFrontMan, blackLeftMan]
+    const greenMan = [greenFrontMan, greenRightMan, greenFrontMan, greenLeftMan]
 
     useEffect(() => {
-        if(lastImage && lastIndex >= 0 && lastImage.length > 0){
-            checkImage(lastImage, lastIndex)
+        if (lastImage && lastIndex >= 0 && lastImage?.length > 0) {
+            checkImage(lastImage)
         }
-    },[lastImage, lastIndex])
+    }, [lastImage, lastIndex])
+
 
     const addBlure = () => {
         let filter = document.getElementById('filter')
-        filter.classList.add("blur")
+        filter?.classList.add("blur")
 
-        let timer = setTimeout(()=>{
-            filter.className = ''
+        let timer:any = setTimeout(() => {
+            if(filter && filter.className) filter.className = ''
             return clearTimeout(timer)
-        },100)
+        }, 100)
     }
 
     const capture = async () => {
@@ -70,23 +72,23 @@ export default function CapacitorCam() {
             quality: 90,
         })
 
-        if(!result || result.value.length < 7) return
+        if (!result || result.value.length < 7) return
 
         const base64PictureData = result.value;
-        const imageSrcPath = 'data:image/jpeg;base64,' +base64PictureData;
+        const imageSrcPath = 'data:image/jpeg;base64,' + base64PictureData;
         setLastImage(imageSrcPath)
         setLastIndex(selectedMenuItemIndex)
         setSelectedMenuItemIndex(selectedMenuItemIndex + 1)
     }
 
-    const checkImage = async (imageSrcPath) => {
-        var img = new Image(window.innerWidth,  window.innerHeight)
+    const checkImage = async (imageSrcPath:string) => {
+        var img = new Image(window.innerWidth, window.innerHeight)
         img.src = imageSrcPath
 
         let turnAngle = accel.x * -0.025
 
-        let res = await tryGetPose(img, turnAngle)
-        let status = () => res && Object.entries(res).length > 0 ? true : false 
+        let res: CGPoint[] | null = await tryGetPose(img) || null
+        let status = () => (res && Object.entries(res).length > 0) ? true : false
 
         const backToResults = () => {
             dispatch(setIsRetakeOnePhoto(false))
@@ -98,41 +100,38 @@ export default function CapacitorCam() {
 
         switch (switcher) {
             case 1:
-                dispatch(addImagesPath({front: {path: imageSrcPath}}))
-                dispatch(addImagesStatus({front: {status: status()}}))
-                dispatch(addImagesAngle({front: {angle: turnAngle}}))
-                dispatch(addImagesLandmarks({front: {landmarks: res}}))
-                
+                dispatch(addImage({
+                    sessionId: session.id,
+                    front: { path: imageSrcPath, status: status(), angle: turnAngle, landmarks: res},
+                },))
                 isRetakeOnePhoto && backToResults()
                 break;
             case 2:
-                dispatch(addImagesPath({right: {path: imageSrcPath}}))
-                dispatch(addImagesStatus({right: {status: status()}}))
-                dispatch(addImagesAngle({right: {angle: turnAngle}}))
-                dispatch(addImagesLandmarks({right: {landmarks: res}}))
-                
+                dispatch(addImage({
+                    sessionId: session.id,
+                    right: { path: imageSrcPath, status: status(), angle: turnAngle, landmarks: res},
+                },))
                 isRetakeOnePhoto && backToResults()
                 break;
             case 3:
-                dispatch(addImagesPath({back: {path: imageSrcPath}}))
-                dispatch(addImagesStatus({back: {status: status()}}))
-                dispatch(addImagesAngle({back: {angle: turnAngle}}))
-                dispatch(addImagesLandmarks({back: {landmarks: res}}))
-
+                dispatch(addImage({
+                    sessionId: session.id,
+                    back: { path: imageSrcPath, status: status(), angle: turnAngle, landmarks: res},
+                },))
                 isRetakeOnePhoto && backToResults()
                 break;
             case 4:
-                dispatch(addImagesPath({left: {path: imageSrcPath}}))
-                dispatch(addImagesStatus({left: {status: status()}}))
-                dispatch(addImagesAngle({left: {angle: turnAngle}}))
-                dispatch(addImagesLandmarks({left: {landmarks: res}}))
-
+                dispatch(addImage({
+                    sessionId: session.id,
+                    left: { path: imageSrcPath, status: status(), angle: turnAngle, landmarks: res},
+                },))
                 isRetakeOnePhoto && backToResults()
                 setSelectedMenuItemIndex(0)
 
-                if(isRetakeOnePhoto) dispatch(setIsRetakeOnePhoto(false))
+                if (isRetakeOnePhoto) dispatch(setIsRetakeOnePhoto(false))
 
                 dispatch(setIsLoading(true))
+                dispatch(setIsReading(false))
 
                 history.push('/results')
 
@@ -146,51 +145,55 @@ export default function CapacitorCam() {
     const isGoodAccel = () => (Math.abs(accel.x) > 0.5 || Math.abs(accel.z) > 0.5) ? false : true
 
     const isAnyResults = () => {
-        for(const [key,value] of Object.entries(images)) {
-            if(value.path.length > 0) return true
+        for (const [key, value] of Object.entries(images)) {
+            if (value?.path?.length > 0) return true
         }
         return false
     }
 
-    
+
     return (
         <>
             <IonPage>
-                
+
                 <IonContent fullscreen id="content">
                     <AccelInterface accel={accel} />
 
                     <ul className="menuList">
                         {isRetakeOnePhoto &&
-                            <li 
+                            <li
                                 className="menuList-el selected"
-                            >   
-                                {images[sides[resultSideNumber]].status &&  <img className="menuList-el-statusIcon" src={checkCircle}></img>}
-                                {images[sides[resultSideNumber]].status === false && <img className="menuList-el-statusIcon" src={alertTriangle}></img>}
+                            >
+                                {/* @ts-ignore */}
+                                {images[sides[resultSideNumber]]?.status && <img className="menuList-el-statusIcon" src={checkCircle}></img>}
+                                {/* @ts-ignore */}
+                                {images[sides[resultSideNumber]]?.status === false && <img className="menuList-el-statusIcon" src={alertTriangle}></img>}
 
-                                <img className="menuList-el-manIcon"src={blackMan[resultSideNumber]} alt="" />
+                                <img className="menuList-el-manIcon" src={blackMan[resultSideNumber]} alt="" />
                                 <p>{sides[resultSideNumber][0].toUpperCase() + sides[resultSideNumber].slice(1)}</p>
                             </li>
                         }
-                        {!isRetakeOnePhoto && blackMan.map((svg, index)=>(
-                            <li 
-                                key={index} 
+                        {!isRetakeOnePhoto && blackMan.map((svg, index) => (
+                            <li
+                                key={index}
                                 className={"menuList-el" + (selectedMenuItemIndex === index ? " selected" : "")}
-                                onClick={ ()=> setSelectedMenuItemIndex(index) }
-                            >   
+                                onClick={() => setSelectedMenuItemIndex(index)}
+                            >
+                                {/* @ts-ignore */}
                                 {images[sides[index]].status //if pose is found - change card style and image
                                     ? <>
                                         <img className="menuList-el-statusIcon" src={checkCircle}></img>
-                                        <img className="menuList-el-manIcon"src={greenMan[index]} alt="" />
+                                        <img className="menuList-el-manIcon" src={greenMan[index]} alt="" />
                                         <p className='greenText'>{sides[index][0].toUpperCase() + sides[index].slice(1)}</p>
                                     </>
                                     : <>
+                                        {/* @ts-ignore */}
                                         {images[sides[index]].status === false && <img className="menuList-el-statusIcon" src={alertTriangle}></img>}
-                                        <img className="menuList-el-manIcon"src={svg} alt="" />
+                                        <img className="menuList-el-manIcon" src={svg} alt="" />
                                         <p className='blackText'>{sides[index][0].toUpperCase() + sides[index].slice(1)}</p>
                                     </>
                                 }
-                                
+
                             </li>
                         ))}
                     </ul>
@@ -199,51 +202,48 @@ export default function CapacitorCam() {
                 </IonContent>
 
                 <div className='btn-box'>
-                    
-                    <div className={`btn-capture ${isGoodAccel()}`}onClick={()=>{
+
+                    <div className={`btn-capture ${isGoodAccel()}`} onClick={() => {
                         if (isGoodAccel()) {
-                            addBlure() 
+                            addBlure()
                             capture()
                         }
                     }}>
                         <img src={circleButton} alt="" />
                     </div>
 
-                    <button
-                        fill="clear" expand="block" shape="round"
-                        className='btn-toHome'
-                        
-                        onClick={() =>
-                            presentAlert({
-                                header: 'Clear photo',
-                                message: "This will clear all photo. Are you sure?",
-                                buttons: [
-                                {
-                                    text: 'CANCEL',
-                                    role: 'cancel',
-                                    handler: () => {
-                                    },
-                                },
-                                {
-                                    text: 'CLEAR',
-                                    role: 'confirm',
-                                    handler: () => {
-                                        dispatch(setIsLoading(true))
-                                        dispatch(setIsRetakeOnePhoto(false))
-                                        dispatch(setResultSideNumber(0))
-                                        setSelectedMenuItemIndex(0)
-                                        history.push("/home")
-                                    },
-                                },
-                                ]
-                            })
-                        }
+                    <button className='btn-toHome'
+                            onClick={() =>
+                                presentAlert({
+                                    header: 'Clear photo',
+                                    message: "This will clear all photo. Are you sure?",
+                                    buttons: [
+                                        {
+                                            text: 'CANCEL',
+                                            role: 'cancel',
+                                            handler: () => {
+                                            },
+                                        },
+                                        {
+                                            text: 'CLEAR',
+                                            role: 'confirm',
+                                            handler: () => {
+                                                dispatch(setIsLoading(true))
+                                                dispatch(setIsRetakeOnePhoto(false))
+                                                dispatch(setResultSideNumber(0))
+                                                setSelectedMenuItemIndex(0)
+                                                history.push("/home")
+                                            },
+                                        },
+                                    ]
+                                })
+                            }
                     >
                         <p>Cancel</p>
                     </button>
 
                     <div className={`btn-toResults ${isAnyResults()}`} onClick={() => {
-                        if(isAnyResults()) {
+                        if (isAnyResults()) {
                             setSelectedMenuItemIndex(0)
                             history.push('/results')
                         }
@@ -256,6 +256,5 @@ export default function CapacitorCam() {
         </>
     )
 }
-
 
 
