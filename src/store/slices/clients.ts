@@ -49,12 +49,27 @@ export const clientSlice = createSlice({
         },
 
         updateClients: (state) => {
-            let clients = localStorage.getItem('clients')
-            if(clients && clients.length > 0){
-                state.clients = JSON.parse(clients)
-            }else{
-                localStorage.setItem('clients','[]')
+            let clients = null
+            let localSize = JSON.stringify(localStorage).length
+            console.log('size: ' + localSize);
+            for (let i = 0; i < 15; i++) {
+                let cl = localStorage.getItem('clients')
+                if(cl && cl.length > 0){
+                    clients = cl
+                    break
+                }
             }
+
+            if(clients && clients.length >= 2){
+                state.clients = JSON.parse(clients)
+            } else if(clients && clients.length < 2) {
+                localStorage.setItem('clients','[]')
+            } else {
+                console.log('localerror');
+                console.log(localStorage);
+                console.count()
+            }
+
         },
     },
 })

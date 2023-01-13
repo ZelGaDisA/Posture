@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 import {useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import { RootState } from 'store/store';
-import { Client } from 'store/slices/clients';
+import { Client, updateClients } from 'store/slices/clients';
 import { Session, setSelectedSession, setSession, clearSessions} from 'store/slices/sessions';
 import { setResultSideNumber, setIsReading } from "store/slices/app";
 import { Images,CGPoint } from 'store/types';
@@ -46,6 +46,7 @@ const ClientPage = () => {
     const selectedSessions = useSelector((state:RootState) => state.sessions.selectedSessions)
     
     //STATES
+    const [updater, setUpdater]  = useState(0)
     const [selectedCardIndex, setSelectedCardIndex] = useState(-1)
     const [comparisonResult, setComparisonResults] = useState<any>(null)
     const [visibleCards, setVisibleCards] = useState<visibleCard[]>([])
@@ -57,9 +58,13 @@ const ClientPage = () => {
 
     //FUNCTIONS
     useEffect(()=>{
-        selectedSessions.length === 2 
-        ? setComparisonResults(findAngle(selectedSessions, sessions, selectedCardIndex))
-        : setComparisonResults(null)
+        if(selectedSessions.length === 2){
+            setComparisonResults(findAngle(selectedSessions, sessions, selectedCardIndex))
+        }
+        else{
+            setComparisonResults(null)
+
+        }
 
         let localstoreImages = sessions.map((s:Session)=>{
             let image = localStorage.getItem(String(s.id))
@@ -72,10 +77,10 @@ const ClientPage = () => {
         //@ts-ignore
         const images = localstoreImages
         
-        if(!images){
+        if(!images || images.length <= 0){
             return
         }
-        let imagesIds = images.map((i:Images,ind:number)=>i.sessionId)
+        let imagesIds = images.map((i:Images,ind:number)=>i?.sessionId)
         let visCards = sessions.map((s:Session,i:number)=>{
             if(s && imagesIds.indexOf(s.id) !== -1){
                 return {
@@ -86,11 +91,12 @@ const ClientPage = () => {
         })
         //@ts-ignore
         setVisibleCards(visCards.filter((vc) => !!vc))
-    },[selectedSessions, selectedCardIndex])
+    },[updater,selectedSessions, selectedCardIndex])
 
-    const alert = (message:string) => presentAlert({
+    
+    const deleteSession = (s:Session) => presentAlert({
         header: 'Warning!',
-        message: message,
+        message: "Are you sure you want to delete this session?",
         buttons: [
             {
                 text: 'CANCEL',
@@ -103,9 +109,17 @@ const ClientPage = () => {
                 role: 'confirm',
                 cssClass: 'removeClientBtn',
                 handler: () => {
-                    if(deleteClient()){
-                        dispatch(clearSessions())
-                        history.goBack()
+
+                    let localSessions = localStorage.getItem('sessions')
+                    let parsedSessions = localSessions && JSON.parse(localSessions)
+
+                    if(localSessions && localSessions.length > 2){
+                        localStorage.removeItem(String(s.id))
+                        let newSessions = parsedSessions.filter((session:Session) => session.id !== s.id)
+                        let string = JSON.stringify(newSessions)
+                        localStorage.setItem('sessions', string)
+                        setUpdater(updater + 1)
+                        dispatch(updateClients())
                     }
                 },
             },
@@ -135,18 +149,58 @@ const ClientPage = () => {
     const selectSession = (session:Session) => {
         dispatch(setSelectedSession(session))
     }
-    const deleteClient = () => {
-        let newClients = clients.clients.slice().filter((c:Client)=> c.id !== clientInfo.id)
+    
+    const deleteClient = () => presentAlert({
+        header: 'Warning!',
+        message: "Are you sure you want to delete this client?",
+        buttons: [
+            {
+                text: 'CANCEL',
+                role: 'cancel',
+                handler: () => {
+                    
+                },
+            },
+            {
+                text: 'REMOVE',
+                role: 'confirm',
+                cssClass: 'removeClientBtn',
+                handler: () => {
+                    let newClients = clients.clients.slice().map((c:Client)=> c.id !== clientInfo.id ? c : {})
+                    let localSessions = localStorage.getItem('sessions')
+                    let localParsed = localSessions ? JSON.parse(localSessions) : []
+                    let newSessions = localParsed.slice().filter((session:Session) => session.clientId !== clientInfo.id)
+                    
+                    sessions.slice().forEach((s:Session)=>{
+                        if(s.clientId === clientInfo.id){
+                            localStorage.removeItem(String(s.id))
+                        }
+                    })
 
-        if(newClients.length > 0){
-            let c = JSON.stringify(newClients)
-            localStorage.setItem('clients', c)
+                    console.log('====================================');
+                    
+                    console.log(newSessions);
 
-            return true
-        } else{
-            return false
-        }
-    }
+                    console.log('====================================');
+                    if(newSessions.length >= 0){
+                        let c = JSON.stringify(newSessions)
+                        localStorage.setItem('sessions', c)
+                    }
+                    if(newClients.length >= 0){
+                        let c = JSON.stringify(newClients)
+                        localStorage.setItem('clients', c)
+                        dispatch(updateClients())
+                        dispatch(clearSessions())
+                        history.goBack()
+                    } else{
+                        console.log('====================================');
+                        console.log('error');
+                        console.log('====================================');
+                    }
+                },
+            },
+        ]
+    })
 
 
     return (
@@ -162,9 +216,9 @@ const ClientPage = () => {
                     </div>
 
                     <h3 className='client-header-text'>{clientInfo.name}</h3>
-                    <h3 className='client-header-more' onClick={() => alert("Are you sure you want to delete this client?")}>
+                    <div className='client-header-more' onClick={() => deleteClient()}>
                         <img src={trash} alt="" />
-                    </h3>
+                    </div>
                 </div>
 
                 <div className='cardsBox'>
@@ -214,6 +268,10 @@ const ClientPage = () => {
                                         <IonLabel className='sessionsBox-list__el-Label all'
                                             onClick={()=>goToSession(s)}
                                         >{s.id ? getDateTime(s.id) : 0}</IonLabel>
+
+                                        <div className='deleteSession-Button black' >
+                                            <img src={trash} alt="" onClick={()=> deleteSession(s)}/>
+                                        </div>
                                     </li>
                                 } else {
                                     if (selectedSessions.length < 2) {
@@ -244,9 +302,6 @@ const ClientPage = () => {
                                                     onClick={()=>goToSession(s)}
                                                 >{s.id ? getDateTime(s.id) : 0}</IonLabel>
 
-                                                <div className='deleteSession-Button'>
-                                                    {/* <img src={trash} alt="" onClick={()=> deleteSession(s)}/> */}
-                                                </div>
                                                 </div>
                                         }
                                     }
@@ -300,4 +355,3 @@ const ClientPage = () => {
 };
 
 export default ClientPage;
-

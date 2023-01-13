@@ -45,23 +45,26 @@ const Home = () => {
     },[search])
 
     useEffect(()=>{
-        if(!search && search?.length === 0){
-            dispatch(updateClients())
+        dispatch(updateClients())
+
+        if(!search || search?.length === 0){
             let t = setTimeout(()=>{
                 setUpdater(updater + 1)
                 clearTimeout(t)
             },500)
         }
-    },[updater, search])
+    },[updater, search?.length])
 
     useEffect(()=>{
         //@ts-ignore
         clientsData && clientsData.clients  && setResults(clientsData.clients)
-    },[clientsData , clientsData.client.id])
+    },[updater, clientsData])
 
 
     const resultsInfo = (client:Client) =>{
         try {
+            let stringsSessions = localStorage.getItem('sessions')
+            if(!stringsSessions || stringsSessions.length <= 0) return
             //@ts-ignore
             let sessions = JSON.parse(localStorage.getItem('sessions'))
             let findedSessions = sessions.filter((i:Session) => i.clientId === client.id)
@@ -88,31 +91,31 @@ const Home = () => {
                     <h3 className='header-text'>My clients</h3>
                 </div>
 
-                <div className='home-betaLabel'>
+                {/* <div className='home-betaLabel'>
                     <p className='home-betaLabel-text'>v1.0.3 [BETA]</p>
-                </div>
+                </div> */}
 
-                <IonSearchbar placeholder='Find a client' debounce={1000} onIonChange={(e: Event) => handleChange(e)}></IonSearchbar>
+                {/* <IonSearchbar placeholder='Find a client' debounce={1000} onIonChange={(e: Event) => handleChange(e)}></IonSearchbar> */}
 
                 <IonList className='client-List'>
                     {results && results.length > 0 && results.map((result: Client, index: number) => (
-                        <li className='client-List__item' key={index}>
+                        result.id && <li className='client-List__item' key={index}>
                             <div className='client-List__item-text' onClick={()=>{
                                 dispatch(chooseClient(result))
                                 dispatch(filterSessionsByUser(result.id))
                                 history.push('/client')
                             }}>
                                 <p className='client-List__item-text_name'>{result.name}</p>
-                                {resultsInfo(result)?.number > 0 && <p className='client-List__item-text_number'>{`sessions: ${resultsInfo(result)?.number}`}</p>}
-                                {resultsInfo(result)?.lastSessionTime && <p className='client-List__item-text_lastTime'>{`last scan ${resultsInfo(result)?.lastSessionTime}`}</p>}
+                                {resultsInfo(result)?.number > 0 && <p className='client-List__item-text_number'>{`Sessions ${resultsInfo(result)?.number}`}</p>}
+                                {resultsInfo(result)?.lastSessionTime && <p className='client-List__item-text_lastTime'>{`Last scan ${resultsInfo(result)?.lastSessionTime}`}</p>}
                             </div>
                             {resultsInfo(result)?.number >= 2 
-                                ?  <button className='client-List__item-button popup' onClick={(e) => setIsOpenForm(1)}>new scan</button>
+                                ?  <button className='client-List__item-button popup' onClick={(e) => setIsOpenForm(1)}>New scan</button>
                                 :   <button className={'client-List__item-button' + (!!(resultsInfo(result)?.number === 2) ? ' popup' : '')} onClick={()=>{
                                         dispatch(chooseClient(result))
                                         result.id && dispatch(addNewSession({clientId: result.id}))
                                         history.push('/camera')
-                                    }}>new scan</button>
+                                    }}>New scan</button>
                             }
                         </li>
                     ))}
@@ -120,21 +123,20 @@ const Home = () => {
 
 
                 <div id="newPatient__form" className='home-bottom'>
-                    {   clientsData.clients.length === 3 
+                    {   clientsData.clients.filter(c => c.id).length === 3 
                         ?   <IonButton className='home-button popup' onClick={(e) => setIsOpenForm(2)}>
                                 <p className='home-button-text'>Start with new client</p>
                             </IonButton>
                         :   <IonButton className='home-button' onClick={() =>{
                                 presentAlert({
                                     header: "Enter the client's name",
-                                    message: "max 18 characters",
                                     buttons: [{
                                         text: 'SAVE AND START',
                                         handler: (value) => {
                                             const newClientId = Date.now()
                                             const clients = localStorage.getItem('clients')
                                             const allClientsNumber = clients ? JSON.parse(clients).length + 1 : 1
-
+                                            
                                             let clientName = value[0]
 
                                             if(clientName.length === 0) clientName = `Client #${allClientsNumber}`

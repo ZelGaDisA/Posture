@@ -15,7 +15,8 @@ import { setIsLoading, setIsReading, setIsRetakeOnePhoto, setResultSideNumber } 
 import { addImage } from "store/slices/sessions";
 
 //IMAGES
-import circleButton from "images/roundGreenButton.svg";
+import {ReactComponent as CircleButton} from "images/roundGreenButton.svg";
+
 import alertTriangle from '../../images/alert-triangle.svg';
 import checkCircle from '../../images/check-circle.svg';
 
@@ -69,7 +70,7 @@ export default function CapacitorCam() {
     const capture = async () => {
 
         const result = await CameraPreview.capture({
-            quality: 90,
+            quality: 1,
         })
 
         if (!result || result.value.length < 7) return
@@ -209,7 +210,8 @@ export default function CapacitorCam() {
                             capture()
                         }
                     }}>
-                        <img src={circleButton} alt="" />
+                        {/* <img src={circleButton} alt="" /> */}
+                        <CircleButton/>
                     </div>
 
                     <button className='btn-toHome'

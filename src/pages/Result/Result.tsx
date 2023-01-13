@@ -104,7 +104,7 @@ const Results: React.FC = () => {
                     }}
                     >   {
                             Object.entries(images)?.map(([name, image],index) => {
-                                return image.status && <SwiperSlide virtualIndex={index} key={name}>
+                                return image?.status && <SwiperSlide virtualIndex={index} key={name}>
                                             <div className='safeLayout' />
                                             <GridForResults  rerenderCounter={rerenderCounter} resultSideNumber={resultSideNumber} image={image}/>
                                         </SwiperSlide>

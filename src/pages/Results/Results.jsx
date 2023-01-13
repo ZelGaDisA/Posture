@@ -58,7 +58,6 @@ const Results = () => {
         } else {
             console.log(`image ${id} is empty`);
         }
-
     }
 
     return (
@@ -130,7 +129,12 @@ const Results = () => {
                     }
 
                     {!isReading && <>
-                        <IonButton
+                        {(
+                            images.front.status ||
+                            images.back.status ||
+                            images.left.status ||
+                            images.right.status
+                        ) && <IonButton
                             fill="clear" expand="block" shape="round"
                             className='results-button save'
                             onClick={() => {
@@ -140,8 +144,8 @@ const Results = () => {
                                 history.push("/home")
                             }}
                         >
-                            <p className='results-button-text'>SAVE AND BACK</p>
-                        </IonButton>
+                                <p className='results-button-text'>SAVE AND BACK</p>
+                            </IonButton>}
                         <IonButton
                             fill="clear" expand="block" shape="round"
                             className='results-button clear'

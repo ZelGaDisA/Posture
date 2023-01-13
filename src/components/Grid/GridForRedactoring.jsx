@@ -485,7 +485,7 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
                             .style('z-index', 999)
                             .style('stroke-width', '100px')
                             .style('stroke', 'rgba(0,0,0,0)')
-                            .on('touchstart touchmove', (e) => {
+                            .on('touchstart touchmove mousemove', (e) => {
                                 if (selectedCircleId !== rightCircleName) {
                                     setSelectedCircleId(rightCircleName)
                                 }
@@ -496,7 +496,7 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
                                     setDb(newData)
                                 }
                             })
-                            .on('touchend', () => {
+                            .on('touchend mouseleave', () => {
                                 setSelectedCircleId(null)
                                 hideLens()
                             })
@@ -509,7 +509,7 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
                             .attr("cy", value.left.y)
                             .style('stroke-width', '100px')
                             .style('stroke', 'rgba(0,0,0,0)')
-                            .on('touchstart touchmove', (e) => {
+                            .on('touchstart touchmove mousemove', (e) => {
                                 if (selectedCircleId !== leftCircleName) {
                                     setSelectedCircleId(leftCircleName)
                                 }
@@ -522,7 +522,7 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
                                     setDb(newData)
                                 }
                             })
-                            .on('touchend', () => {
+                            .on('touchend mouseleave', () => {
                                 setSelectedCircleId(null)
                                 hideLens()
                             })
@@ -540,7 +540,10 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
                             .attr("cy", value.right.y)
                             .style('stroke-width', '100px')
                             .style('stroke', 'rgba(0,0,0,0)')
-                            .on('touchstart touchmove', (e) => {
+                            .on('touchstart touchmove mousemove', (e) => {
+                                console.log('====================================');
+                                console.log(e);
+                                console.log('====================================');
                                 if (selectedCircleId !== rightCircleName) {
                                     setSelectedCircleId(rightCircleName)
                                 }
@@ -551,7 +554,7 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
                                     setDb(newData)
                                 }
                             })
-                            .on('touchend', () => {
+                            .on('touchend ', () => {
                                 setSelectedCircleId(null)
                                 hideLens()
                             })
@@ -564,6 +567,11 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
                             .attr("cy", value.left.y)
                             .style('stroke-width', '100px')
                             .style('stroke', 'rgba(0,0,0,0)')
+                            .on('mousedown mousemove', (e) => {
+                                console.log('====================================');
+                                console.log(1);
+                                console.log('====================================');
+                            })
                             .on('touchstart touchmove', (e) => {
                                 if (selectedCircleId !== leftCircleName) {
                                     setSelectedCircleId(leftCircleName)

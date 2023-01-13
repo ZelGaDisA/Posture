@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.posture',
-  appName: 'healthUapp Posture Check',
+  appId: 'com.healthUapp.posture',
+  appName: 'Posture Check',
   webDir: 'build',
   bundledWebRuntime: false,
   plugins:{

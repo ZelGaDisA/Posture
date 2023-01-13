@@ -36,6 +36,7 @@ export const sessionSlice = createSlice({
     name: 'session',
     initialState,
     reducers: {
+        
         clearSessions: (state) => {
                 state.images = {
                     sessionId: null,
