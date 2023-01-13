@@ -42,72 +42,103 @@ import {setAccel,setIsLoading} from "store/slices/app";
 import { CameraPreview } from '@capacitor-community/camera-preview';
 
 
-setupIonicReact();
+setupIonicReact({ swipeBackEnabled: false });
+
 
 const App: React.FC = () => {
     const dispatch = useDispatch()
     const [isLoadingPage, setIsLoadingPage] = useState(true)
+    const [operatingSystem, setOperatingSystem] = useState<String>('none')
+
+    useEffect(()=>{
+        //@ts-ingnore
+        const checkDeviceInfoAndStart = async () => {
+            const info = await Device.getInfo();
+            setOperatingSystem(info.operatingSystem)
+            // Если операционная система определена - начинаем просмотр данных акселерометра
+            if((operatingSystem === 'ios' || operatingSystem === 'android')){
+                //@ts-ignore
+                if (typeof DeviceMotionEvent.requestPermission === 'function') {
+                    //@ts-ignore
+                    DeviceMotionEvent.requestPermission()
+                }
+            }
+        };
+
+        checkDeviceInfoAndStart()
+    },[operatingSystem])
 
     useEffect(() => {     
-        dispatch(createSessions())
-        dispatch(updateClients())
-        
-        {(async () =>{
-            await tryGetPose(new Image(window.innerWidth,  window.innerHeight)) //enable tensorflow
-            console.log('Tensorflow is started!');
-        })()}
-        
-        CameraPreview.start({position: 'rear',height: window.innerHeight,width: window.innerWidth,toBack: true,parent: "root"})
-        const handleMotionEvent = (event: any) =>  dispatch(setAccel(event.accelerationIncludingGravity))
-        window.addEventListener('devicemotion', handleMotionEvent, true) //add accel listener
 
-        setIsLoadingPage(false)
-        return () =>  window.removeEventListener('devicemotion', handleMotionEvent, true) //remove accel listener
-    }, []);
+        if((operatingSystem === 'ios' || operatingSystem === 'android' || operatingSystem === 'mac')){
+            dispatch(createSessions())
+            dispatch(updateClients())
+    
+            {(async () =>{
+                await tryGetPose(new Image(window.innerWidth,  window.innerHeight)) //enable tensorflow
+                console.log('Tensorflow is started!');
+            })()}
+            
+            CameraPreview.start({
+                toBack: true,
+                disableAudio: true,
+                height: window.innerHeight,
+                width: window.innerWidth,
+                position: 'rear',
+                parent: "root"
+            })
+    
+            //@ts-ignore
+            const deviceMotionEvent = (event: any) =>  dispatch(setAccel({accel:event.accelerationIncludingGravity, operatingSystem: operatingSystem}))
+
+            window.addEventListener('devicemotion', deviceMotionEvent, true) //add accel listener
+
+            setIsLoadingPage(false)    
+            return () =>  window.removeEventListener('devicemotion', deviceMotionEvent, true) //remove accel listener
+        }else {
+            console.log('device is false');
+            
+        }
+    }, [operatingSystem]);
 
 
     return (
         <>
-        <IonApp>
-            <IonReactRouter>
-                <IonRouterOutlet>
+            <IonApp>
+                <IonReactRouter>
+                    <IonRouterOutlet>
 
-                    <Route exact path="/home">
-                        {isLoadingPage && 
-                            <div id='loading'><h1>Loading...</h1></div>
-                        }
-                        {!isLoadingPage && 
+                        <Route exact path="/home">
                             <Home />
-                        }
-                    </Route>
+                        </Route>
 
-                    <Route exact path="/camera">
-                        <Camera />
-                    </Route>
+                        <Route exact path="/camera">
+                            <Camera />
+                        </Route>
 
-                    <Route path="/result">
-                        <Result />
-                    </Route>
+                        <Route path="/result">
+                            <Result />
+                        </Route>
 
-                    <Route path="/results">
-                        <Results />
-                    </Route>
+                        <Route path="/results">
+                            <Results />
+                        </Route>
 
-                    <Route path="/redactor">
-                        <Redactor />
-                    </Route>
+                        <Route path="/redactor">
+                            <Redactor />
+                        </Route>
 
-                    <Route path="/client">
-                        <Client />
-                    </Route>
+                        <Route path="/client">
+                            <Client />
+                        </Route>
 
-                    <Route exact path="/">
-                        <Redirect to="/home" />
-                    </Route>
+                        <Route exact path="/">
+                            <Redirect to="/home" />
+                        </Route>
 
-                </IonRouterOutlet>
-            </IonReactRouter>
-        </IonApp>
+                    </IonRouterOutlet>
+                </IonReactRouter>
+            </IonApp>
         </>
     )
     };

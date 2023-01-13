@@ -1,30 +1,31 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { Images } from 'store/types';
+import { Images, Image } from 'store/types';
 
 
 
 export interface Session {
     id: number,
-    images: Images
     clientId: number
 }
 
 interface SessionData {
+    images: Images,
     session: Session,
     sessions: Session[] | [],
     selectedSessions: Session[] | []
 }
 
 const initialState: SessionData = {
+    images: {
+        sessionId: null,
+        front: { path: "", status: null, angle: null, landmarks: null},
+        back: { path: "", status: null, angle: null, landmarks: null},
+        right: { path: "", status: null, angle: null, landmarks: null},
+        left: { path: "", status: null, angle: null, landmarks: null},
+    },
     session: {
         id: 0,
-        images: {
-            front: { path: "", status: null, angle: null, landmarks: null},
-            back: { path: "", status: null, angle: null, landmarks: null},
-            right: { path: "", status: null, angle: null, landmarks: null},
-            left: { path: "", status: null, angle: null, landmarks: null},
-        },
         clientId: 0
     },
     sessions: [],
@@ -36,21 +37,33 @@ export const sessionSlice = createSlice({
     initialState,
     reducers: {
         clearSessions: (state) => {
+                state.images = {
+                    sessionId: null,
+                    front: { path: "", status: null, angle: null, landmarks: null},
+                    back: { path: "", status: null, angle: null, landmarks: null},
+                    right: { path: "", status: null, angle: null, landmarks: null},
+                    left: { path: "", status: null, angle: null, landmarks: null},
+                }
                 state.session = {
                     id: 0,
-                    images: {
-                        front: { path: "", status: null, angle: null, landmarks: null},
-                        back: { path: "", status: null, angle: null, landmarks: null},
-                        right: { path: "", status: null, angle: null, landmarks: null},
-                        left: { path: "", status: null, angle: null, landmarks: null},
-                    },
                     clientId: 0
                 }
                 state.sessions = []
                 state.selectedSessions = []
         },
+
+        //СОХРАНИТЬ ИЗОБРАЖЕНИЯ ОТДЕЛЬНО ОТ СЕССИЙ
         setSession: (state, action: PayloadAction<Session>) => {
             state.session = action.payload
+
+            try {
+                let localImages = localStorage.getItem(String(action.payload.id))
+                //@ts-ignore
+                state.images = JSON.parse(localImages)
+            } catch (error) {
+                console.log(error);
+            }
+            
         },
         setSelectedSession: (state, action: PayloadAction<Session | null>) => {
             if(action.payload === null){
@@ -71,79 +84,65 @@ export const sessionSlice = createSlice({
             }
             else {state.selectedSessions = [...state.selectedSessions, action.payload]}
         },
-        addImagesPath: (state, action: PayloadAction<Images>) => {
+        addImage: (state, action: PayloadAction<{sessionId?:number, front?: Image, left?: Image, right?: Image, back?: Image}>) => {
+            if(action.payload?.sessionId){
+                state.images.sessionId = action.payload.sessionId
+            }
             if(action.payload?.left){
-                state.session.images.left.path = action.payload.left.path
+                state.images.left = action.payload.left
             }
             if(action.payload?.right){
-                state.session.images.right.path = action.payload.right.path
+                state.images.right = action.payload.right
             }
             if(action.payload?.back){
-                state.session.images.back.path = action.payload.back.path
+                state.images.back = action.payload.back
             }
             if(action.payload?.front){
-                state.session.images.front.path = action.payload.front.path
-            }
-        },
-        addImagesStatus: (state, action: PayloadAction<Images>) => {
-            if(action.payload?.left){
-                state.session.images.left.status = action.payload.left.status
-            }
-            if(action.payload?.right){
-                state.session.images.right.status = action.payload.right.status
-            }
-            if(action.payload?.back){
-                state.session.images.back.status = action.payload.back.status
-            }
-            if(action.payload?.front){
-                state.session.images.front.status = action.payload.front.status
-            }
-        },
-        addImagesAngle: (state, action: PayloadAction<Images>) => {
-            if(action.payload?.left){
-                state.session.images.left.angle = action.payload.left.angle
-            }
-            if(action.payload?.right){
-                state.session.images.right.angle = action.payload.right.angle
-            }
-            if(action.payload?.back){
-                state.session.images.back.angle = action.payload.back.angle
-            }
-            if(action.payload?.front){
-                state.session.images.front.angle = action.payload.front.angle
-            }
-        },
-        addImagesLandmarks: (state, action: PayloadAction<Images>) => {
-            if(action.payload?.left){
-                state.session.images.left.landmarks = action.payload.left.landmarks
-            }
-            if(action.payload?.right){
-                state.session.images.right.landmarks = action.payload.right.landmarks
-            }
-            if(action.payload?.back){
-                state.session.images.back.landmarks = action.payload.back.landmarks
-            }
-            if(action.payload?.front){
-                state.session.images.front.landmarks = action.payload.front.landmarks
+                state.images.front = action.payload.front
             }
         },
         saveSessionToLocal:  (state) => {
             let sessions = localStorage.getItem('sessions')
             let newSession = state.session
+            let newImage = state.images
+            
+            if(sessions && state.session &&  state.images && JSON.parse(sessions).length > 0){
+                try {
 
-            if(sessions && JSON.parse(sessions).length > 0){
-                let newSessions = JSON.parse(sessions)
-                newSessions.push(newSession)
-                localStorage.setItem('sessions', JSON.stringify(newSessions))
+                    let newSessions = JSON.parse(sessions)
+
+                    newSessions.push(newSession)
+
+                    let newImagesString = JSON.stringify(newImage)
+                    let newSessionsString = JSON.stringify(newSessions)
+
+                    if(newSessionsString.length > 0 && newImagesString.length > 0){
+                        localStorage.setItem(String(newSession.id), newImagesString)
+                        localStorage.setItem('sessions', newSessionsString)
+                    }else{
+                        console.log('====================================');
+                        console.log('stringify error');
+                        console.log('====================================');
+                    }
+
+                } catch (error) {
+                    console.log('====================================');
+                    console.log(String(error));
+                    console.log(localStorage)
+                    console.log('====================================');
+                }
             }else{
                 localStorage.setItem('sessions', JSON.stringify([newSession]));
+                localStorage.setItem(String(newSession.id), JSON.stringify(newImage));
             }  
 
         },
         addNewSession: (state, action: PayloadAction<{clientId: number}> ) => {
-            state.session.id = Date.now()
+            let sessionId = Date.now()
+            state.session.id = sessionId
             state.session.clientId = action.payload.clientId   
-            state.session.images = {
+            state.images = {
+                sessionId: sessionId,
                 front: { path: "", status: null, angle: null, landmarks: null},
                 back: { path: "", status: null, angle: null, landmarks: null},
                 right: { path: "", status: null, angle: null, landmarks: null},
@@ -166,15 +165,7 @@ export const sessionSlice = createSlice({
                 newSessions = newSessions.filter((s:Session) => {
                     if(s && s.clientId && action.payload && action.payload){
                         if(+s.clientId === +action.payload){
-                            if(s.images && 
-                                (s.images.front.status !== null ||
-                                s.images.back.status !== null ||
-                                s.images.left.status !== null ||
-                                s.images.right.status)
-                            ) {
-                                return s
-                            }
-                            
+                            return s
                         }
                     }
                 })
@@ -193,10 +184,10 @@ export const {
     clearSessions,
     setSelectedSession,
     saveSessionToLocal ,
-    addNewSession, createSessions,
+    addNewSession,
+    createSessions,
     filterSessionsByUser,
-    addImagesPath, addImagesStatus,
-    addImagesAngle, addImagesLandmarks
+    addImage
 } = sessionSlice.actions
 
 export default sessionSlice.reducer

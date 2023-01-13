@@ -1,4 +1,10 @@
 
+.buttBack{
+    position: absolute;
+    left: 20px;
+    fill: black;
+    filter: brightness(0%);
+}
 
 #lens{
     position: absolute;
@@ -41,7 +47,8 @@
     top: 0;
 
     width: 100vw;
-    height: 50px;
+    height: calc(40px + 5vh);
+    padding-top: 2vh;
 
     background: rgba($color: #ffffff, $alpha: 1);
     border-bottom-left-radius: 8px;
@@ -117,6 +124,9 @@
     background-color: white;
     height: 26px;
     padding-top: 5px;
+    &.isReading{
+        bottom: 0px;
+    }
 }
 .swiper-pagination-bullet{
     --swiper-pagination-bullet-width: 10px;

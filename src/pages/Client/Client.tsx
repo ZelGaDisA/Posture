@@ -6,11 +6,13 @@ import {useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import { RootState } from 'store/store';
 import { Client } from 'store/slices/clients';
-import { Session, setSelectedSession, setSession,clearSessions} from 'store/slices/sessions';
-import { setResultSideNumber } from "store/slices/app";
+import { Session, setSelectedSession, setSession, clearSessions} from 'store/slices/sessions';
+import { setResultSideNumber, setIsReading } from "store/slices/app";
 import { Images,CGPoint } from 'store/types';
+import { findAngle } from 'functions/findAngle';
 
 import back from "images/backGreen.svg";
+import more from "images/icons/more-vertical.svg";
 import save from 'images/icons/log-in.svg'
 import trash from 'images/icons/trash-2.svg'
 
@@ -24,22 +26,29 @@ import blackRightMan from 'images/rightSVG.svg';
 
 import alertTriangle from '../../images/alert-triangle.svg';
 import checkCircle from '../../images/check-circle.svg';
-import { getCoords } from 'functions/getCoords';
+
+
+interface visibleCard {
+    session: Session,
+    images: Images[]
+}
 
 const ClientPage = () => {
     //HOOKS
     const history = useHistory();
     const dispatch = useDispatch();
+    const [presentAlert] = useIonAlert();
 
     //SLICES
+    const clients = useSelector((state:RootState) => state.clients)
     const clientInfo = useSelector((state:RootState) => state.clients.client)
     const sessions = useSelector((state:RootState) => state.sessions.sessions)
-    const images = useSelector((state:RootState) => state.sessions.session.images)
     const selectedSessions = useSelector((state:RootState) => state.sessions.selectedSessions)
-
+    
     //STATES
     const [selectedCardIndex, setSelectedCardIndex] = useState(-1)
     const [comparisonResult, setComparisonResults] = useState<any>(null)
+    const [visibleCards, setVisibleCards] = useState<visibleCard[]>([])
 
     //CONSTANTES
     const sides = ['front', 'right', 'back', 'left']
@@ -47,75 +56,67 @@ const ClientPage = () => {
     const greenMan = [greenFrontMan,  greenRightMan, greenFrontMan, greenLeftMan]
 
     //FUNCTIONS
-    const deleteSession = (s:Session) => {
-        console.log(s);
-    }
     useEffect(()=>{
         selectedSessions.length === 2 
-        ? findAngle(selectedSessions, selectedCardIndex)
+        ? setComparisonResults(findAngle(selectedSessions, sessions, selectedCardIndex))
         : setComparisonResults(null)
-    },[selectedSessions])
 
-    const findAngle = (selectedSessions: Session[], sideNumber:number)=>{
-        
-        let images:Images[] = selectedSessions.slice().sort((a,b) => a.id - b.id).map(s => s.images)
-        let coords: any;
-        
-        switch (sideNumber) {
-            case 0:
-                coords = images.map(i => !!(i && i.front && i.front.landmarks) && getCoords(i.front.landmarks, 0))
-                break;
-            case 1:
-                coords = images.map(i => !!(i && i.right && i.right.landmarks) && getCoords(i.right.landmarks, 1))
-                break;
-            case 2:
-                coords = images.map(i => !!(i && i.back && i.back.landmarks) && getCoords(i.back.landmarks, 2))
-                break;
-            case 3:
-                coords = images.map(i => !!(i && i.left && i.left.landmarks) && getCoords(i.left.landmarks, 3))
-                break;
-            default:
-                break;
+        let localstoreImages = sessions.map((s:Session)=>{
+            let image = localStorage.getItem(String(s.id))
+            return image && JSON.parse(image)
+        })
+
+        if(!localstoreImages || localstoreImages?.length === 0){
+            return
         }
-
-        if(coords && coords.length === 2){
-            let a = coords[0]
-            let b = coords[1]
-            
-            const toGradus = (radian: number) => {
-                return Math.floor((radian * (180/Math.PI)) * 100) / 100
-            }
-
-            let result = {
-                ears: {
-                    before: toGradus(a.ears.angle),
-                    after: toGradus(b.ears.angle),
-                    comparison: toGradus(a.ears.angle - b.ears.angle)
-                },
-                shoulders: {
-                    before: toGradus(a.shoulders.angle),
-                    after: toGradus(b.shoulders.angle),
-                    comparison: toGradus(a.shoulders.angle - b.shoulders.angle)
-                },
-                hips: {
-                    before: toGradus(a.hips.angle),
-                    after: toGradus(b.hips.angle),
-                    comparison: toGradus(a.hips.angle - b.hips.angle)
-                },
-                ankles: {
-                    before: toGradus(a.ankles.angle),
-                    after: toGradus(b.ankles.angle),
-                    comparison: toGradus(a.ankles.angle - b.ankles.angle)
+        //@ts-ignore
+        const images = localstoreImages
+        
+        if(!images){
+            return
+        }
+        let imagesIds = images.map((i:Images,ind:number)=>i.sessionId)
+        let visCards = sessions.map((s:Session,i:number)=>{
+            if(s && imagesIds.indexOf(s.id) !== -1){
+                return {
+                    session: s,
+                    images: images[imagesIds.indexOf(s.id)]
                 }
             }
+        })
+        //@ts-ignore
+        setVisibleCards(visCards.filter((vc) => !!vc))
+    },[selectedSessions, selectedCardIndex])
 
-            setComparisonResults(result)
-        }
-        
-    }
+    const alert = (message:string) => presentAlert({
+        header: 'Warning!',
+        message: message,
+        buttons: [
+            {
+                text: 'CANCEL',
+                role: 'cancel',
+                handler: () => {
+                },
+            },
+            {
+                text: 'REMOVE',
+                role: 'confirm',
+                cssClass: 'removeClientBtn',
+                handler: () => {
+                    if(deleteClient()){
+                        dispatch(clearSessions())
+                        history.goBack()
+                    }
+                },
+            },
+        ]
+    })
+
+    
 
     const goToSession = (s:Session) => {
         dispatch(setSession(s))
+        dispatch(setIsReading(true))
 
         if(selectedCardIndex >= 0){
             dispatch(setResultSideNumber(selectedCardIndex))
@@ -134,6 +135,19 @@ const ClientPage = () => {
     const selectSession = (session:Session) => {
         dispatch(setSelectedSession(session))
     }
+    const deleteClient = () => {
+        let newClients = clients.clients.slice().filter((c:Client)=> c.id !== clientInfo.id)
+
+        if(newClients.length > 0){
+            let c = JSON.stringify(newClients)
+            localStorage.setItem('clients', c)
+
+            return true
+        } else{
+            return false
+        }
+    }
+
 
     return (
         <IonPage>
@@ -147,7 +161,10 @@ const ClientPage = () => {
                         <img src={back} alt=""/>
                     </div>
 
-                    <h3 className='client-Header-text'>{clientInfo.name}</h3>
+                    <h3 className='client-header-text'>{clientInfo.name}</h3>
+                    <h3 className='client-header-more' onClick={() => alert("Are you sure you want to delete this client?")}>
+                        <img src={trash} alt="" />
+                    </h3>
                 </div>
 
                 <div className='cardsBox'>
@@ -185,67 +202,61 @@ const ClientPage = () => {
                     </ul>
                 </div>
 
-                <div className='sessionsBox'>
-                    <IonList className='sessionsBox-list'>
-                        {sessions.length > 0 ? sessions.map((s:Session,i)=>{
+                <IonList className='sessionsBox-list'>
+                        {visibleCards?.length > 0 ? visibleCards.map((visCard:visibleCard,i:number)=>{
+                                if(!visCard?.session){ console.log(visibleCards,visCard); return}
+
+                                const s = visCard.session
+                                const images = visCard.images
+
                                 if (selectedCardIndex === -1){//all results
-                                    //@ts-ignore
-                                    if(s && s.images){
-                                        return <div className='sessionsBox-list__el' key={i}>
-                                            <IonLabel className='sessionsBox-list__el-Label all'
-                                                onClick={()=>goToSession(s)}
-                                            >{s.id ? getDateTime(s.id) : 0}</IonLabel>
-                                            <div className='deleteSession-Button'>
-                                                <img src={trash} alt="" onClick={()=> deleteSession(s)}/>
-                                            </div>
-                                        </div>
-                                    }
+                                    return <li className='sessionsBox-list__el' key={i}>
+                                        <IonLabel className='sessionsBox-list__el-Label all'
+                                            onClick={()=>goToSession(s)}
+                                        >{s.id ? getDateTime(s.id) : 0}</IonLabel>
+                                    </li>
                                 } else {
                                     if (selectedSessions.length < 2) {
-                                        //@ts-ignore
-                                        if((s && s.images &&  s.images[sides[selectedCardIndex]].status)){
-                                            return <div key={i} className='sessionsBox-list__el'>
-                                            <IonCheckbox 
-                                                className='sessionsBox-list__el-Checkbox'
-                                                slot="start"
-                                                onClick={() => selectSession(s)}
-                                                checked={selectedSessions.map(i => i.id).indexOf(s.id) >= 0}
-                                            ></IonCheckbox>
-                                            <IonLabel className='sessionsBox-list__el-Label'
-                                                onClick={()=>goToSession(s)}
-                                            >{s.id ? getDateTime(s.id) : 0}</IonLabel>
-                                            <div className='deleteSession-Button'>
-                                                <img src={trash} alt="" onClick={()=> deleteSession(s)}/>
+                                        {/* @ts-ignore */}
+                                        return s.id && images[sides[selectedCardIndex]]?.status && <div key={i} className='sessionsBox-list__el'>
+                                                <IonCheckbox 
+                                                    className='sessionsBox-list__el-Checkbox'
+                                                    slot="start"
+                                                    onClick={() => selectSession(s)}
+                                                    checked={selectedSessions.map(i => i.id).indexOf(s.id) >= 0}
+                                                ></IonCheckbox>
+                                                <IonLabel className='sessionsBox-list__el-Label'
+                                                    onClick={()=>goToSession(s)}
+                                                >{s.id ? getDateTime(s.id) : 0}</IonLabel>
                                             </div>
-                                            </div>
-                                        }
                                     } else {
-                                        if(s && selectedSessions && selectedSessions.map(i => i.id).indexOf(s.id) !== -1){
+                                        if(s && s.id && selectedSessions && selectedSessions.map(i => i.id).indexOf(s.id) !== -1){
                                             return <div key={i} className='sessionsBox-list__el'>
+
                                                 <IonCheckbox 
                                                     className='sessionsBox-list__el-Checkbox'
                                                     slot="start"
                                                     onClick={() => selectSession(s)}
                                                     checked={true}
                                                 ></IonCheckbox>
+
                                                 <IonLabel className='sessionsBox-list__el-Label'
                                                     onClick={()=>goToSession(s)}
                                                 >{s.id ? getDateTime(s.id) : 0}</IonLabel>
+
                                                 <div className='deleteSession-Button'>
-                                                    <img src={trash} alt="" onClick={()=> deleteSession(s)}/>
+                                                    {/* <img src={trash} alt="" onClick={()=> deleteSession(s)}/> */}
                                                 </div>
                                                 </div>
                                         }
                                     }
                                 }
-                            })
-
+                        })
                             : <div className='emptySessions'>
                                 <p>Sessions is not found...</p>
                             </div>
                         }
-                    </IonList>
-                </div>
+                </IonList>
 
                 { selectedSessions?.length === 2 && <div className="comparisonBox">
                     <div className="comparisonBox-el">
@@ -254,29 +265,32 @@ const ClientPage = () => {
                         <p className='after'>After</p>
                         <p className='comparison'>Comparison</p>
                     </div>
+                    {(selectedCardIndex === 0 || selectedCardIndex === 2) && <>
                     <div className="comparisonBox-el">
                         <p className='name'>Ears</p>
                         <p className='before'>{comparisonResult?.ears.before}°</p>
                         <p className='after'>{comparisonResult?.ears.after}°</p>
-                        <p className='comparison'>{comparisonResult?.ears.comparison}°</p>
+                        <p className={'comparison ' + comparisonResult?.ears.color}>{comparisonResult?.ears.comparison}°</p>
                     </div>
                     <div className="comparisonBox-el">
                         <p className='name'>Shoulders</p>
                         <p className='before'>{comparisonResult?.shoulders.before}°</p>
                         <p className='after'>{comparisonResult?.shoulders.after}°</p>
-                        <p className='comparison'>{comparisonResult?.shoulders.comparison}°</p>
+                        <p className={'comparison ' + comparisonResult?.shoulders.color}>{comparisonResult?.shoulders.comparison}°</p>
                     </div>
                     <div className="comparisonBox-el">
                         <p className='name'>Hips</p>
                         <p className='before'>{comparisonResult?.hips.before}°</p>
                         <p className='after'>{comparisonResult?.hips.after}°</p>
-                        <p className='comparison'>{comparisonResult?.hips.comparison}°</p>
+                        <p className={'comparison ' + comparisonResult?.hips.color}>{comparisonResult?.hips.comparison}°</p>
                     </div>
+                    </>}
+
                     <div className="comparisonBox-el">
                         <p className='name'>Ankles</p>
                         <p className='before'>{comparisonResult?.ankles.before}°</p>
                         <p className='after'>{comparisonResult?.ankles.after}°</p>
-                        <p className='comparison'>{comparisonResult?.ankles.comparison}°</p>
+                        <p className={'comparison ' + comparisonResult?.ankles.color}>{comparisonResult?.ankles.comparison}°</p>
                     </div>
                 </div>}
 

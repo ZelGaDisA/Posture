@@ -13,6 +13,7 @@ export interface AppState {
     resultSideNumber: number;
     isRetakeOnePhoto: boolean;
     isLoading: boolean;
+    isReading: boolean;
     cameraUpdate: boolean
     rerenderCounter: number;
 }
@@ -21,6 +22,7 @@ const initialState: AppState = {
     accel: { x: 0, y: 0, z: 0 },
     resultSideNumber: 0,
     isLoading: true,
+    isReading: false,
     isRetakeOnePhoto: false,
     cameraUpdate: false,
     rerenderCounter: 0,
@@ -37,12 +39,28 @@ export const appSlice = createSlice({
         setIsLoading: (state, action: PayloadAction<boolean>) => {
             state.isLoading = action.payload
         },
-        setAccel: (state, action: PayloadAction<Accel>) => {
-            state.accel = {
-                x: (state.accel.x + action.payload.x) / 2,
-                y: (state.accel.y + action.payload.y) / 2,
-                z: (state.accel.z + action.payload.z) / 2,
+        setIsReading: (state, action: PayloadAction<boolean>) => {
+            state.isReading = action.payload
+        },
+        setAccel: (state, action: PayloadAction<{accel: Accel, operatingSystem: string | null}>) => {
+
+            if(action.payload.operatingSystem === "ios"){
+                state.accel = {
+                    x: (state.accel.x + action.payload.accel.x) / 2,
+                    y: (state.accel.y + action.payload.accel.y) / 2,
+                    z: (state.accel.z + action.payload.accel.z) / 2,
+                }
             }
+    
+            if(action.payload.operatingSystem === 'android'){
+                state.accel = {
+                    x: (state.accel.x + action.payload.accel.x) / 2,
+                    y: (state.accel.y + action.payload.accel.y) / 2,
+                    z: (state.accel.z + action.payload.accel.z) / 2,
+                }
+            }
+
+            
         },
         setIsRetakeOnePhoto: (state, action: PayloadAction<boolean>) => {
             state.isRetakeOnePhoto = action.payload
@@ -64,6 +82,6 @@ export const appSlice = createSlice({
 
 
 // Action creators are generated for each case reducer function
-export const { setResultSideNumber ,setIsLoading, setAccel, setIsRetakeOnePhoto, cameraUpdate,rerenderResults} = appSlice.actions
+export const { setResultSideNumber, setIsLoading, setIsReading, setAccel, setIsRetakeOnePhoto, cameraUpdate,rerenderResults} = appSlice.actions
 
 export default appSlice.reducer

@@ -3,60 +3,82 @@ import {
     IonPage,
     useIonAlert,
     IonButton,
-    IonFab,
-    IonToolbar,
-    IonTitle
+    IonCard,
 } from '@ionic/react';
 
-import { useEffect,useState } from 'react';
+import { useEffect,useState,useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { IonItem, IonList, IonSearchbar } from '@ionic/react';
 
-
-import homeFrame from 'images/homeInstruction.svg'
 import {useHistory} from "react-router";
 
 import './Home.scss'
 import { chooseClient,addNewClient,Client,updateClients } from 'store/slices/clients';
-import { Session,addNewSession,createSessions,filterSessionsByUser } from "store/slices/sessions";
+import { Session,addNewSession,filterSessionsByUser } from "store/slices/sessions";
 import { RootState } from 'store/store';
 
 
 const Home = () => {
     const history = useHistory();
     const dispatch = useDispatch();
-
+    //ALERT
     const [presentAlert] = useIonAlert();
-    const clientsData = useSelector((state:RootState) => state.clients)
 
+    const clientsData = useSelector((state:RootState) => state.clients)
+    const clients = useSelector((state:RootState) => state.clients.clients)
+    const [search, setSearch] = useState<string>()
     const [results, setResults] = useState(clientsData.clients);
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    const savedSessions = localStorage.getItem('sessions')
+    const [updater, setUpdater] = useState(0)
+
+    const [isOpenForm, setIsOpenForm] = useState(0)
 
     const handleChange = (e: Event) => {
-        let query = "";
         const target = e.target as HTMLIonSearchbarElement;
-        if (target) query = target.value!.toLowerCase();
-        setResults(clientsData.clients.filter((client: Client) => client.name ? client.name.toLowerCase().indexOf(query) > -1 : ''));
+        //
+        if (target) setSearch(target.value!.toLowerCase())
+        
     }
+    useEffect(()=>{
+        if(search){
+            setResults(clientsData.clients.filter((client: Client) => client.name ? client.name.toLowerCase().indexOf(search) > -1 : ''));
+        }
+    },[search])
+
+    useEffect(()=>{
+        if(!search && search?.length === 0){
+            dispatch(updateClients())
+            let t = setTimeout(()=>{
+                setUpdater(updater + 1)
+                clearTimeout(t)
+            },500)
+        }
+    },[updater, search])
 
     useEffect(()=>{
         //@ts-ignore
-        clientsData && clientsData.clients && setResults(clientsData.clients)
-        updateClients()
+        clientsData && clientsData.clients  && setResults(clientsData.clients)
     },[clientsData , clientsData.client.id])
 
+
     const resultsInfo = (client:Client) =>{
-        let sessions = savedSessions && JSON.parse(savedSessions)
-        let findedSessions = sessions.filter((i:Session) => i.clientId === client.id)
-        let lastSessionId = findedSessions.sort((a:Session, b:Session) => a.id - b.id)[0]?.id || false
-        let lastSessionTime = lastSessionId ? (new Date(lastSessionId)).toLocaleDateString("en-US") : false
-        
-        return({
-            number: findedSessions.length,
-            lastSessionTime: lastSessionTime
-        })
+        try {
+            //@ts-ignore
+            let sessions = JSON.parse(localStorage.getItem('sessions'))
+            let findedSessions = sessions.filter((i:Session) => i.clientId === client.id)
+            let lastSessionId = findedSessions.sort((a:Session, b:Session) => a.id - b.id)[0]?.id || false
+            let lastSessionTime = lastSessionId ? (new Date(lastSessionId)).toLocaleDateString("en-US") : false
+            
+            return({
+                number: findedSessions.length,
+                lastSessionTime: lastSessionTime,
+            })
+        } catch (error) {
+            console.log('====================================');
+            console.log(error);
+            console.log('====================================');
+        }
     }
+
 
     return (
         <IonPage>
@@ -64,6 +86,10 @@ const Home = () => {
             <IonContent fullscreen className='home-IonContent'>
                 <div className='home-contentInner'>
                     <h3 className='header-text'>My clients</h3>
+                </div>
+
+                <div className='home-betaLabel'>
+                    <p className='home-betaLabel-text'>v1.0.3 [BETA]</p>
                 </div>
 
                 <IonSearchbar placeholder='Find a client' debounce={1000} onIonChange={(e: Event) => handleChange(e)}></IonSearchbar>
@@ -77,53 +103,93 @@ const Home = () => {
                                 history.push('/client')
                             }}>
                                 <p className='client-List__item-text_name'>{result.name}</p>
-                                {resultsInfo(result).number > 0 && <p className='client-List__item-text_number'>{`sessions: ${resultsInfo(result).number}`}</p>}
-                                {resultsInfo(result).lastSessionTime && <p className='client-List__item-text_lastTime'>{`last scan ${resultsInfo(result).lastSessionTime}`}</p>}
+                                {resultsInfo(result)?.number > 0 && <p className='client-List__item-text_number'>{`sessions: ${resultsInfo(result)?.number}`}</p>}
+                                {resultsInfo(result)?.lastSessionTime && <p className='client-List__item-text_lastTime'>{`last scan ${resultsInfo(result)?.lastSessionTime}`}</p>}
                             </div>
-                            <button className='client-List__item-button' onClick={()=>{
-                                dispatch(chooseClient(result))
-                                result.id && dispatch(addNewSession({clientId: result.id}))
-                                history.push('/camera')
-                            }}>new scan</button>
+                            {resultsInfo(result)?.number >= 2 
+                                ?  <button className='client-List__item-button popup' onClick={(e) => setIsOpenForm(1)}>new scan</button>
+                                :   <button className={'client-List__item-button' + (!!(resultsInfo(result)?.number === 2) ? ' popup' : '')} onClick={()=>{
+                                        dispatch(chooseClient(result))
+                                        result.id && dispatch(addNewSession({clientId: result.id}))
+                                        history.push('/camera')
+                                    }}>new scan</button>
+                            }
                         </li>
                     ))}
                 </IonList>
 
+
                 <div id="newPatient__form" className='home-bottom'>
-                        <button className='home-button' onClick={() =>
+                    {   clientsData.clients.length === 3 
+                        ?   <IonButton className='home-button popup' onClick={(e) => setIsOpenForm(2)}>
+                                <p className='home-button-text'>Start with new client</p>
+                            </IonButton>
+                        :   <IonButton className='home-button' onClick={() =>{
                                 presentAlert({
-                                header: "Enter the client's name",
-                                buttons: [{
-                                    text: 'SAVE AND START',
-                                    handler: (value) => {
+                                    header: "Enter the client's name",
+                                    message: "max 18 characters",
+                                    buttons: [{
+                                        text: 'SAVE AND START',
+                                        handler: (value) => {
+                                            const newClientId = Date.now()
+                                            const clients = localStorage.getItem('clients')
+                                            const allClientsNumber = clients ? JSON.parse(clients).length + 1 : 1
 
-                                        const newClientId = Date.now()
-                                        const clients = localStorage.getItem('clients')
-                                        const allClientsNumber = clients ? JSON.parse(clients).length + 1 : 1
-                                        let clientName = value[0]
-                                        
-                                        if(clientName.length === 0) clientName = `Client #${allClientsNumber}`
+                                            let clientName = value[0]
 
-                                        dispatch(addNewClient({name: clientName, id: +newClientId}))
-                                        dispatch(addNewSession({clientId: +newClientId}))
-                                        setResults(clientsData.clients);
+                                            if(clientName.length === 0) clientName = `Client #${allClientsNumber}`
 
-                                        history.push("/camera")
-                                    },
-                                },],
-                                inputs: [
-                                    {
-                                        placeholder: `Client #${clientsData.clients ? clientsData.clients.length + 1 : 1}`,
-                                        id: 'alert-input_name',
-                                        
-                                    },
-                                ],
-                                })}>
-                            <p className='home-button-text'>Start with new client</p>
-                        </button>
+                                            dispatch(addNewClient({name: clientName, id: +newClientId}))
+                                            dispatch(addNewSession({clientId: +newClientId}))
+                                            setResults(clientsData.clients);
+
+                                            history.push("/camera")
+                                            console.log('clicked');
+                                        },
+                                    },],
+
+                                    inputs: [
+                                        {
+                                            placeholder: `Client #${clientsData.clients ? clientsData.clients.length + 1 : 1}`,
+                                            id: 'alert-input_name',
+                                            attributes: {
+                                                maxlength: 18,
+                                            }
+                                        } 
+                                    ],
+                                    })}}>
+                                <p className='home-button-text'>Start with new client</p>
+                            </IonButton>
+                    }
                 </div>
+
+                
+                {!!isOpenForm && 
+                    <div className='ion-card' >
+                        <div className='ion-card-back' onClick={()=>{setIsOpenForm(0)}}/>
+                        <IonCard className="ion-card-form">
+                            <div className='ion-card-form-box'>
+                                {isOpenForm === 1 
+                                    ?   <p className='ion-card-form-box-header'>The number of <br/> saved sessions is 2</p>
+                                    :   <p className='ion-card-form-box-header'>The number of <br/> clients is 3</p>
+                                }
+                            </div>
+                            <div className='ion-card-form-box'>
+                                {isOpenForm === 1 
+                                    ?   <p className='ion-card-form-box-text'>If you want to save another <br/> session, you must delete any of the previously saved</p>
+                                    :   <p className='ion-card-form-box-text'>If you want to save another <br/> client, you must delete any of the previously saved</p>
+                                }
+                            </div>
+
+                            <button onClick={()=>{
+                                setIsOpenForm(0)
+                            }}  className="email-button">
+                                OK
+                            </button>
+                        </IonCard>
+                    </div>
+                }
             </IonContent>
-            
         </IonPage>
     );
 };

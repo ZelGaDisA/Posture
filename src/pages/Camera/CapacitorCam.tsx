@@ -132,7 +132,7 @@ export default function CapacitorCam() {
 
                 dispatch(setIsLoading(true))
                 dispatch(setIsReading(false))
-
+                
                 history.push('/results')
 
                 break;
@@ -213,31 +213,31 @@ export default function CapacitorCam() {
                     </div>
 
                     <button className='btn-toHome'
-                            onClick={() =>
-                                presentAlert({
-                                    header: 'Clear photo',
-                                    message: "This will clear all photo. Are you sure?",
-                                    buttons: [
-                                        {
-                                            text: 'CANCEL',
-                                            role: 'cancel',
-                                            handler: () => {
-                                            },
+                        onClick={() =>
+                            presentAlert({
+                                header: 'Clear photo',
+                                message: "This will clear all photo. Are you sure?",
+                                buttons: [
+                                    {
+                                        text: 'CANCEL',
+                                        role: 'cancel',
+                                        handler: () => {
                                         },
-                                        {
-                                            text: 'CLEAR',
-                                            role: 'confirm',
-                                            handler: () => {
-                                                dispatch(setIsLoading(true))
-                                                dispatch(setIsRetakeOnePhoto(false))
-                                                dispatch(setResultSideNumber(0))
-                                                setSelectedMenuItemIndex(0)
-                                                history.push("/home")
-                                            },
+                                    },
+                                    {
+                                        text: 'CLEAR',
+                                        role: 'confirm',
+                                        handler: () => {
+                                            dispatch(setIsLoading(true))
+                                            dispatch(setIsRetakeOnePhoto(false))
+                                            dispatch(setResultSideNumber(0))
+                                            setSelectedMenuItemIndex(0)
+                                            history.push("/home")
                                         },
-                                    ]
-                                })
-                            }
+                                    },
+                                ]
+                            })
+                        }
                     >
                         <p>Cancel</p>
                     </button>
@@ -256,5 +256,6 @@ export default function CapacitorCam() {
         </>
     )
 }
+
 
 

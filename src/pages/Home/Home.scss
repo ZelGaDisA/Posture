@@ -3,7 +3,165 @@
 body{
     margin: 0;
 }
+    
+
 ion-content {--overflow: hidden}
+
+.note-danger{
+    --ion-color-base: rgb(225, 0, 0);
+}
+.note-warning{
+    --ion-color-base: rgb(225, 184, 0);
+}
+
+.ion-card{
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &-back{
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: none;
+    }
+    &-form{
+        position: relative;
+        width: 80vw;
+        height: auto;
+        background-color: rgb(255, 255, 255);
+        margin: 0;
+        scroll-padding-left: 0;
+        --padding-inline-start: 0px;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+
+        &-box{
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            align-items: center;
+            width: 90%
+            ;
+            &-header{
+                margin: 5px 0;
+                font-family: 'Inter';
+                font-style: normal;
+                font-weight: 600;
+                font-size: 17px;
+                line-height: 22px;
+                /* or 129% */
+
+                text-align: center;
+                letter-spacing: -0.408px;
+
+                color: #000000;
+            }
+            &-text{
+                margin: 5px 0;
+                font-family: 'Inter';
+                font-style: normal;     
+                font-weight: 400;
+                font-size: 14px;
+                line-height: 130%;
+                /* or 18px */
+
+                text-align: center;
+
+                /* Text - Medium */
+
+                color: #666666;
+            }
+        }
+    }
+
+    .email-button{
+        position: relative;
+        width: 100%;
+        height: 40px;
+        margin-top: 20px;
+        padding:  20px 0 30px 0;
+        display: flex;
+        justify-content: center;
+        background: white;
+
+        align-items: center;
+        font-weight: 700;
+        transition: 0.1s ease;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+        font-weight: 400;
+        font-size: 17px;
+        line-height: 22px;
+        color: #007AFF;
+        &:active{
+            opacity: 0.5;
+        }
+    }
+
+}
+
+.openEmailForm-btn.sc-ion-action-sheet-ios{
+    background: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+}
+
+.closeEmailForm-btn.sc-ion-action-sheet-ios{
+    background: rgb(189, 15, 15);
+    background-color: rgb(189, 15, 15);
+    --background: red;
+    --background-color: red;
+    color: rgb(0, 0, 0);
+}
+.action-sheet-group.action-sheet-group-cancel.sc-ion-action-sheet-ios{
+    background: rgb(189, 15, 15);
+    background-color: rgb(189, 15, 15);
+    --background: red;
+    --background-color: red;
+    color: rgb(0, 0, 0);
+}
+.action-sheet-group.action-sheet-group-cancel.sc-ion-action-sheet-ios{
+    background: rgb(189, 15, 15);
+    background-color: rgb(189, 15, 15);
+    --background: red;
+    --background-color: red;
+    color: rgb(0, 0, 0);
+}
+.item-native{
+    padding: 0;
+    --background: red;
+    background: red;
+    color: #009E94;
+    &::after{
+        --background: red;
+        background: red;
+    }
+}
+
+.home-betaLabel{
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 10px 10px;
+    &-text{
+        margin: 0;
+        color: rgba(65, 65, 65, 0.1);
+        font-weight: 700;
+        font-size: 13px;
+    }
+}
 
 #alert-input_name{
     color: rgb(0, 0, 0);
@@ -13,18 +171,46 @@ ion-content {--overflow: hidden}
     font-weight: 400;
     font-size: 15px;
     line-height: 22px;
-    
+    background: #f7f7f7;
+    border-radius: 30px;
     padding-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 0;
     &::placeholder{
-        color: rgba(60, 60, 67, 0.6);
-        background: #F5F5F5;
-        border-radius: 10px;
-        padding: 6px 0 10px 6px;
+        color: rgba(0, 0, 0, 0.2);
         
+        padding-inline-start: 0px;
+        padding-inline-end: 10px;
+
     }
+}
+
+.action-sheet-button.ion-activatable.ion-focusable.sc-ion-action-sheet-ios{
+    --color:black;
+    --background: white;
+}
+.alert-input-group.sc-ion-alert-ios{
+    padding: 0 5%;
+}
+.alert-button-inner.sc-ion-alert-ios{
+    color: rgba(0, 164, 153, 1);
+}
+
+.alert-message.sc-ion-alert-ios{
+    padding: 10px 0;
+    margin-left: 15px;
+    width: 75%;
+    font-size: 12px;
+    text-align-last: left;
+    --ion-text-color: rgb(100, 100, 100);
+
+
 }
 .alert-button-group.sc-ion-alert-md{
     height: 50px;
+}
+.alert-button.sc-ion-alert-ios:last-child{
+    margin-bottom: 10px;
 }
 .alert-wrapper.ion-overlay-wrapper.sc-ion-alert-md{
     background-color: white;
@@ -39,6 +225,7 @@ ion-content {--overflow: hidden}
         line-height: 24px;
         padding: 0;
         height: 20px;
+
     }
     .alert-input-group.sc-ion-alert-md{
         padding: 0;
@@ -90,7 +277,7 @@ ion-content {--overflow: hidden}
     background: white;
     &__item{
         margin: 0 auto;
-        min-height: 72px;
+        min-height: 82px;
         width: 90vw;
         box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.08);
         margin-bottom: 10px;
@@ -137,7 +324,9 @@ ion-content {--overflow: hidden}
             font-weight: 400;
             font-size: 15px;
             line-height: 20px;
-
+            &.popup{
+                color: #8800b5;
+            }
             &:active{
                 opacity: 0.5;
             }
@@ -224,6 +413,7 @@ ion-content {--overflow: hidden}
     justify-content: center;
     align-items: center;
     background: white;    
+    
     .home-button {
         font-weight: bold;
         letter-spacing: 1px;
@@ -235,6 +425,12 @@ ion-content {--overflow: hidden}
         background: linear-gradient(91.58deg, #009E94 15.07%, #00B594 86.17%);
         box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.12);
         border-radius: 100px;
+        --background: none;
+        --border-radius: 100px;
+        transition: all 0.2s ease;
+        &.popup{
+            background: linear-gradient(91.58deg, #47009e 15.07%, #7c00b5 86.17%);
+        }
         &-text{
             color: #ffffff;
             font-family: 'Inter';
@@ -246,13 +442,8 @@ ion-content {--overflow: hidden}
 
             text-transform: uppercase;
             margin: 0;
+            
         }
-
-
-        &:active {
-            opacity: 0;
-        }
-
     }
 }
 

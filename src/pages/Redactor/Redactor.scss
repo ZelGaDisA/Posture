@@ -26,7 +26,8 @@ body{
     top: 0;
 
     width: 100vw;
-    height: 50px;
+    height: calc(40px + 5vh);
+    padding-top: 2vh;
 
     background: rgba($color: #ffffff, $alpha: 1);
     border-bottom-left-radius: 8px;

@@ -1,24 +1,25 @@
-import {useEffect, useState, useRef} from "react";
+import { useEffect, useState, useRef } from "react";
 import * as d3 from 'd3';
 
 import "./Grid.scss";
 import finger from 'images/Finger.svg'
 
-import {useDispatch, useSelector} from "react-redux";
-import {changePoint} from "functions/changePoint"
-import {getCoords} from "functions/getCoords"
+import { useDispatch, useSelector } from "react-redux";
+import { changePoint } from "functions/changePoint"
+import { getCoords } from "functions/getCoords"
 import { rerenderResults } from "store/slices/app";
 import { useHistory } from "react-router";
-import {getBackend} from '@tensorflow/tfjs-core'
-import { addImagesLandmarks } from "store/slices/sessions";
+import { getBackend } from '@tensorflow/tfjs-core'
+import sessions, { addImagesLandmarks, addImage } from "store/slices/sessions";
 
-export const GridForRedactoring = ({resultSideNumber,image}) => {
+export const GridForRedactoring = ({ resultSideNumber, image }) => {
     const boxRef = useRef()
     const dispatch = useDispatch()
     const history = useHistory()
-    const [rotator, setRotator] = useState(0) 
+    const [rotator, setRotator] = useState(0)
 
     const rerenderCounter = useSelector((state) => state.app.rerenderCounter)
+    const images = useSelector((state) => state.sessions.images)
     const [db, setDb] = useState(image.landmarks)//db for drawing
     const [isFingerVisible, setIsFingerVisible] = useState(true)//db for drawing
     const [selectedCircleId, setSelectedCircleId] = useState(null)
@@ -27,52 +28,75 @@ export const GridForRedactoring = ({resultSideNumber,image}) => {
         height: window.innerHeight
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         drawSoloPatientGrid(image.landmarks, size)
-    },[image, boxRef, resultSideNumber,rotator])
+    }, [image, boxRef, resultSideNumber, rotator])
 
-    useEffect(()=>{
-        let t = setTimeout(()=>{
+    useEffect(() => {
+        let t = setTimeout(() => {
             return clearTimeout(t)
-        },100)
+        }, 100)
     })
 
-    useEffect(()=>{
+    useEffect(() => {
         drawSoloPatientGrid(db, size)
-    },[db,selectedCircleId])
+    }, [db, selectedCircleId])
 
-    useEffect(()=>{
-        if(rerenderCounter > 0) {
+    useEffect(() => {
+        if (rerenderCounter > 0) {
             saveLandsToStore()
             dispatch(rerenderResults(false))
         }
-    },[rerenderCounter])
+    }, [rerenderCounter])
 
 
 
-    const saveLandsToStore = () =>{
-
+    const saveLandsToStore = () => {
         switch (resultSideNumber) {
             case 0:
-                dispatch(addImagesLandmarks({front: {landmarks: db}}))
+                let newFront = {
+                    angle: images.front.angle,
+                    path: images.front.path,
+                    status: images.front.status,
+                    landmarks: db,
+                }
+                dispatch(addImage({ front: newFront }))
                 break;
             case 1:
-                dispatch(addImagesLandmarks({right: {landmarks: db}}))
+                let newRight = {
+                    angle: images.right.angle,
+                    path: images.right.path,
+                    status: images.right.status,
+                    landmarks: db,
+                }
+                dispatch(addImage({ right: newRight }))
                 break;
             case 2:
-                dispatch(addImagesLandmarks({back: {landmarks: db}}))
+                let newBack = {
+                    angle: images.back.angle,
+                    path: images.back.path,
+                    status: images.back.status,
+                    landmarks: db,
+                }
+                dispatch(addImage({ back: newBack }))
                 break;
             case 3:
-                dispatch(addImagesLandmarks({left: {landmarks: db}}))
+                let newLeft = {
+                    angle: images.left.angle,
+                    path: images.left.path,
+                    status: images.left.status,
+                    landmarks: db,
+                }
+                dispatch(addImage({ left: newLeft }))
                 break;
             default:
                 break;
         }
 
-        let t = setTimeout(()=>{
+        let t = setTimeout(() => {
             history.goBack()
             return () => clearTimeout(t);
-        },[50])
+        }, [50])
     }
 
     const drawSoloPatientGrid = (db, size) => {
@@ -89,21 +113,21 @@ export const GridForRedactoring = ({resultSideNumber,image}) => {
             const centerPointScale = 4
             const selectedPointScale = 20
 
-            const hideLens = () =>{
+            const hideLens = () => {
                 const lens = document.getElementById('lens')
                 lens.style.left = -10000 + "px"
                 lens.style.top = -10000 + "px"
             }
 
-            const multiplePointByPrecent = (p1, p2, precent) =>{
+            const multiplePointByPrecent = (p1, p2, precent) => {
                 return {
-                    left:{
-                        x:  ((1 - precent) * p1.x ) + p2.x * precent,
-                        y:  ((1 - precent) * p1.y ) + p2.y * precent
+                    left: {
+                        x: ((1 - precent) * p1.x) + p2.x * precent,
+                        y: ((1 - precent) * p1.y) + p2.y * precent
                     },
-                    right:{
-                        x:  ((1 - precent) * p2.x ) + p1.x * precent,
-                        y:  ((1 - precent) * p2.y ) + p1.y * precent
+                    right: {
+                        x: ((1 - precent) * p2.x) + p1.x * precent,
+                        y: ((1 - precent) * p2.y) + p1.y * precent
                     }
                 }
             }
@@ -163,39 +187,39 @@ export const GridForRedactoring = ({resultSideNumber,image}) => {
                 let row = svg.append('g')
                     .style('transform-origin', `center center`)
                     .style('transform', `rotate(${image.angle}turn)`)
-                    let step = size.width / (size.width / 23)
-                        let boxSize = (size.height > size.width) ? size.height : size.width
+                let step = size.width / (size.width / 23)
+                let boxSize = (size.height > size.width) ? size.height : size.width
 
-                    row.append('path').attr('class', 'subLine-black')
-                        .style('fill', "none")
-                        .attr('d', () => d3.line()([
-                            [coords.ears.center.x, 0], [coords.ears.center.x, size.height]
+                row.append('path').attr('class', 'subLine-black')
+                    .style('fill', "none")
+                    .attr('d', () => d3.line()([
+                        [coords.ears.center.x, 0], [coords.ears.center.x, size.height]
                     ]))
-            
+
                 for (let i = step; i < boxSize; i += step) {
-            
+
                     row.append('path').attr('class', 'subLine-culumn')
                         .style('fill', "none")
                         .attr('d', () => d3.line()([
                             [i, 0], [i, size.height]
                         ]))
-            
+
                     row.append('path').attr('class', 'subLine-row')
                         .style('fill', "none")
                         .attr('d', () => d3.line()([
                             [0, i], [size.width, i]
                         ]))
-            
+
                 }
-            
+
             }
 
             //black line on the center
             svg.append('path').attr('class', 'line')
                 .attr('d', () => d3.line()([
                     [coords.ears.center.x, -size.height], [coords.ears.center.x, size.height]
-                ])).style('stroke-width',2)
-                .style('stroke','rgba(0,0,0,0.5)')
+                ])).style('stroke-width', 2)
+                .style('stroke', 'rgba(0,0,0,0.5)')
 
             {//img elements
                 svgBox
@@ -225,8 +249,8 @@ export const GridForRedactoring = ({resultSideNumber,image}) => {
                 .style('fill', "none")
 
             for (const [name, value] of Object.entries(coords)) {//Angles
-                let angle = Math.abs(Math.floor((value.angle * (180/Math.PI)) * 100) / 100)
-                let backAngle = Math.abs(Math.floor((90 - Math.abs(value.angle * (180/Math.PI))) * 100)/100)
+                let angle = Math.abs(Math.floor((value.angle * (180 / Math.PI)) * 100) / 100)
+                let backAngle = Math.abs(Math.floor((90 - Math.abs(value.angle * (180 / Math.PI))) * 100) / 100)
 
                 let rectNameRus = ''
                 let lineColor;
@@ -234,28 +258,28 @@ export const GridForRedactoring = ({resultSideNumber,image}) => {
 
                 switch (name) {
                     case 'ears':
-                        lineColor = angle > 5 ? "#EC0000": "rgba(37, 179, 145, 1)";
-                        textColor = angle > 5 ? "#EC0000": "rgba(46, 84, 130, 1)";
+                        lineColor = angle > 5 ? "#EC0000" : "rgba(37, 179, 145, 1)";
+                        textColor = angle > 5 ? "#EC0000" : "rgba(46, 84, 130, 1)";
                         rectNameRus = "Голова"
                         break;
                     case 'shoulders':
-                        lineColor = angle > 5 ? "#EC0000": "rgba(37, 179, 145, 1)";
-                        textColor = angle > 5 ? "#EC0000": "rgba(46, 84, 130, 1)";
+                        lineColor = angle > 5 ? "#EC0000" : "rgba(37, 179, 145, 1)";
+                        textColor = angle > 5 ? "#EC0000" : "rgba(46, 84, 130, 1)";
                         rectNameRus = "Плечи"
                         break;
                     case 'hips':
-                        lineColor = angle > 5 ? "#EC0000": "rgba(37, 179, 145, 1)";
-                        textColor = angle > 5 ? "#EC0000": "rgba(46, 84, 130, 1)";
+                        lineColor = angle > 5 ? "#EC0000" : "rgba(37, 179, 145, 1)";
+                        textColor = angle > 5 ? "#EC0000" : "rgba(46, 84, 130, 1)";
                         rectNameRus = "Бедра"
                         break;
                     case 'ankles':
-                        lineColor = backAngle > 5 ? "#EC0000": "rgba(37, 179, 145, 1)";
-                        textColor = backAngle > 5 ? "#EC0000": "rgba(46, 84, 130, 1)";
+                        lineColor = backAngle > 5 ? "#EC0000" : "rgba(37, 179, 145, 1)";
+                        textColor = backAngle > 5 ? "#EC0000" : "rgba(46, 84, 130, 1)";
                         rectNameRus = "Ноги"
                         break;
                     default:
-                        lineColor = angle > 5 ? "#EC0000": "rgba(37, 179, 145, 1)";
-                        textColor = angle > 5 ? "#EC0000": "rgba(46, 84, 130, 1)";
+                        lineColor = angle > 5 ? "#EC0000" : "rgba(37, 179, 145, 1)";
+                        textColor = angle > 5 ? "#EC0000" : "rgba(46, 84, 130, 1)";
                         rectNameRus = "Центр"
                         break;
                 }
@@ -266,8 +290,8 @@ export const GridForRedactoring = ({resultSideNumber,image}) => {
 
 
 
-                if(!(name === 'ears' && name === 'shoulders')){
-                    if(resultSideNumber === 0 || resultSideNumber === 2){
+                if (!(name === 'ears' && name === 'shoulders')) {
+                    if (resultSideNumber === 0 || resultSideNumber === 2) {
                         textBox.append("rect")
                             .attr("x", name === 'ankles' ? size.width / 2 - 40 : 14)
                             .attr("y", name === 'ankles' ? value.center.y + 10 : value.center.y - 15)
@@ -278,17 +302,17 @@ export const GridForRedactoring = ({resultSideNumber,image}) => {
                             .style('fill', 'white')
                             .attr("filter", "url(#shadow)")
 
-                        if(name !== 'ankles') {
+                        if (name !== 'ankles') {
                             textBox.append("text")
                                 .attr('class', 'textBox')
                                 .attr("x", 55)
                                 .attr("y", value.center.y + 17)
-                                .text(`${Math.floor((value.angle * (180/Math.PI)) * 100) / 100}°`)
+                                .text(`${Math.floor((value.angle * (180 / Math.PI)) * 100) / 100}°`)
                                 .attr('text-anchor', 'middle')
                                 .style('fill', textColor)
                                 .style('font-size', '24')
                                 .style('font-weight', '600')
-                        }else{
+                        } else {
                             textBox.append("rect")
                                 .attr("x", name === 'ankles' ? size.width / 2 - 40 : 14)
                                 .attr("y", name === 'ankles' ? value.center.y + 10 : value.center.y - 15)
@@ -298,18 +322,18 @@ export const GridForRedactoring = ({resultSideNumber,image}) => {
                                 .attr('rx', 10)
                                 .style('fill', 'white')
                                 .attr("filter", "url(#shadow)")
-    
+
                             textBox.append("text")
                                 .attr('class', 'textBox')
                                 .attr("x", size.width / 2)
                                 .attr("y", value.center.y + 42)
-                                .text(`${ Math.abs(Math.floor((90 - Math.abs(value.angle * (180/Math.PI))) * 100)/100)}°`)
+                                .text(`${Math.abs(Math.floor((90 - Math.abs(value.angle * (180 / Math.PI))) * 100) / 100)}°`)
                                 .attr('text-anchor', 'middle')
                                 .style('fill', textColor)
                                 .style('font-size', '24')
                                 .style('font-weight', '600')
                         }
-                    }else if(name === 'ankles'){
+                    } else if (name === 'ankles') {
                         textBox.append("rect")
                             .attr("x", name === 'ankles' ? size.width / 2 - 40 : 14)
                             .attr("y", name === 'ankles' ? value.center.y + 10 : value.center.y - 15)
@@ -319,12 +343,12 @@ export const GridForRedactoring = ({resultSideNumber,image}) => {
                             .attr('rx', 10)
                             .style('fill', 'white')
                             .attr("filter", "url(#shadow)")
-    
+
                         textBox.append("text")
                             .attr('class', 'textBox')
                             .attr("x", size.width / 2)
                             .attr("y", value.center.y + 42)
-                            .text(`${ Math.abs(Math.floor((90 - Math.abs(value.angle * (180/Math.PI))) * 100)/100)}°`)
+                            .text(`${Math.abs(Math.floor((90 - Math.abs(value.angle * (180 / Math.PI))) * 100) / 100)}°`)
                             .attr('text-anchor', 'middle')
                             .style('fill', textColor)
                             .style('font-size', '24')
@@ -334,23 +358,23 @@ export const GridForRedactoring = ({resultSideNumber,image}) => {
             }
 
             for (const [name, value] of Object.entries(coords)) {//Dots
-                let angle = Math.abs(Math.floor((value.angle * (180/Math.PI)) * 100) / 100)
-                let backAngle = Math.abs(Math.floor((90 - Math.abs(value.angle * (180/Math.PI))) * 100)/100)
+                let angle = Math.abs(Math.floor((value.angle * (180 / Math.PI)) * 100) / 100)
+                let backAngle = Math.abs(Math.floor((90 - Math.abs(value.angle * (180 / Math.PI))) * 100) / 100)
                 switch (name) {
                     case 'ears':
-                        lineColor = angle > 5 ? "#EC0000": "#25B391";
+                        lineColor = angle > 5 ? "#EC0000" : "#25B391";
                         break;
                     case 'shoulders':
-                        lineColor = angle > 5 ? "#EC0000": "#25B391";
+                        lineColor = angle > 5 ? "#EC0000" : "#25B391";
                         break;
                     case 'hips':
-                        lineColor = angle > 5 ? "#EC0000": "#25B391";
+                        lineColor = angle > 5 ? "#EC0000" : "#25B391";
                         break;
                     case 'ankles':
-                        lineColor = backAngle > 5 ? "#EC0000": "#25B391";
+                        lineColor = backAngle > 5 ? "#EC0000" : "#25B391";
                         break;
                     default:
-                        lineColor = angle > 5 ? "#EC0000": "#25B391";
+                        lineColor = angle > 5 ? "#EC0000" : "#25B391";
                         break;
                 }
 
@@ -365,7 +389,7 @@ export const GridForRedactoring = ({resultSideNumber,image}) => {
                         end = size.width,
                         // yLeft = k * start + b,
                         // yRight = k * end + b
-                        
+
                         yLeft = value.left.y,
                         yRight = value.right.y
 
@@ -381,15 +405,15 @@ export const GridForRedactoring = ({resultSideNumber,image}) => {
                 {//Drawing deviation lines
                     let line = linePoint()
 
-                    if(resultSideNumber === 0 || resultSideNumber === 2){
+                    if (resultSideNumber === 0 || resultSideNumber === 2) {
                         svg.append('path').attr('class', 'subLine')
-                        .attr('d', () => d3.line()([
-                            [value.left.x, line.left], [value.right.x, line.right]
-                        ]))
-                        .style('stroke', lineColor)
-                        .style('fill', "none")
+                            .attr('d', () => d3.line()([
+                                [value.left.x, line.left], [value.right.x, line.right]
+                            ]))
+                            .style('stroke', lineColor)
+                            .style('fill', "none")
 
-                    }else if(name === 'ears' || name === 'ankles'){
+                    } else if (name === 'ears' || name === 'ankles') {
                         svg.append('path').attr('class', 'subLine')
                             .attr('d', () => d3.line()([
                                 [value.left.x, line.left], [value.right.x, line.right]
@@ -399,19 +423,19 @@ export const GridForRedactoring = ({resultSideNumber,image}) => {
                     }
 
 
-                        //ANGLES POLYGON
-                    if(resultSideNumber === 0 || resultSideNumber === 2){
+                    //ANGLES POLYGON
+                    if (resultSideNumber === 0 || resultSideNumber === 2) {
                         let newPoint = multiplePointByPrecent(value.center, value.left, 1000)
 
                         name !== 'ankles' && svg.append('polygon')
 
-                        .attr('points', `${value.center.x},${value.center.y} ${newPoint.right.x},${value.center.y} ${newPoint.right.x},${newPoint.right.y}`)
-                        .style('fill', lineColor)
-                        .style('filter', 'opacity(0.4)')
+                            .attr('points', `${value.center.x},${value.center.y} ${newPoint.right.x},${value.center.y} ${newPoint.right.x},${newPoint.right.y}`)
+                            .style('fill', lineColor)
+                            .style('filter', 'opacity(0.4)')
                     }
 
-                    
-                        //BACK POLYGON
+
+                    //BACK POLYGON
                     name === 'ankles' && svg.append('polygon')
                         .attr('points', `${coords.ears.center.x},${coords.ears.center.y} ${coords.ears.center.x},${coords.ankles.center.y} ${coords.ankles.center.x},${coords.ankles.center.y}`)
                         .style('fill', lineColor)
@@ -420,13 +444,13 @@ export const GridForRedactoring = ({resultSideNumber,image}) => {
                 }
 
                 //Линия центра
-                if(resultSideNumber === 0 || resultSideNumber === 2){
+                if (resultSideNumber === 0 || resultSideNumber === 2) {
                     svg.append('path').attr('class', 'middleLine')
-                    .attr('d', () => d3.line()([[0, value.center.y], [size.width, value.center.y]]))
-                    .style('stroke', "rgba(0,0,0,0.5)")
-                    .style("stroke-dasharray", "10,6")
-                    .style('stroke-width', 1.4)
-                    .style('fill', "none")
+                        .attr('d', () => d3.line()([[0, value.center.y], [size.width, value.center.y]]))
+                        .style('stroke', "rgba(0,0,0,0.5)")
+                        .style("stroke-dasharray", "10,6")
+                        .style('stroke-width', 1.4)
+                        .style('fill', "none")
                 }
 
                 {// Точки
@@ -438,20 +462,20 @@ export const GridForRedactoring = ({resultSideNumber,image}) => {
                         return newMessage.join('')
                     }
 
-                    if(name === "ankles" || (name === 'ears' && (resultSideNumber === 1 || resultSideNumber === 3))){
+                    if (name === "ankles" || (name === 'ears' && (resultSideNumber === 1 || resultSideNumber === 3))) {
                         let centerName = "center" + circleName() + 's'
                         let leftCircleName = `left${circleName()}`
                         let rightCircleName = `right${circleName()}`
-                        
+
                         value.center && svg.append("circle")
                             .attr("r", selectedCircleId === centerName ? selectedPointScale : centerPointScale)
                             .style('fill', selectedCircleId === centerName ? 'orange' : lineColor)
                             .attr("id", `P${resultSideNumber}-` + centerName)
                             .attr("cx", value.center.x)
                             .attr("cy", value.center.y)
-                            .style('stroke-width', '30px')
+                            .style('stroke-width', '100px')
                             .style('stroke', 'rgba(0,0,0,0)')
-                        
+
                         value.right && svg.append("circle")
                             .attr("r", selectedCircleId === rightCircleName ? selectedPointScale : centerPointScale)
                             .attr("id", `P${resultSideNumber}-` + rightCircleName)
@@ -459,20 +483,20 @@ export const GridForRedactoring = ({resultSideNumber,image}) => {
                             .attr("cx", value.right.x)
                             .attr("cy", value.right.y)
                             .style('z-index', 999)
-                            .style('stroke-width', '30px')
+                            .style('stroke-width', '100px')
                             .style('stroke', 'rgba(0,0,0,0)')
-                            .on('touchstart touchmove', (e)=>{
-                                if(selectedCircleId !== rightCircleName) {
+                            .on('touchstart touchmove', (e) => {
+                                if (selectedCircleId !== rightCircleName) {
                                     setSelectedCircleId(rightCircleName)
                                 }
-                                let newData = {...db}
+                                let newData = { ...db }
                                 let newLandCoord = changePoint(e, image)
-                                if(newLandCoord && Object.entries(newLandCoord).length > 0){
+                                if (newLandCoord && Object.entries(newLandCoord).length > 0) {
                                     newData[rightCircleName] = newLandCoord
                                     setDb(newData)
                                 }
                             })
-                            .on('touchend', ()=>{
+                            .on('touchend', () => {
                                 setSelectedCircleId(null)
                                 hideLens()
                             })
@@ -483,28 +507,28 @@ export const GridForRedactoring = ({resultSideNumber,image}) => {
                             .style('fill', selectedCircleId === leftCircleName ? 'orange' : lineColor)
                             .attr("cx", value.left.x)
                             .attr("cy", value.left.y)
-                            .style('stroke-width', '30px')
+                            .style('stroke-width', '100px')
                             .style('stroke', 'rgba(0,0,0,0)')
-                            .on('touchstart touchmove', (e)=>{
-                                if(selectedCircleId !== leftCircleName) {
+                            .on('touchstart touchmove', (e) => {
+                                if (selectedCircleId !== leftCircleName) {
                                     setSelectedCircleId(leftCircleName)
                                 }
-                                
-                                let newData = {...db}
+
+                                let newData = { ...db }
 
                                 let newLandCoord = changePoint(e, image)
-                                if(newLandCoord && Object.entries(newLandCoord).length > 0){
+                                if (newLandCoord && Object.entries(newLandCoord).length > 0) {
                                     newData[leftCircleName] = newLandCoord
                                     setDb(newData)
                                 }
                             })
-                            .on('touchend', ()=>{
+                            .on('touchend', () => {
                                 setSelectedCircleId(null)
                                 hideLens()
                             })
 
 
-                    } else if(resultSideNumber === 0 || resultSideNumber === 2){
+                    } else if (resultSideNumber === 0 || resultSideNumber === 2) {
                         let leftCircleName = `left${circleName()}`
                         let rightCircleName = `right${circleName()}`
 
@@ -514,20 +538,20 @@ export const GridForRedactoring = ({resultSideNumber,image}) => {
                             .style('fill', selectedCircleId === rightCircleName ? 'orange' : lineColor)
                             .attr("cx", value.right.x)
                             .attr("cy", value.right.y)
-                            .style('stroke-width', '30px')
+                            .style('stroke-width', '100px')
                             .style('stroke', 'rgba(0,0,0,0)')
-                            .on('touchstart touchmove', (e)=>{
-                                if(selectedCircleId !== rightCircleName) {
+                            .on('touchstart touchmove', (e) => {
+                                if (selectedCircleId !== rightCircleName) {
                                     setSelectedCircleId(rightCircleName)
                                 }
-                                let newData = {...db}
+                                let newData = { ...db }
                                 let newLandCoord = changePoint(e, image)
-                                if(newLandCoord && Object.entries(newLandCoord).length > 0){
+                                if (newLandCoord && Object.entries(newLandCoord).length > 0) {
                                     newData[rightCircleName] = newLandCoord
                                     setDb(newData)
                                 }
                             })
-                            .on('touchend', ()=>{
+                            .on('touchend', () => {
                                 setSelectedCircleId(null)
                                 hideLens()
                             })
@@ -538,22 +562,22 @@ export const GridForRedactoring = ({resultSideNumber,image}) => {
                             .style('fill', selectedCircleId === leftCircleName ? 'orange' : lineColor)
                             .attr("cx", value.left.x)
                             .attr("cy", value.left.y)
-                            .style('stroke-width', '30px')
+                            .style('stroke-width', '100px')
                             .style('stroke', 'rgba(0,0,0,0)')
-                            .on('touchstart touchmove', (e)=>{
-                                if(selectedCircleId !== leftCircleName) {
+                            .on('touchstart touchmove', (e) => {
+                                if (selectedCircleId !== leftCircleName) {
                                     setSelectedCircleId(leftCircleName)
                                 }
-                                
-                                let newData = {...db}
+
+                                let newData = { ...db }
 
                                 let newLandCoord = changePoint(e, image)
-                                if(newLandCoord && Object.entries(newLandCoord).length > 0){
+                                if (newLandCoord && Object.entries(newLandCoord).length > 0) {
                                     newData[leftCircleName] = newLandCoord
                                     setDb(newData)
                                 }
                             })
-                            .on('touchend', ()=>{
+                            .on('touchend', () => {
                                 setSelectedCircleId(null)
                                 hideLens()
                             })
@@ -563,5 +587,5 @@ export const GridForRedactoring = ({resultSideNumber,image}) => {
         }
     }
 
-    return <div ref={boxRef} id="svgBox"/>
+    return <div ref={boxRef} id="svgBox" />
 }

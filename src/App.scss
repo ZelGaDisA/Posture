@@ -1,6 +1,9 @@
 *{
+    -webkit-touch-callout:none;
+    -webkit-user-select:none;
     -webkit-user-drag:none;
     -moz-user-drag:none;
+    -moz-user-select:none;
     -o-user-drag:none;
     user-drag:none;
     user-select: none;
@@ -67,6 +70,9 @@ ion-checkbox::part(container) {
 
 .alert-message{
     --ion-text-color: #666666;
-    padding: 0;
+    
 }
 
+.alert-message.sc-ion-alert-ios{
+    padding: 20px 0;
+}

@@ -34,10 +34,10 @@ const Redactor: React.FC = () => {
     const resultSideNumber = useSelector((state: RootState) => state.app.resultSideNumber)//0-front, 1-right, 2-back, 3-left
     const sideNames = ['Front', 'Right' ,'Back', 'Left']
 
-    const ImageFront = useSelector((state: RootState) => state.sessions.session.images.front)
-    const ImageRight = useSelector((state: RootState) => state.sessions.session.images.right)
-    const ImageBack = useSelector((state: RootState) => state.sessions.session.images.back)
-    const ImageLeft = useSelector((state: RootState) => state.sessions.session.images.left)
+    const ImageFront = useSelector((state: RootState) => state.sessions.images.front)
+    const ImageRight = useSelector((state: RootState) => state.sessions.images.right)
+    const ImageBack = useSelector((state: RootState) => state.sessions.images.back)
+    const ImageLeft = useSelector((state: RootState) => state.sessions.images.left)
 
     return (
         <IonPage>

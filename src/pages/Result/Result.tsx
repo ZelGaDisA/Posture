@@ -18,7 +18,7 @@ import retakePhoto from "images/Component 16.svg";
 import editPoints from "images/Component 15.svg";
 
 import {useHistory} from "react-router";
-import { RootState } from '../../store/store';
+import { RootState } from 'store/store';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
@@ -41,10 +41,19 @@ const Results: React.FC = () => {
 
     const resultSideNumber = useSelector((state: RootState) => state.app.resultSideNumber)//0-front, 1-right, 2-back, 3-left
     const sideNames = ['Front side' ,'Back side', 'Right side' , 'Left side']
-    const images = useSelector((state: RootState) => state.sessions.session.images)//0-front, 1-right, 2-back, 3-left
+    const images = useSelector((state: RootState) => state.sessions.images)//0-front, 1-right, 2-back, 3-left
+    const isReading = useSelector((state: RootState) => state.app.isReading)
     const [slide,setSlide] = useState(0)
     const rerenderCounter = useSelector((state: RootState) => state.app.rerenderCounter);
     const [presentAlert] = useIonAlert();
+
+    useEffect(()=>{
+        if(isReading){
+            let bottom = document.getElementsByClassName('swiper-pagination-horizontal')[0]
+            bottom.className = bottom.className + 'isReading'
+        }
+    },[isReading])
+
 
     const stupidSorting = (n: number) => {
         //0-1-2-3 to 0-2-1-3
@@ -52,29 +61,14 @@ const Results: React.FC = () => {
         else if (n === 1) return 2
         else return n
     }
-
+    
     const goToRedactoring = () => {
-        dispatch(setResultSideNumber(slide))
         history.push("/redactor");
     }
     const goToRetakePhoto = () => {
-        dispatch(setResultSideNumber(stupidSorting(slide)))
         dispatch(setIsRetakeOnePhoto(true))
         dispatch(setIsLoading(true))
         history.push("/camera");
-    }
-
-
-    const safeToImg = async () => {
-        try {
-            Screenshot.save('jpg', 70, 'myscreen').then(res => {
-                console.log(res)
-                console.log(res.filePath)
-            })
-            
-        } catch (error) {
-            console.error(error);
-        }
     }
 
     
@@ -91,12 +85,7 @@ const Results: React.FC = () => {
                         <img src={back} alt=""/>
                     </div>
 
-
-                    {!!(resultSideNumber >= 0) && <p className='result-header__text'>{sideNames[stupidSorting(slide)]}</p>}
-
-                    <div className='buttSave' onClick={() => safeToImg()}>
-                        <img src={save} alt=""/>
-                    </div>
+                    {!!(resultSideNumber >= 0) && <p className='result-header__text'>{sideNames[stupidSorting(resultSideNumber)]}</p>}
                 </div>
 
                 {(rerenderCounter >= 0) && <Swiper
@@ -105,22 +94,26 @@ const Results: React.FC = () => {
                     slidesPerView={1}
                     pagination={{ clickable: true }}
                     rewind = {true}
-                    initialSlide={stupidSorting(resultSideNumber)}
+                    initialSlide={resultSideNumber}
                     onSlideChange={(swiper) => {
-                        setSlide(stupidSorting(swiper.realIndex))
+                        setSlide(swiper.realIndex)
+                        console.log('====================================');
+                        console.log(swiper.realIndex);
+                        console.log('====================================');
+                        dispatch(setResultSideNumber(stupidSorting(swiper.realIndex - 1)))
                     }}
                     >   {
-                            Object.entries(images).map(([name, image],index) => {
+                            Object.entries(images)?.map(([name, image],index) => {
                                 return image.status && <SwiperSlide virtualIndex={index} key={name}>
                                             <div className='safeLayout' />
-                                            <GridForResults  rerenderCounter={rerenderCounter} resultSideNumber={stupidSorting(index)} image={image}/>
+                                            <GridForResults  rerenderCounter={rerenderCounter} resultSideNumber={resultSideNumber} image={image}/>
                                         </SwiperSlide>
                             })
                         }
                 </Swiper>}
 
 
-                <div className='result-bottom'>
+                {!isReading && <div className='result-bottom'>
                             <div
                                 className="img" 
                                 
@@ -160,7 +153,7 @@ const Results: React.FC = () => {
                             </div>
 
                             
-                </div>
+                </div>}
             </IonContent>
         </IonPage>
     );

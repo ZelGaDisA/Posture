@@ -12,7 +12,7 @@ interface ClientsData {
     clients: Client[] | []
 }
 
-const initialState: ClientsData= {
+const initialState: ClientsData = {
     client: {id: null, name: null},
     clients: []
 };
@@ -50,8 +50,7 @@ export const clientSlice = createSlice({
 
         updateClients: (state) => {
             let clients = localStorage.getItem('clients')
-
-            if(clients){
+            if(clients && clients.length > 0){
                 state.clients = JSON.parse(clients)
             }else{
                 localStorage.setItem('clients','[]')

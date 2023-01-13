@@ -1,10 +1,12 @@
 import * as bodyPix from '@tensorflow-models/body-pix';
+import { Vector2D } from '@tensorflow-models/body-pix/dist/types';
 import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-backend-webgl';
+import { CGPoint } from 'store/types';
 
 
 
-export const tryGetPose = async (img) =>{
+export const tryGetPose = async (img:any) =>{
     tf.enableProdMode()//set tf to production mode
     await tf.setBackend('webgl'); 
     await tf.ready()
@@ -27,29 +29,30 @@ export const tryGetPose = async (img) =>{
         return
     }
 
-    const result = {}
-    const namesKeys = []
-    const coordsValues = []
+    const result: any = {}
+    const namesKeys: string[] = []
+    const coordsValues: CGPoint[] = []
 
-    personLand.forEach(el => {
+    personLand.forEach((el) => {
         namesKeys.push(el.part)
         coordsValues.push(el.position)
     });
 
-    namesKeys.forEach((el, idx) => {
+    namesKeys.forEach((el:string, idx:number) => {
+        //@ts-ignore
         result[el] = coordsValues[idx]
     })
 
+    let landmarks: CGPoint[] = result
     //i don't meow what need to be disposed :(
     tf.dispose()
     net.dispose()
 
     console.log('tensordlow backend: ',tf.getBackend());
 
-    if(Object.entries(result) < 1) {
+    if(Object.entries(landmarks).length < 1) {
         console.log('bad result');
     } else {
-        // setLands(result)
-        return result
+        return landmarks
     }
 }

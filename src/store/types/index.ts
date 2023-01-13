@@ -6,14 +6,13 @@ export interface CGPoint {
 
 export interface Image {
     path: string;
-    status: null | boolean;
-    angle: null | number;
-    landmarks: null | CGPoint[];
+    status: boolean | null;
+    angle: number | null;
+    landmarks: CGPoint[] | null;
 }
 
-
-
 export interface Images {
+    sessionId: number | null,
     front: Image,
     left: Image,
     back: Image,

@@ -7,6 +7,7 @@ import {changePoint} from "../../functions/changePoint"
 import { addImagesLandmarks } from "store/slices/sessions";
 import {getCoords} from "functions/getCoords"
 
+
 export const GridForResults = ({resultSideNumber, image, rerenderCounter}) => {
     const boxRef = useRef()
 

@@ -1,8 +1,11 @@
+.removeClientBtn{
+    width: 10px;
+}
 .client-header{
     width: 100vw;
     height: 50px;
     
-    margin-top: 10px;
+    margin-top: 3vh;
     margin-bottom: 30px;
 
     background: rgba($color: #ffffff, $alpha: 1);
@@ -15,7 +18,15 @@
     color: black;
     z-index: 2;
 
-    &__text{
+    &-more{
+        position: absolute;
+        right: 20px;
+        filter: brightness(0%);
+
+        padding: 10px;
+    }
+
+    &-text{
         position: relative;
         color: #000;
     }
@@ -25,6 +36,11 @@
         left: 20px;
         fill: black;
         filter: brightness(0%);
+        transition: all 0.2s ease;
+
+        &:active{
+            opacity: 0.5;
+        }
     }
 
     .buttSave{
@@ -110,68 +126,65 @@
     }
 }
 
-.sessionsBox{
-    height: calc(100vh - 70px);
+.sessionsBox-list{
+    height: calc(100vh - 182px);
     margin-top: 20px;
     width: 100vw;
-    background-color: rgb(255, 255, 255);
-
-    &-list{
-        padding: 0;
-        background: rgb(255, 255, 255);
-        .emptySessions{
+    padding: 0;
+    background: rgb(255, 255, 255);
+    overflow-y: scroll;
+    .emptySessions{
+        color: #000;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        p{
             color: #000;
+        }
+    }
+    &__el{
+        color:rgb(0, 0, 0);
+        height: 50px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        &-Label{
+            padding-left: 16px;
+            transition: 0.1s ease;
+            width: calc(100vw - 100px);
+            &:active{
+                opacity: 0.2;
+            }
+            &.all{
+                padding-left: 30px;
+                width: calc(100vw - 70px);
+            }
+            
+        }
+        &-Checkbox{
+            color:rgb(0, 0, 0);
+            background: none;
+            --background:rgb(255, 255, 255);
+            --border-style: none;
+            margin-left: 16px;
+        }
+        .deleteSession-Button{
+            width: 50px;
+            z-index: 999;
             display: flex;
             justify-content: center;
             text-align: center;
-            p{
-                color: #000;
-            }
-        }
-        &__el{
-            color:rgb(0, 0, 0);
-            height: 50px;
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            &-Label{
-                padding-left: 16px;
-                transition: 0.1s ease;
-                width: calc(100vw - 100px);
-                &:active{
-                    opacity: 0.2;
-                }
-                &.all{
-                    padding-left: 30px;
-                    width: calc(100vw - 70px);
-                }
-                
-            }
-            &-Checkbox{
-                color:rgb(0, 0, 0);
-                background: none;
-                --background:rgb(255, 255, 255);
-                --border-style: none;
-                margin-left: 16px;
-            }
-            .deleteSession-Button{
-                width: 50px;
-                z-index: 999;
-                display: flex;
-                justify-content: center;
-                text-align: center;
-                &:active{
-                    img{
-                        width: 24px;
-                        height: 24px;
-                        opacity: 0.2;
-                    }
-                }
+            &:active{
                 img{
                     width: 24px;
                     height: 24px;
-                    transition: 0.1s ease;
+                    opacity: 0.2;
                 }
+            }
+            img{
+                width: 24px;
+                height: 24px;
+                transition: 0.1s ease;
             }
         }
     }
@@ -213,6 +226,18 @@
         }
         .comparison{
             color: rgb(0, 110, 100);
+            &.red{
+                color: red;
+                &::before {
+                    content: "▲";
+                }
+            }
+            &.green{
+                color: green;
+                &::before {
+                    content: "▼";
+                }
+            }
         }
 
     }
