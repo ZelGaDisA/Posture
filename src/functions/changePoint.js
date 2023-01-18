@@ -3,11 +3,6 @@ import * as d3 from 'd3'
 export const changePoint = (e, img) => {//user call this function on tap screen
     let lens = document.getElementById('lens')
 
-    console.log('====================================');
-    console.log(e.clientX);
-    console.log(e.clientY);
-    console.log('====================================');
-
     let mousePosition = {}
 
     if (e.type === 'mousedown' || e.type === 'mousemove') {

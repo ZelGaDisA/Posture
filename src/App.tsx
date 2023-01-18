@@ -1,6 +1,5 @@
 import 'App.scss'
 import { useEffect,useState } from 'react';
-import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, setupIonicReact} from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
@@ -14,6 +13,14 @@ import Redactor from 'pages/Redactor';
 import { updateClients } from 'store/slices/clients';
 import { createSessions } from "store/slices/sessions";
 
+import {
+    BrowserRouter,
+    Redirect,
+    Switch,
+    Route,
+    Link,
+    useRouteMatch,
+  } from "react-router-dom";
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -42,7 +49,12 @@ import {setAccel,setIsLoading} from "store/slices/app";
 import { CameraPreview } from '@capacitor-community/camera-preview';
 
 
-setupIonicReact({ swipeBackEnabled: false });
+setupIonicReact(
+    { 
+        swipeBackEnabled: false,
+        animated: false
+    },
+);
 
 
 const App: React.FC = () => {
@@ -101,13 +113,11 @@ const App: React.FC = () => {
         }
     }, [operatingSystem]);
 
-
     return (
         <>
             <IonApp>
-                <IonReactRouter>
-                    <IonRouterOutlet>
-
+                <BrowserRouter>
+                    <Switch>
                         <Route exact path="/home">
                             <Home />
                         </Route>
@@ -136,8 +146,8 @@ const App: React.FC = () => {
                             <Redirect to="/home" />
                         </Route>
 
-                    </IonRouterOutlet>
-                </IonReactRouter>
+                    </Switch>
+                </BrowserRouter>
             </IonApp>
         </>
     )

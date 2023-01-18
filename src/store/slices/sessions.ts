@@ -157,7 +157,8 @@ export const sessionSlice = createSlice({
                 localStorage.setItem('sessions','[]')
             }
         },
-        filterSessionsByUser: (state, action: PayloadAction<number | null> ) => {
+
+        filterSessionsByClient: (state, action: PayloadAction<number | null> ) => {
             let sessions = localStorage.getItem('sessions')
 
             if(sessions){
@@ -187,7 +188,7 @@ export const {
     saveSessionToLocal ,
     addNewSession,
     createSessions,
-    filterSessionsByUser,
+    filterSessionsByClient,
     addImage
 } = sessionSlice.actions
 

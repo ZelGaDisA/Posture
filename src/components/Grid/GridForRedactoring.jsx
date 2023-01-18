@@ -193,7 +193,7 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
                 row.append('path').attr('class', 'subLine-black')
                     .style('fill', "none")
                     .attr('d', () => d3.line()([
-                        [coords.ears.center.x, 0], [coords.ears.center.x, size.height]
+                        [coords.ankles.center.x, 0], [coords.ankles.center.x, size.height]
                     ]))
 
                 for (let i = step; i < boxSize; i += step) {
@@ -214,12 +214,6 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
 
             }
 
-            //black line on the center
-            svg.append('path').attr('class', 'line')
-                .attr('d', () => d3.line()([
-                    [coords.ears.center.x, -size.height], [coords.ears.center.x, size.height]
-                ])).style('stroke-width', 2)
-                .style('stroke', 'rgba(0,0,0,0.5)')
 
             {//img elements
                 svgBox
@@ -253,33 +247,33 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
                 let backAngle = Math.abs(Math.floor((90 - Math.abs(value.angle * (180 / Math.PI))) * 100) / 100)
 
                 let rectNameRus = ''
-                let lineColor;
+                let lineColor = "rgba(46, 84, 130, 1)"
                 let textColor = "rgba(46, 84, 130, 1)"
 
                 switch (name) {
                     case 'ears':
-                        lineColor = angle > 5 ? "#EC0000" : "rgba(37, 179, 145, 1)";
-                        textColor = angle > 5 ? "#EC0000" : "rgba(46, 84, 130, 1)";
+                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 0.5)";
+                        textColor = angle > 5 ? "rgba(236, 0, 0, 1)" : "rgba(46, 84, 130, 1)";
                         rectNameRus = "Голова"
                         break;
                     case 'shoulders':
-                        lineColor = angle > 5 ? "#EC0000" : "rgba(37, 179, 145, 1)";
-                        textColor = angle > 5 ? "#EC0000" : "rgba(46, 84, 130, 1)";
+                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 0.5)";
+                        textColor = angle > 5 ? "rgba(236, 0, 0, 1)" : "rgba(46, 84, 130, 1)";
                         rectNameRus = "Плечи"
                         break;
                     case 'hips':
-                        lineColor = angle > 5 ? "#EC0000" : "rgba(37, 179, 145, 1)";
-                        textColor = angle > 5 ? "#EC0000" : "rgba(46, 84, 130, 1)";
+                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 0.5)";
+                        textColor = angle > 5 ? "rgba(236, 0, 0, 1)" : "rgba(46, 84, 130, 1)";
                         rectNameRus = "Бедра"
                         break;
                     case 'ankles':
-                        lineColor = backAngle > 5 ? "#EC0000" : "rgba(37, 179, 145, 1)";
-                        textColor = backAngle > 5 ? "#EC0000" : "rgba(46, 84, 130, 1)";
+                        lineColor = backAngle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 0.5)";
+                        textColor = backAngle > 5 ? "rgba(236, 0, 0, 1)" : "rgba(46, 84, 130, 1)";
                         rectNameRus = "Ноги"
                         break;
                     default:
-                        lineColor = angle > 5 ? "#EC0000" : "rgba(37, 179, 145, 1)";
-                        textColor = angle > 5 ? "#EC0000" : "rgba(46, 84, 130, 1)";
+                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 0.5)";
+                        textColor = angle > 5 ? "rgba(236, 0, 0, 1)" : "rgba(46, 84, 130, 1)";
                         rectNameRus = "Центр"
                         break;
                 }
@@ -300,7 +294,7 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
                             .attr('rx', 10)
                             .attr('rx', 10)
                             .style('fill', 'white')
-                            .attr("filter", "url(#shadow)")
+                        // .attr("filter", "url(#shadow)")
 
                         if (name !== 'ankles') {
                             textBox.append("text")
@@ -321,7 +315,7 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
                                 .attr('rx', 10)
                                 .attr('rx', 10)
                                 .style('fill', 'white')
-                                .attr("filter", "url(#shadow)")
+                            // .attr("filter", "url(#shadow)")
 
                             textBox.append("text")
                                 .attr('class', 'textBox')
@@ -342,7 +336,7 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
                             .attr('rx', 10)
                             .attr('rx', 10)
                             .style('fill', 'white')
-                            .attr("filter", "url(#shadow)")
+                        // .attr("filter", "url(#shadow)")
 
                         textBox.append("text")
                             .attr('class', 'textBox')
@@ -362,19 +356,19 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
                 let backAngle = Math.abs(Math.floor((90 - Math.abs(value.angle * (180 / Math.PI))) * 100) / 100)
                 switch (name) {
                     case 'ears':
-                        lineColor = angle > 5 ? "#EC0000" : "#25B391";
+                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 0.5)";
                         break;
                     case 'shoulders':
-                        lineColor = angle > 5 ? "#EC0000" : "#25B391";
+                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 0.5)";
                         break;
                     case 'hips':
-                        lineColor = angle > 5 ? "#EC0000" : "#25B391";
+                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 0.5)";
                         break;
                     case 'ankles':
-                        lineColor = backAngle > 5 ? "#EC0000" : "#25B391";
+                        lineColor = backAngle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 0.5)";
                         break;
                     default:
-                        lineColor = angle > 5 ? "#EC0000" : "#25B391";
+                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 0.5)";
                         break;
                 }
 
@@ -428,7 +422,6 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
                         let newPoint = multiplePointByPrecent(value.center, value.left, 1000)
 
                         name !== 'ankles' && svg.append('polygon')
-
                             .attr('points', `${value.center.x},${value.center.y} ${newPoint.right.x},${value.center.y} ${newPoint.right.x},${newPoint.right.y}`)
                             .style('fill', lineColor)
                             .style('filter', 'opacity(0.4)')
@@ -437,7 +430,7 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
 
                     //BACK POLYGON
                     name === 'ankles' && svg.append('polygon')
-                        .attr('points', `${coords.ears.center.x},${coords.ears.center.y} ${coords.ears.center.x},${coords.ankles.center.y} ${coords.ankles.center.x},${coords.ankles.center.y}`)
+                        .attr('points', `${coords.ankles.center.x},${coords.ankles.center.y} ${coords.ankles.center.x},${coords.ears.center.y} ${coords.ears.center.x},${coords.ears.center.y}`)
                         .style('fill', lineColor)
                         .style('filter', 'opacity(0.4)')
 
@@ -462,70 +455,90 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
                         return newMessage.join('')
                     }
 
-                    if (name === "ankles" || (name === 'ears' && (resultSideNumber === 1 || resultSideNumber === 3))) {
+                    if (((name === "ankles" || name === 'ears') && (resultSideNumber === 1 || resultSideNumber === 3))) {
                         let centerName = "center" + circleName() + 's'
                         let leftCircleName = `left${circleName()}`
                         let rightCircleName = `right${circleName()}`
 
                         value.center && svg.append("circle")
                             .attr("r", selectedCircleId === centerName ? selectedPointScale : centerPointScale)
-                            .style('fill', selectedCircleId === centerName ? 'orange' : lineColor)
+                            .style('fill', selectedCircleId === centerName ? 'orange' : "white")
                             .attr("id", `P${resultSideNumber}-` + centerName)
                             .attr("cx", value.center.x)
                             .attr("cy", value.center.y)
-                            .style('stroke-width', '100px')
-                            .style('stroke', 'rgba(0,0,0,0)')
 
-                        value.right && svg.append("circle")
-                            .attr("r", selectedCircleId === rightCircleName ? selectedPointScale : centerPointScale)
-                            .attr("id", `P${resultSideNumber}-` + rightCircleName)
-                            .style('fill', selectedCircleId === rightCircleName ? 'orange' : lineColor)
-                            .attr("cx", value.right.x)
-                            .attr("cy", value.right.y)
                             .style('z-index', 999)
-                            .style('stroke-width', '100px')
+                            .style('stroke-width', '40px')
                             .style('stroke', 'rgba(0,0,0,0)')
-                            .on('touchstart touchmove mousemove', (e) => {
-                                if (selectedCircleId !== rightCircleName) {
-                                    setSelectedCircleId(rightCircleName)
+                            .on('touchstart  mousemove touchmove', (e) => {
+                                if (selectedCircleId !== centerName) {
+                                    setSelectedCircleId(centerName)
                                 }
                                 let newData = { ...db }
                                 let newLandCoord = changePoint(e, image)
                                 if (newLandCoord && Object.entries(newLandCoord).length > 0) {
                                     newData[rightCircleName] = newLandCoord
-                                    setDb(newData)
-                                }
-                            })
-                            .on('touchend mouseleave', () => {
-                                setSelectedCircleId(null)
-                                hideLens()
-                            })
-
-                        value.left && svg.append("circle")
-                            .attr("r", selectedCircleId === leftCircleName ? selectedPointScale : centerPointScale)
-                            .attr("id", `P${resultSideNumber}-` + leftCircleName)
-                            .style('fill', selectedCircleId === leftCircleName ? 'orange' : lineColor)
-                            .attr("cx", value.left.x)
-                            .attr("cy", value.left.y)
-                            .style('stroke-width', '100px')
-                            .style('stroke', 'rgba(0,0,0,0)')
-                            .on('touchstart touchmove mousemove', (e) => {
-                                if (selectedCircleId !== leftCircleName) {
-                                    setSelectedCircleId(leftCircleName)
-                                }
-
-                                let newData = { ...db }
-
-                                let newLandCoord = changePoint(e, image)
-                                if (newLandCoord && Object.entries(newLandCoord).length > 0) {
                                     newData[leftCircleName] = newLandCoord
                                     setDb(newData)
                                 }
                             })
-                            .on('touchend mouseleave', () => {
+                            .on('touchend touchcancel', () => {
                                 setSelectedCircleId(null)
                                 hideLens()
                             })
+
+
+
+                        // value.right && svg.append("circle")
+                        //     .attr("r", selectedCircleId === rightCircleName ? selectedPointScale : centerPointScale)
+                        //     .attr("id", `P${resultSideNumber}-` + rightCircleName)
+                        //     .style('fill', selectedCircleId === rightCircleName ? 'orange' : "white")
+                        //     .attr("cx", value.right.x)
+                        //     .attr("cy", value.right.y)
+                        //     .style('z-index', 999)
+                        //     .style('stroke-width', '40px')
+                        //     .style('stroke', 'rgba(0,0,0,0)')
+                        //     .on('touchstart  mousemove touchmove', (e) => {
+                        //         if (selectedCircleId !== rightCircleName) {
+                        //             setSelectedCircleId(rightCircleName)
+                        //         }
+                        //         let newData = { ...db }
+                        //         let newLandCoord = changePoint(e, image)
+                        //         if (newLandCoord && Object.entries(newLandCoord).length > 0) {
+                        //             newData[rightCircleName] = newLandCoord
+                        //             setDb(newData)
+                        //         }
+                        //     })
+                        //     .on('touchend touchcancel', () => {
+                        //         setSelectedCircleId(null)
+                        //         hideLens()
+                        //     })
+
+                        // value.left && svg.append("circle")
+                        //     .attr("r", selectedCircleId === leftCircleName ? selectedPointScale : centerPointScale)
+                        //     .attr("id", `P${resultSideNumber}-` + leftCircleName)
+                        //     .style('fill', selectedCircleId === leftCircleName ? 'orange' : 'white')
+                        //     .attr("cx", value.left.x)
+                        //     .attr("cy", value.left.y)
+                        //     .style('stroke-width', '40px')
+                        //     .style('stroke', 'rgba(0,0,0,0)')
+                        //     .on('touchstart  mousemove touchmove', (e) => {
+                        //         if (selectedCircleId !== leftCircleName) {
+                        //             setSelectedCircleId(leftCircleName)
+                        //         }
+
+                        //         let newData = { ...db }
+
+                        //         let newLandCoord = changePoint(e, image)
+                        //         if (newLandCoord && Object.entries(newLandCoord).length > 0) {
+                        //             newData[leftCircleName] = newLandCoord
+                        //             setDb(newData)
+                        //         }
+                        //     })
+                        //     .on('touchend touchcancel', () => {
+                        //         setSelectedCircleId(null)
+                        //         hideLens()
+                        //     })
 
 
                     } else if (resultSideNumber === 0 || resultSideNumber === 2) {
@@ -535,15 +548,12 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
                         value.right && svg.append("circle")
                             .attr("r", selectedCircleId === rightCircleName ? selectedPointScale : centerPointScale)
                             .attr("id", `P${resultSideNumber}-` + rightCircleName)
-                            .style('fill', selectedCircleId === rightCircleName ? 'orange' : lineColor)
+                            .style('fill', selectedCircleId === rightCircleName ? 'orange' : 'white')
                             .attr("cx", value.right.x)
                             .attr("cy", value.right.y)
-                            .style('stroke-width', '100px')
+                            .style('stroke-width', '40px')
                             .style('stroke', 'rgba(0,0,0,0)')
-                            .on('touchstart touchmove mousemove', (e) => {
-                                console.log('====================================');
-                                console.log(e);
-                                console.log('====================================');
+                            .on('touchstart  mousemove touchmove', (e) => {
                                 if (selectedCircleId !== rightCircleName) {
                                     setSelectedCircleId(rightCircleName)
                                 }
@@ -554,7 +564,7 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
                                     setDb(newData)
                                 }
                             })
-                            .on('touchend ', () => {
+                            .on('touchend touchcancel', () => {
                                 setSelectedCircleId(null)
                                 hideLens()
                             })
@@ -562,17 +572,12 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
                         value.left && svg.append("circle")
                             .attr("r", selectedCircleId === leftCircleName ? selectedPointScale : centerPointScale)
                             .attr("id", `P${resultSideNumber}-` + leftCircleName)
-                            .style('fill', selectedCircleId === leftCircleName ? 'orange' : lineColor)
+                            .style('fill', selectedCircleId === leftCircleName ? 'orange' : 'white')
                             .attr("cx", value.left.x)
                             .attr("cy", value.left.y)
-                            .style('stroke-width', '100px')
+                            .style('stroke-width', '40px')
                             .style('stroke', 'rgba(0,0,0,0)')
-                            .on('mousedown mousemove', (e) => {
-                                console.log('====================================');
-                                console.log(1);
-                                console.log('====================================');
-                            })
-                            .on('touchstart touchmove', (e) => {
+                            .on('touchstart mousemove touchmove ', (e) => {
                                 if (selectedCircleId !== leftCircleName) {
                                     setSelectedCircleId(leftCircleName)
                                 }
@@ -585,7 +590,7 @@ export const GridForRedactoring = ({ resultSideNumber, image }) => {
                                     setDb(newData)
                                 }
                             })
-                            .on('touchend', () => {
+                            .on('touchend touchcancel', () => {
                                 setSelectedCircleId(null)
                                 hideLens()
                             })

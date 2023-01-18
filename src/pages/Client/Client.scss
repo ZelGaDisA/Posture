@@ -37,7 +37,7 @@
         fill: black;
         filter: brightness(0%);
         transition: all 0.2s ease;
-        padding: 10px;
+        margin: 10px;
 
         &:active{
             opacity: 0.5;
@@ -192,6 +192,51 @@
             }
         }
     }
+    &__button{
+        color:rgba($color: #019086, $alpha: 0.9);
+        height: 50px;
+        display: flex;
+        align-items: center;
+        border-bottom: 2px solid rgba($color: #00A499, $alpha: 0.8);
+
+        &:active{
+            opacity: 0.2;
+        }
+        &-Label{
+            transition: 0.1s ease;
+            padding-left: 30px;
+            width: calc(100vw - 70px);
+        }
+        &-Checkbox{
+            color:rgb(0, 0, 0);
+            background: none;
+            --background:rgb(255, 255, 255);
+            --border-style: none;
+            margin-left: 16px;
+        }
+        .deleteSession-Button{
+            width: 50px;
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            &.black{
+                filter: brightness(0);
+            }
+            &:active{
+                img{
+                    width: 24px;
+                    height: 24px;
+                    opacity: 0.2;
+                }
+            }
+            img{
+                width: 24px;
+                height: 24px;
+                transition: 0.1s ease;
+            }
+        }
+    }
 }
 
 
@@ -206,30 +251,35 @@
     left: 2vw;
     color: black;
     width: 96vw;
-    &-el{
-        border-bottom: 10px solid;
-        border-image-slice: 1;
-        border-width: 2px;
-        border-image-source: linear-gradient(to right, rgb(0, 67, 63), rgb(0, 148, 133));
+    display: flex;
+    justify-content: space-around;
 
+    &-el{
+        width: 23%;
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
+        justify-content: space-around;
+        font-size: 13px;
+        color: rgb(0, 127, 119);
         p{
+            text-align: center;
             padding: 0;
             margin: 10px 5px;
-            text-align-last: left;
+            font-weight: 500;
+            overflow-wrap: normal;
         }
-        .name{
-            color: rgb(0, 80, 70);
+
+        &.names{
+            width: 27%;
+            p{
+                text-align: left;
+                padding: 0;
+                margin: 10px 5px;
+                font-weight: 600;
+            }
         }
-        .before{
-            color: rgb(0, 90, 80);
-        }
-        .after{
-            color: rgb(0, 100, 90);
-        }
+        
         .comparison{
-            color: rgb(0, 110, 100);
             &.red{
                 color: red;
                 &::before {
@@ -244,5 +294,15 @@
             }
         }
 
+    }
+
+    &.min{
+        justify-content: space-between;
+        .comparisonBox-el{
+            p{
+                font-weight: 500;
+                font-size: 16px;
+            }
+        }
     }
 }

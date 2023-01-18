@@ -1,5 +1,5 @@
 //import
-import './CapacitorCam.scss';
+import './Onboarding.scss';
 
 import { useEffect, useState } from "react";
 import { IonContent, IonPage, IonButton, useIonAlert } from "@ionic/react";
@@ -70,7 +70,7 @@ export default function CapacitorCam() {
     const capture = async () => {
 
         const result = await CameraPreview.capture({
-            quality: 10,
+            quality: 1,
         })
 
         if (!result || result.value.length < 7) return

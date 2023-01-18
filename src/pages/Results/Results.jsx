@@ -25,7 +25,7 @@ import badPhotoBack from 'images/resultCards/Type=Back, State=Retake photo.svg'
 import badPhotoLeft from 'images/resultCards/Type=Left, State=Retake photo.svg'
 
 import { setResultSideNumber, setIsLoading, setIsRetakeOnePhoto, startCamera, stopCamera, setIsReading } from "store/slices/app";
-import { saveSessionToLocal } from "store/slices/sessions";
+import { filterSessionsByClient, saveSessionToLocal } from "store/slices/sessions";
 import './Results.scss'
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -65,20 +65,14 @@ const Results = () => {
             <IonContent fullscreen className='content'>
                 <div className='results-content-inner'>
                     <h3 className='results-text'>My patient</h3>
-                    <div className='buttBack' onClick={() => {
+                    <button className='buttBack' onClick={() => {
+                        history.push("/client")
                         dispatch(setResultSideNumber(0))
                         dispatch(setIsLoading(true))
-                        history.goBack()
-
-                        if (isReading) {
-                            let time = setTimeout(() => {
-                                dispatch(setIsReading(false))
-                                clearTimeout(time)
-                            }, 500)
-                        }
+                        dispatch(setIsReading(false))
                     }}>
                         <img src={back} alt="" />
-                    </div>
+                    </button>
                 </div>
 
                 <ul className='frameList'>
@@ -89,7 +83,7 @@ const Results = () => {
                             onClick={() => {
                                 if (images[sides[verySmartSorting(index)]].status) {
                                     selectResult(index)
-                                    dispatch(setResultSideNumber(verySmartSorting(index)))
+                                    dispatch(setResultSideNumber(index + 1))
                                     dispatch(setIsLoading(false))
                                 } else {
                                     history.push("/camera");
@@ -109,25 +103,6 @@ const Results = () => {
 
 
                 <div className='results-bottom'>
-                    {isReading &&
-                        <IonButton
-                            fill="clear" expand="block" shape="round"
-                            className='results-button clear'
-
-                            onClick={() => {
-                                dispatch(setResultSideNumber(0))
-                                dispatch(setIsLoading(true))
-                                let time = setTimeout(() => {
-                                    dispatch(setIsReading(false))
-                                    clearTimeout(time)
-                                }, 500)
-                                history.push("/home")
-                            }}
-                        >
-                            <p className='results-button-text'>BACK TO CLIENTS</p>
-                        </IonButton>
-                    }
-
                     {!isReading && <>
                         {(
                             images.front.status ||
@@ -141,7 +116,8 @@ const Results = () => {
                                 dispatch(saveSessionToLocal({ clientId: client.id, data: images }))
                                 dispatch(setResultSideNumber(0))
                                 dispatch(setIsLoading(true))
-                                history.push("/home")
+                                dispatch(filterSessionsByClient(client.id))
+                                history.push("/client")
                             }}
                         >
                                 <p className='results-button-text'>SAVE AND BACK</p>
@@ -153,7 +129,7 @@ const Results = () => {
                             onClick={() => {
                                 dispatch(setResultSideNumber(0))
                                 dispatch(setIsLoading(true))
-                                history.push("/home")
+                                history.push("/client")
                             }}
                         >
                             <p className='results-button-text'>EXIT WITHOUT SAVE</p>

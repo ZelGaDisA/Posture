@@ -34,10 +34,9 @@ export const clientSlice = createSlice({
             state.clients = [...state.clients,  newClient]
 
             let clients = localStorage.getItem('clients')
+            state.client = newClient
 
             if(clients && JSON.parse(clients).length > 0){
-                state.client = newClient
-                
                 let newClients = JSON.parse(clients)
                 newClients.push(newClient)
                 console.log(newClients);

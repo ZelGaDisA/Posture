@@ -56,7 +56,8 @@ ion-content {--overflow: hidden}
             width: 90%
             ;
             &-header{
-                margin: 5px 0;
+                margin: 10px 0;
+                margin-bottom: 0px;
                 font-family: 'Inter';
                 font-style: normal;
                 font-weight: 600;
@@ -197,24 +198,19 @@ ion-content {--overflow: hidden}
 }
 
 .alert-message.sc-ion-alert-ios{
-    padding: 10px 0;
-    margin-left: 15px;
-    width: 75%;
     font-size: 12px;
-    text-align-last: left;
+    margin: 0 20px;
     --ion-text-color: rgb(100, 100, 100);
-
-
 }
 .alert-button-group.sc-ion-alert-md{
     height: 50px;
 }
-.alert-button.sc-ion-alert-ios:last-child{
-    margin-bottom: 10px;
+.alert-button.sc-ion-alert-ios{
+    padding: 10px 0;
 }
 .alert-wrapper.ion-overlay-wrapper.sc-ion-alert-md{
     background-color: white;
-    width: 50%;
+
     box-shadow: 0px 8px 10px rgba(0, 0, 0, 0.14), 0px 3px 14px rgba(0, 0, 0, 0.12), 0px 4px 5px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
     .alert-title.sc-ion-alert-md{
@@ -224,8 +220,7 @@ ion-content {--overflow: hidden}
         font-size: 18px;
         line-height: 24px;
         padding: 0;
-        height: 20px;
-
+        text-align: center;
     }
     .alert-input-group.sc-ion-alert-md{
         padding: 0;
@@ -273,6 +268,7 @@ ion-content {--overflow: hidden}
     background: none;
     height: calc(100vh - 238px);
     padding: 0;
+    padding-top: 20px;
     overflow: auto;
     background: white;
     &__item{
@@ -280,6 +276,7 @@ ion-content {--overflow: hidden}
         min-height: 82px;
         width: 90vw;
         box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.08);
+        // filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
         margin-bottom: 10px;
         border: none;
         border-radius: 10px;

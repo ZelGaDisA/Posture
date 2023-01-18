@@ -1,31 +1,31 @@
-import {useEffect, useState, useRef} from "react";
+import { useEffect, useState, useRef } from "react";
 import * as d3 from 'd3';
 
 import "./Grid.scss";
-import {useDispatch, useSelector} from "react-redux";
-import {changePoint} from "../../functions/changePoint"
+import { useDispatch, useSelector } from "react-redux";
+import { changePoint } from "../../functions/changePoint"
 import { addImagesLandmarks } from "store/slices/sessions";
-import {getCoords} from "functions/getCoords"
+import { getCoords } from "functions/getCoords"
 
 
-export const GridForResults = ({resultSideNumber, image, rerenderCounter}) => {
+export const GridForResults = ({ resultSideNumber, image, rerenderCounter }) => {
     const boxRef = useRef()
 
     const [db, setDb] = useState(image.landmarks);//db for drawing
     const [selectedCircleId, setSelectedCircleId] = useState('')
-    const [rotator, setRotator] = useState(0) 
+    const [rotator, setRotator] = useState(0)
     const size = {//my svg-image have a  fullsize of device screen
         width: window.innerWidth,
         height: window.innerHeight
     }
 
-    useEffect(()=>{
-        if(db) drawSoloPatientGrid(image.landmarks, size)
-    },[image, boxRef, resultSideNumber, rerenderCounter])
+    useEffect(() => {
+        if (db) drawSoloPatientGrid(image.landmarks, size)
+    }, [image, boxRef, resultSideNumber, rerenderCounter])
 
-    useEffect(()=>{
-        if(db) drawSoloPatientGrid(db, size)
-    },[db,rotator])
+    useEffect(() => {
+        if (db) drawSoloPatientGrid(db, size)
+    }, [db, rotator])
 
     const drawSoloPatientGrid = (db, size) => {
         // console.log(db)
@@ -41,29 +41,29 @@ export const GridForResults = ({resultSideNumber, image, rerenderCounter}) => {
             const centerPointScale = 4
             const selectedPointScale = 20
 
-            const hideLens = () =>{
+            const hideLens = () => {
                 const lens = document.getElementById('lens')
                 lens.style.left = -10000 + "px"
                 lens.style.top = -10000 + "px"
             }
 
-            const multiplePointByPrecent = (p1, p2, precent) =>{
+            const multiplePointByPrecent = (p1, p2, precent) => {
                 return {
-                    left:{
-                        x:  ((1 - precent) * p1.x ) + p2.x * precent,
-                        y:  ((1 - precent) * p1.y ) + p2.y * precent
+                    left: {
+                        x: ((1 - precent) * p1.x) + p2.x * precent,
+                        y: ((1 - precent) * p1.y) + p2.y * precent
                     },
-                    right:{
-                        x:  ((1 - precent) * p2.x ) + p1.x * precent,
-                        y:  ((1 - precent) * p2.y ) + p1.y * precent
+                    right: {
+                        x: ((1 - precent) * p2.x) + p1.x * precent,
+                        y: ((1 - precent) * p2.y) + p1.y * precent
                     }
                 }
             }
 
-            const getCenter = (p1,p2) => {
+            const getCenter = (p1, p2) => {
                 return {
-                    x: (p1.x + p2.x)/2,
-                    y: (p1.y + p2.y)/2
+                    x: (p1.x + p2.x) / 2,
+                    y: (p1.y + p2.y) / 2
                 }
             }
 
@@ -124,8 +124,8 @@ export const GridForResults = ({resultSideNumber, image, rerenderCounter}) => {
                 let y2 = start.y - t * Math.sin(angle);
 
                 return {
-                    start: {x: x1, y: y1},
-                    end: {x: x2, y: y2}
+                    start: { x: x1, y: y1 },
+                    end: { x: x2, y: y2 }
                 };
             }
 
@@ -133,31 +133,32 @@ export const GridForResults = ({resultSideNumber, image, rerenderCounter}) => {
                 let row = svg.append('g')
                     .style('transform-origin', `center center`)
                     .style('transform', `rotate(${image.angle}turn)`)
-                    let step = size.width / (size.width/23)
-                        let boxSize = (size.height > size.width) ? size.height : size.width
 
-                    row.append('path').attr('class', 'subLine-black')
-                        .style('fill', "none")
-                        .attr('d', () => d3.line()([
-                            [coords.ears.center.x, 0], [coords.ears.center.x, size.height]
+                let step = size.width / (size.width / 23)
+                let boxSize = (size.height > size.width) ? size.height : size.width
+
+                row.append('path').attr('class', 'subLine-black')
+                    .style('fill', "none")
+                    .attr('d', () => d3.line()([
+                        [coords.ankles.center.x, 0], [coords.ankles.center.x, size.height]
                     ]))
-            
+
                 for (let i = step; i < boxSize; i += step) {
-            
+
                     row.append('path').attr('class', 'subLine-culumn')
                         .style('fill', "none")
                         .attr('d', () => d3.line()([
                             [i, 0], [i, size.height]
                         ]))
-            
+
                     row.append('path').attr('class', 'subLine-row')
                         .style('fill', "none")
                         .attr('d', () => d3.line()([
                             [0, i], [size.width, i]
                         ]))
-            
+
                 }
-            
+
             }
 
             {//Рисует человека
@@ -171,7 +172,7 @@ export const GridForResults = ({resultSideNumber, image, rerenderCounter}) => {
                     .attr('class', 'poseGridSVG')
                     .style('width', size.width)
                     .style('height', size.height)
-                    
+
             }
 
             svg.append('path')
@@ -182,31 +183,31 @@ export const GridForResults = ({resultSideNumber, image, rerenderCounter}) => {
                 .style('fill', "none")
 
             for (const [name, value] of Object.entries(coords)) {//Angles
-                let angle = Math.abs(Math.floor((value.angle * (180/Math.PI)) * 100) / 100)
-                let backAngle = Math.abs(Math.floor((90 - Math.abs(value.angle * (180/Math.PI))) * 100)/100)
+                let angle = Math.abs(Math.floor((value.angle * (180 / Math.PI)) * 100) / 100)
+                let backAngle = Math.abs(Math.floor((90 - Math.abs(value.angle * (180 / Math.PI))) * 100) / 100)
 
                 let textColor = "rgba(46, 84, 130, 1)"
 
                 switch (name) {
                     case 'ears':
-                        lineColor = angle > 5 ? "#EC0000": "rgba(37, 179, 145, 1)";
-                        textColor = angle > 5 ? "#EC0000": "rgba(46, 84, 130, 1)";
+                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 1)";
+                        textColor = angle > 5 ? "rgba(236, 0, 0, 1)" : "rgba(46, 84, 130, 1)";
                         break;
                     case 'shoulders':
-                        lineColor = angle > 5 ? "#EC0000": "rgba(37, 179, 145, 1)";
-                        textColor = angle > 5 ? "#EC0000": "rgba(46, 84, 130, 1)";
+                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 1)";
+                        textColor = angle > 5 ? "rgba(236, 0, 0, 1)" : "rgba(46, 84, 130, 1)";
                         break;
                     case 'hips':
-                        lineColor = angle > 5 ? "#EC0000": "rgba(37, 179, 145, 1)";
-                        textColor = angle > 5 ? "#EC0000": "rgba(46, 84, 130, 1)";
+                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 1)";
+                        textColor = angle > 5 ? "rgba(236, 0, 0, 1)" : "rgba(46, 84, 130, 1)";
                         break;
                     case 'ankles':
-                        lineColor = backAngle > 5 ? "#EC0000": "rgba(37, 179, 145, 1)";
-                        textColor = backAngle > 5 ? "#EC0000": "rgba(46, 84, 130, 1)";
+                        lineColor = backAngle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 1)";
+                        textColor = backAngle > 5 ? "rgba(236, 0, 0, 1)" : "rgba(46, 84, 130, 1)";
                         break;
                     default:
-                        lineColor = angle > 5 ? "#EC0000": "rgba(37, 179, 145, 1)";
-                        textColor = angle > 5 ? "#EC0000": "rgba(46, 84, 130, 1)";
+                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 1)";
+                        textColor = angle > 5 ? "rgba(236, 0, 0, 1)" : "rgba(46, 84, 130, 1)";
                         break;
                 }
 
@@ -216,8 +217,8 @@ export const GridForResults = ({resultSideNumber, image, rerenderCounter}) => {
 
 
 
-                if(!(name === 'ears' && name === 'shoulders')){
-                    if(resultSideNumber === 0 || resultSideNumber === 2){
+                if (!(name === 'ears' && name === 'shoulders')) {
+                    if (resultSideNumber === 0 || resultSideNumber === 2) {
                         textBox.append("rect")
                             .attr("x", name === 'ankles' ? value.center.x - 40 : 14)
                             .attr("y", name === 'ankles' ? value.center.y + 10 : name === 'ears' ? value.center.y - 80 : value.center.y + 20)
@@ -225,43 +226,43 @@ export const GridForResults = ({resultSideNumber, image, rerenderCounter}) => {
                             .attr('height', 64)
                             .attr('rx', 10)
                             .attr('rx', 10)
-                            .style('fill', 'white')
-                            .attr("filter", "url(#shadow)")
+                            .attr('fill', 'rgb(255,255,255)')
+                        // .attr("filter", "url(#shadow)")
 
-                        if(name !== 'ankles') {
+                        if (name !== 'ankles') {
                             textBox.append("text")
                                 .attr('class', 'textBox angle')
                                 .attr("x", 55)
                                 .attr("y", name === 'ears' ? value.center.y - 35 : value.center.y + 65)
-                                .text(`${Math.floor((value.angle * (180/Math.PI)) * 100) / 100}°`)
+                                .text(`${Math.floor((value.angle * (180 / Math.PI)) * 100) / 100}°`)
                                 .attr('text-anchor', 'middle')
                                 .style('fill', textColor)
                             textBox.append("text")
                                 .attr('class', 'textBox')
                                 .attr("x", 55)
                                 .attr("y", name === 'ears' ? value.center.y - 60 : value.center.y + 40)
-                                .text(`${name.split('').map((e,i)=> i === 0 ? e.toUpperCase() : e).join('')}`)
+                                .text(`${name.split('').map((e, i) => i === 0 ? e.toUpperCase() : e).join('')}`)
                                 .attr('text-anchor', 'middle')
                                 .style('fill', textColor)
-                        }else{
-    
+                        } else {
+
                             textBox.append("text")
                                 .attr('class', 'textBox angle')
-                                .attr("x", value.center.x )
+                                .attr("x", value.center.x)
                                 .attr("y", value.center.y + 55)
-                                .text(`${ Math.abs(Math.floor((90 - Math.abs(value.angle * (180/Math.PI))) * 100)/100)}°`)
+                                .text(`${Math.abs(Math.floor((90 - Math.abs(value.angle * (180 / Math.PI))) * 100) / 100)}°`)
                                 .attr('text-anchor', 'middle')
                                 .style('fill', textColor)
 
                             textBox.append("text")
                                 .attr('class', 'textBox')
-                                .attr("x", value.center.x )
+                                .attr("x", value.center.x)
                                 .attr("y", value.center.y + 32)
-                                .text(`${name.split('').map((e,i)=> i === 0 ? e.toUpperCase() : e).join('')}`)
+                                .text(`${name.split('').map((e, i) => i === 0 ? e.toUpperCase() : e).join('')}`)
                                 .attr('text-anchor', 'middle')
                                 .style('fill', textColor)
                         }
-                    }else if(name === 'ankles'){
+                    } else if (name === 'ankles') {
                         textBox.append("rect")
                             .attr("x", name === 'ankles' ? value.center.x - 40 : 14)
                             .attr("y", name === 'ankles' ? value.center.y + 10 : value.center.y - 15)
@@ -270,21 +271,21 @@ export const GridForResults = ({resultSideNumber, image, rerenderCounter}) => {
                             .attr('rx', 10)
                             .attr('rx', 10)
                             .style('fill', 'white')
-                            .attr("filter", "url(#shadow)")
+                        // .attr("filter", "url(#shadow)")
 
                         textBox.append("text")
                             .attr('class', 'textBox angle')
                             .attr("x", value.center.x)
                             .attr("y", value.center.y + 47)
-                            .text(`${ Math.abs(Math.floor((90 - Math.abs(value.angle * (180/Math.PI))) * 100)/100)}°`)
+                            .text(`${Math.abs(Math.floor((90 - Math.abs(value.angle * (180 / Math.PI))) * 100) / 100)}°`)
                             .attr('text-anchor', 'middle')
                             .style('fill', textColor)
-                        
+
                         textBox.append("text")
                             .attr('class', 'textBox')
                             .attr("x", value.center.x)
                             .attr("y", value.center.y + 28)
-                            .text(`${name.split('').map((e,i)=> i === 0 ? e.toUpperCase() : e).join('')}`)
+                            .text(`${name.split('').map((e, i) => i === 0 ? e.toUpperCase() : e).join('')}`)
                             .attr('text-anchor', 'middle')
                             .style('fill', textColor)
                     }
@@ -292,23 +293,23 @@ export const GridForResults = ({resultSideNumber, image, rerenderCounter}) => {
             }
 
             for (const [name, value] of Object.entries(coords)) {//Dots
-                let angle = Math.abs(Math.floor((value.angle * (180/Math.PI)) * 100) / 100)
-                let backAngle = Math.abs(Math.floor((90 - Math.abs(value.angle * (180/Math.PI))) * 100)/100)
+                let angle = Math.abs(Math.floor((value.angle * (180 / Math.PI)) * 100) / 100)
+                let backAngle = Math.abs(Math.floor((90 - Math.abs(value.angle * (180 / Math.PI))) * 100) / 100)
                 switch (name) {
                     case 'ears':
-                        lineColor = angle > 5 ? "#EC0000": "#25B391";
+                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 0.5)";
                         break;
                     case 'shoulders':
-                        lineColor = angle > 5 ? "#EC0000": "#25B391";
+                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 0.5)";
                         break;
                     case 'hips':
-                        lineColor = angle > 5 ? "#EC0000": "#25B391";
+                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 0.5)";
                         break;
                     case 'ankles':
-                        lineColor = backAngle > 5 ? "#EC0000": "#25B391";
+                        lineColor = backAngle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 0.5)";
                         break;
                     default:
-                        lineColor = angle > 5 ? "#EC0000": "#25B391";
+                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 0.5)";
                         break;
                 }
 
@@ -323,7 +324,7 @@ export const GridForResults = ({resultSideNumber, image, rerenderCounter}) => {
                         end = size.width,
                         // yLeft = k * start + b,
                         // yRight = k * end + b
-                        
+
                         yLeft = value.left.y,
                         yRight = value.right.y
 
@@ -339,15 +340,15 @@ export const GridForResults = ({resultSideNumber, image, rerenderCounter}) => {
                 {//Drawing deviation lines
                     let line = linePoint()
 
-                    if(resultSideNumber === 0 || resultSideNumber === 2){
+                    if (resultSideNumber === 0 || resultSideNumber === 2) {
                         svg.append('path').attr('class', 'subLine')
-                        .attr('d', () => d3.line()([
-                            [value.left.x, line.left], [value.right.x, line.right]
-                        ]))
-                        .style('stroke', lineColor)
-                        .style('fill', "none")
+                            .attr('d', () => d3.line()([
+                                [value.left.x, line.left], [value.right.x, line.right]
+                            ]))
+                            .style('stroke', lineColor)
+                            .style('fill', "none")
 
-                    }else if(name === 'ears' || name === 'ankles'){
+                    } else if (name === 'ears' || name === 'ankles') {
                         svg.append('path').attr('class', 'subLine')
                             .attr('d', () => d3.line()([
                                 [value.left.x, line.left], [value.right.x, line.right]
@@ -357,38 +358,36 @@ export const GridForResults = ({resultSideNumber, image, rerenderCounter}) => {
                     }
 
 
-                        //ANGLES POLYGON
-                    if(resultSideNumber === 0 || resultSideNumber === 2){
+                    //ANGLES POLYGON
+                    if (resultSideNumber === 0 || resultSideNumber === 2) {
                         let newPoint = multiplePointByPrecent(value.center, value.left, 1000)
 
                         name !== 'ankles' && svg.append('polygon')
-
-                        .attr('points', `${value.center.x},${value.center.y} ${newPoint.right.x},${value.center.y} ${newPoint.right.x},${newPoint.right.y}`)
-                        .style('fill', lineColor)
-                        .style('filter', 'opacity(0.4)')
+                            .attr('points', `${value.center.x},${value.center.y} ${newPoint.right.x},${value.center.y} ${newPoint.right.x},${newPoint.right.y}`)
+                            .style('fill', lineColor)
+                            .style('filter', 'opacity(0.4)')
                     }
 
-                    
-                        //BACK POLYGON
+
+                    //BACK POLYGON
                     name === 'ankles' && svg.append('polygon')
-                        .attr('points', `${coords.ears.center.x},${coords.ears.center.y} ${coords.ears.center.x},${coords.ankles.center.y} ${coords.ankles.center.x},${coords.ankles.center.y}`)
+                        .attr('points', `${coords.ankles.center.x},${coords.ankles.center.y} ${coords.ankles.center.x},${coords.ears.center.y} ${coords.ears.center.x},${coords.ears.center.y}`)
                         .style('fill', lineColor)
                         .style('filter', 'opacity(0.4)')
 
                 }
 
                 //Center line
-                if(resultSideNumber === 0 || resultSideNumber === 2){
+                if (resultSideNumber === 0 || resultSideNumber === 2) {
                     svg.append('path').attr('class', 'middleLine')
-                    .attr('d', () => d3.line()([[0, value.center.y], [size.width, value.center.y]]))
-                    .style('stroke', "rgba(0,0,0,0.5)")
-                    .style("stroke-dasharray", "10,6")
-                    .style('stroke-width', 1.4)
-                    .style('fill', "none")
+                        .attr('d', () => d3.line()([[0, value.center.y], [size.width, value.center.y]]))
+                        .style('stroke', "rgba(0,0,0,0.5)")
+                        .style("stroke-dasharray", "10,6")
+                        .style('stroke-width', 1.4)
+                        .style('fill', "none")
                 }
 
                 {// Dots
-
                     let circleName = () => {
                         let newMessage = name.split('')
                         newMessage.splice(0, 1, newMessage[0].toUpperCase())
@@ -396,40 +395,40 @@ export const GridForResults = ({resultSideNumber, image, rerenderCounter}) => {
                         return newMessage.join('')
                     }
 
-                    if(name === "ankles" || (name === 'ears' && (resultSideNumber === 1 || resultSideNumber === 3))){
+                    if (name === "ankles" || (name === 'ears' && (resultSideNumber === 1 || resultSideNumber === 3))) {
                         let centerName = "center" + circleName() + 's'
                         let leftCircleName = `left${circleName()}`
                         let rightCircleName = `right${circleName()}`
-                        
+
                         value.center && svg.append("circle")
                             .attr("r", selectedCircleId === centerName ? selectedPointScale : centerPointScale)
-                            .style('fill', selectedCircleId === centerName ? 'orange' : lineColor)
+                            .style('fill', selectedCircleId === centerName ? 'orange' : 'white')
                             .attr("id", centerName)
                             .attr("cx", value.center.x)
                             .attr("cy", value.center.y)
                             .style('stroke-width', '30px')
                             .style('stroke', 'rgba(0,0,0,0)')
-                        
+
                         value.right && svg.append("circle")
                             .attr("r", selectedCircleId === rightCircleName ? selectedPointScale : centerPointScale)
                             .attr("id", rightCircleName)
-                            .style('fill', selectedCircleId === rightCircleName ? 'orange' : lineColor)
+                            .style('fill', selectedCircleId === rightCircleName ? 'orange' : 'white')
                             .attr("cx", value.right.x)
                             .attr("cy", value.right.y)
                             .style('stroke-width', '30px')
                             .style('stroke', 'rgba(0,0,0,0)')
-                            .on('touchstart touchmove', (e)=>{
-                                if(selectedCircleId !== rightCircleName) {
+                            .on('touchstart touchmove', (e) => {
+                                if (selectedCircleId !== rightCircleName) {
                                     setSelectedCircleId(rightCircleName)
                                 }
-                                let newData = {...db}
+                                let newData = { ...db }
                                 let newLandCoord = changePoint(e, image)
-                                if(newLandCoord && Object.entries(newLandCoord).length > 0){
+                                if (newLandCoord && Object.entries(newLandCoord).length > 0) {
                                     newData[rightCircleName] = newLandCoord
                                     setDb(newData)
                                 }
                             })
-                            .on('touchend', ()=>{
+                            .on('touchend', () => {
                                 setSelectedCircleId('')
                                 hideLens()
                             })
@@ -437,54 +436,54 @@ export const GridForResults = ({resultSideNumber, image, rerenderCounter}) => {
                         value.left && svg.append("circle")
                             .attr("r", selectedCircleId === leftCircleName ? selectedPointScale : centerPointScale)
                             .attr("id", leftCircleName)
-                            .style('fill', selectedCircleId === leftCircleName ? 'orange' : lineColor)
+                            .style('fill', selectedCircleId === leftCircleName ? 'orange' : 'white')
                             .attr("cx", value.left.x)
                             .attr("cy", value.left.y)
                             .style('stroke-width', '30px')
                             .style('stroke', 'rgba(0,0,0,0)')
-                            .on('touchstart touchmove', (e)=>{
-                                if(selectedCircleId !== leftCircleName) {
+                            .on('touchstart touchmove', (e) => {
+                                if (selectedCircleId !== leftCircleName) {
                                     setSelectedCircleId(leftCircleName)
                                 }
-                                
-                                let newData = {...db}
+
+                                let newData = { ...db }
 
                                 let newLandCoord = changePoint(e, image)
-                                if(newLandCoord && Object.entries(newLandCoord).length > 0){
+                                if (newLandCoord && Object.entries(newLandCoord).length > 0) {
                                     newData[leftCircleName] = newLandCoord
                                     setDb(newData)
                                 }
                             })
-                            .on('touchend', ()=>{
+                            .on('touchend', () => {
                                 setSelectedCircleId('')
                                 hideLens()
                             })
 
 
-                    } else if(resultSideNumber === 0 || resultSideNumber === 2){
+                    } else if (resultSideNumber === 0 || resultSideNumber === 2) {
                         let leftCircleName = `left${circleName()}`
                         let rightCircleName = `right${circleName()}`
 
                         value.right && svg.append("circle")
                             .attr("r", selectedCircleId === rightCircleName ? selectedPointScale : centerPointScale)
                             .attr("id", rightCircleName)
-                            .style('fill', selectedCircleId === rightCircleName ? 'orange' : lineColor)
+                            .style('fill', selectedCircleId === rightCircleName ? 'orange' : 'white')
                             .attr("cx", value.right.x)
                             .attr("cy", value.right.y)
                             .style('stroke-width', '30px')
                             .style('stroke', 'rgba(0,0,0,0)')
-                            .on('touchstart touchmove', (e)=>{
-                                if(selectedCircleId !== rightCircleName) {
+                            .on('touchstart touchmove', (e) => {
+                                if (selectedCircleId !== rightCircleName) {
                                     setSelectedCircleId(rightCircleName)
                                 }
-                                let newData = {...db}
+                                let newData = { ...db }
                                 let newLandCoord = changePoint(e, image)
-                                if(newLandCoord && Object.entries(newLandCoord).length > 0){
+                                if (newLandCoord && Object.entries(newLandCoord).length > 0) {
                                     newData[rightCircleName] = newLandCoord
                                     setDb(newData)
                                 }
                             })
-                            .on('touchend', ()=>{
+                            .on('touchend', () => {
                                 setSelectedCircleId('')
                                 hideLens()
                             })
@@ -492,25 +491,25 @@ export const GridForResults = ({resultSideNumber, image, rerenderCounter}) => {
                         value.left && svg.append("circle")
                             .attr("r", selectedCircleId === leftCircleName ? selectedPointScale : centerPointScale)
                             .attr("id", leftCircleName)
-                            .style('fill', selectedCircleId === leftCircleName ? 'orange' : lineColor)
+                            .style('fill', selectedCircleId === leftCircleName ? 'orange' : 'white')
                             .attr("cx", value.left.x)
                             .attr("cy", value.left.y)
                             .style('stroke-width', '30px')
                             .style('stroke', 'rgba(0,0,0,0)')
-                            .on('touchstart touchmove', (e)=>{
-                                if(selectedCircleId !== leftCircleName) {
+                            .on('touchstart touchmove', (e) => {
+                                if (selectedCircleId !== leftCircleName) {
                                     setSelectedCircleId(leftCircleName)
                                 }
-                                
-                                let newData = {...db}
+
+                                let newData = { ...db }
 
                                 let newLandCoord = changePoint(e, image)
-                                if(newLandCoord && Object.entries(newLandCoord).length > 0){
+                                if (newLandCoord && Object.entries(newLandCoord).length > 0) {
                                     newData[leftCircleName] = newLandCoord
                                     setDb(newData)
                                 }
                             })
-                            .on('touchend', ()=>{
+                            .on('touchend', () => {
                                 setSelectedCircleId('')
                                 hideLens()
                             })
@@ -520,5 +519,5 @@ export const GridForResults = ({resultSideNumber, image, rerenderCounter}) => {
         }
     }
 
-    return <div ref={boxRef} id="svgBox"/>
+    return <div ref={boxRef} id="svgBox" />
 }

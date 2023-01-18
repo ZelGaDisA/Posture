@@ -3,13 +3,6 @@
 body{
     margin: 0;
 }
-.buttBack{
-    position: absolute;
-    padding: 10px 10px 5px 10px;
-    left: 20px;
-    fill: black;
-    filter: brightness(0%);
-}
 
 
 .header{
@@ -162,9 +155,6 @@ body{
             }
             &.bad{
                 box-shadow: 0px 4px 14px rgba(142, 100, 1, 0.12);
-            }
-            &.empty{
-                
             }
         }
         &-statusIcon{

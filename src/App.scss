@@ -5,8 +5,20 @@
     -moz-user-drag:none;
     -moz-user-select:none;
     -o-user-drag:none;
-    user-drag:none;
     user-select: none;
+}
+
+
+.buttBack{
+    position: absolute;
+    padding: 10px 10px 5px 10px;
+    left: 20px;
+    filter: brightness(0%);
+    fill: black;
+    background: none;
+    &:active{
+        opacity: 0.5;
+    }
 }
 
 ion-checkbox {
@@ -64,8 +76,7 @@ ion-checkbox::part(container) {
 
 .alert-title{
     --ion-text-color: rgba(0, 0, 0, 0.87);
-    text-align: left;
-
+    
 }
 
 .alert-message{
@@ -74,5 +85,11 @@ ion-checkbox::part(container) {
 }
 
 .alert-message.sc-ion-alert-ios{
-    padding: 20px 0;
+    padding:  0;
+    text-align-last: none;
+    margin-left: 0;
+}
+
+.ion-card-form-box-header{
+    padding: 0;
 }

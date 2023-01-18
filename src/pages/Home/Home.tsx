@@ -14,7 +14,7 @@ import {useHistory} from "react-router";
 
 import './Home.scss'
 import { chooseClient,addNewClient,Client,updateClients } from 'store/slices/clients';
-import { Session,addNewSession,filterSessionsByUser } from "store/slices/sessions";
+import { Session,addNewSession,filterSessionsByClient } from "store/slices/sessions";
 import { RootState } from 'store/store';
 
 
@@ -88,7 +88,7 @@ const Home = () => {
 
             <IonContent fullscreen className='home-IonContent'>
                 <div className='home-contentInner'>
-                    <h3 className='header-text'>My clients</h3>
+                    <h3 className='header-text'>List of results</h3>
                 </div>
 
                 {/* <div className='home-betaLabel'>
@@ -102,7 +102,7 @@ const Home = () => {
                         result.id && <li className='client-List__item' key={index}>
                             <div className='client-List__item-text' onClick={()=>{
                                 dispatch(chooseClient(result))
-                                dispatch(filterSessionsByUser(result.id))
+                                dispatch(filterSessionsByClient(result.id))
                                 history.push('/client')
                             }}>
                                 <p className='client-List__item-text_name'>{result.name}</p>
@@ -129,7 +129,8 @@ const Home = () => {
                             </IonButton>
                         :   <IonButton className='home-button' onClick={() =>{
                                 presentAlert({
-                                    header: "Enter the client's name",
+                                    header: "Person's name",
+                                    message: "Enter the person's name",
                                     buttons: [{
                                         text: 'SAVE AND START',
                                         handler: (value) => {
@@ -139,7 +140,7 @@ const Home = () => {
                                             
                                             let clientName = value[0]
 
-                                            if(clientName.length === 0) clientName = `Client #${allClientsNumber}`
+                                            if(clientName.length === 0) clientName = `Person #${allClientsNumber}`
 
                                             dispatch(addNewClient({name: clientName, id: +newClientId}))
                                             dispatch(addNewSession({clientId: +newClientId}))
@@ -152,7 +153,7 @@ const Home = () => {
 
                                     inputs: [
                                         {
-                                            placeholder: `Client #${clientsData.clients ? clientsData.clients.length + 1 : 1}`,
+                                            placeholder: `Person #${clientsData.clients ? clientsData.clients.length + 1 : 1}`,
                                             id: 'alert-input_name',
                                             attributes: {
                                                 maxlength: 18,
@@ -160,7 +161,7 @@ const Home = () => {
                                         } 
                                     ],
                                     })}}>
-                                <p className='home-button-text'>Start with new client</p>
+                                <p className='home-button-text'>Start new scan</p>
                             </IonButton>
                     }
                 </div>
@@ -173,13 +174,13 @@ const Home = () => {
                             <div className='ion-card-form-box'>
                                 {isOpenForm === 1 
                                     ?   <p className='ion-card-form-box-header'>The number of <br/> saved sessions is 2</p>
-                                    :   <p className='ion-card-form-box-header'>The number of <br/> clients is 3</p>
+                                    :   <p className='ion-card-form-box-header'>The number of <br/> persons is 3</p>
                                 }
                             </div>
                             <div className='ion-card-form-box'>
                                 {isOpenForm === 1 
                                     ?   <p className='ion-card-form-box-text'>If you want to save another <br/> session, you must delete any of the previously saved</p>
-                                    :   <p className='ion-card-form-box-text'>If you want to save another <br/> client, you must delete any of the previously saved</p>
+                                    :   <p className='ion-card-form-box-text'>If you want to save another <br/> person, you must delete any of the previously saved</p>
                                 }
                             </div>
 

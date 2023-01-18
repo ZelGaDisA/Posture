@@ -13,7 +13,7 @@ import {GridForResults}from "components/Grid/GridForResults";
 
 import back from "images/backGreen.svg";
 import save from 'images/icons/log-in.svg'
-import newClient from "images/Component 17.svg";
+import listOfResults from "images/Component 20.svg";
 import retakePhoto from "images/Component 16.svg";
 import editPoints from "images/Component 15.svg";
 
@@ -97,9 +97,6 @@ const Results: React.FC = () => {
                     initialSlide={resultSideNumber}
                     onSlideChange={(swiper) => {
                         setSlide(swiper.realIndex)
-                        console.log('====================================');
-                        console.log(swiper.realIndex);
-                        console.log('====================================');
                         dispatch(setResultSideNumber(stupidSorting(swiper.realIndex - 1)))
                     }}
                     >   {
@@ -119,8 +116,8 @@ const Results: React.FC = () => {
                                 
                                 onClick={() =>
                                     presentAlert({
-                                        header: 'Scan new client',
-                                        message: "This will delete results of scanning.Are you sure?",
+                                        header: 'Back to results',
+                                        message: "This will delete results of scanning.<br/>Are you sure?",
                                         buttons: [
                                         {
                                             text: 'CANCEL',
@@ -129,7 +126,7 @@ const Results: React.FC = () => {
                                             },
                                         },
                                         {
-                                            text: 'CLEAR',
+                                            text: 'BACK',
                                             role: 'confirm',
                                             handler: () => {
                                                 dispatch(setResultSideNumber(0))
@@ -141,7 +138,7 @@ const Results: React.FC = () => {
                                     })
                                 }
                             >
-                                <img src={newClient} alt="" />
+                                <img src={listOfResults} alt="" />
                             </div>
 
                             <div className="img" onClick={goToRetakePhoto}>
