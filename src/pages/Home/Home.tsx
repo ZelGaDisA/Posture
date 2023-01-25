@@ -14,7 +14,7 @@ import {useHistory} from "react-router";
 
 import './Home.scss'
 import { chooseClient,addNewClient,Client,updateClients } from 'store/slices/clients';
-import { Session,addNewSession,filterSessionsByClient } from "store/slices/sessions";
+import sessions, { Session,addNewSession,filterSessionsByClient } from "store/slices/sessions";
 import { RootState } from 'store/store';
 
 
@@ -25,19 +25,20 @@ const Home = () => {
     const [presentAlert] = useIonAlert();
 
     const clientsData = useSelector((state:RootState) => state.clients)
-    const clients = useSelector((state:RootState) => state.clients.clients)
     const [search, setSearch] = useState<string>()
     const [results, setResults] = useState(clientsData.clients);
     const [updater, setUpdater] = useState(0)
 
     const [isOpenForm, setIsOpenForm] = useState(0)
-
+    const [isOnboarding, setIsOnboarding]= useState(false)
+    
     const handleChange = (e: Event) => {
         const target = e.target as HTMLIonSearchbarElement;
         //
         if (target) setSearch(target.value!.toLowerCase())
         
     }
+
     useEffect(()=>{
         if(search){
             setResults(clientsData.clients.filter((client: Client) => client.name ? client.name.toLowerCase().indexOf(search) > -1 : ''));
@@ -82,13 +83,12 @@ const Home = () => {
         }
     }
 
-
     return (
         <IonPage>
 
             <IonContent fullscreen className='home-IonContent'>
                 <div className='home-contentInner'>
-                    <h3 className='header-text'>List of results</h3>
+                    {(results && results.length > 0) && <h3 className='header-text'>List of results</h3>}
                 </div>
 
                 {/* <div className='home-betaLabel'>
@@ -98,36 +98,39 @@ const Home = () => {
                 {/* <IonSearchbar placeholder='Find a client' debounce={1000} onIonChange={(e: Event) => handleChange(e)}></IonSearchbar> */}
 
                 <IonList className='client-List'>
-                    {results && results.length > 0 && results.map((result: Client, index: number) => (
-                        result.id && <li className='client-List__item' key={index}>
-                            <div className='client-List__item-text' onClick={()=>{
-                                dispatch(chooseClient(result))
-                                dispatch(filterSessionsByClient(result.id))
-                                history.push('/client')
-                            }}>
-                                <p className='client-List__item-text_name'>{result.name}</p>
-                                {resultsInfo(result)?.number > 0 && <p className='client-List__item-text_number'>{`Sessions ${resultsInfo(result)?.number}`}</p>}
-                                {resultsInfo(result)?.lastSessionTime && <p className='client-List__item-text_lastTime'>{`Last scan ${resultsInfo(result)?.lastSessionTime}`}</p>}
-                            </div>
-                            {resultsInfo(result)?.number >= 2 
-                                ?  <button className='client-List__item-button popup' onClick={(e) => setIsOpenForm(1)}>New scan</button>
-                                :   <button className={'client-List__item-button' + (!!(resultsInfo(result)?.number === 2) ? ' popup' : '')} onClick={()=>{
+                    {(results && results.length > 0) 
+                        ? results.map((result: Client, index: number) => (
+                                result.id && <li className='client-List__item' key={index}>
+                                    <div className='client-List__item-text' onClick={()=>{
                                         dispatch(chooseClient(result))
-                                        result.id && dispatch(addNewSession({clientId: result.id}))
-                                        history.push('/camera')
-                                    }}>New scan</button>
-                            }
-                        </li>
-                    ))}
+                                        dispatch(filterSessionsByClient(result.id))
+                                        history.push('/sessions')
+                                    }}>
+                                        <p className='client-List__item-text_name'>{result.name}</p>
+                                        {resultsInfo(result)?.number > 0 && <p className='client-List__item-text_number'>{`Sessions ${resultsInfo(result)?.number}`}</p>}
+                                        {resultsInfo(result)?.lastSessionTime && <p className='client-List__item-text_lastTime'>{`Last scan ${resultsInfo(result)?.lastSessionTime}`}</p>}
+                                    </div>
+                                    {resultsInfo(result)?.number >= 2 
+                                        ?  <button className='client-List__item-button popup' onClick={(e) => setIsOpenForm(1)}>New scan</button>
+                                        :   <button className={'client-List__item-button' + (!!(resultsInfo(result)?.number === 2) ? ' popup' : '')} onClick={()=>{
+                                                dispatch(chooseClient(result))
+                                                result.id && dispatch(addNewSession({clientId: result.id}))
+                                                history.push('/camera')
+                                            }}>New scan</button>
+                                    }
+                                </li>
+                            ))
+                        : <p className='noresults'>You have no saved results. It's <br/> time to start!</p>
+                    }
                 </IonList>
 
 
                 <div id="newPatient__form" className='home-bottom'>
                     {   clientsData.clients.filter(c => c.id).length === 3 
-                        ?   <IonButton className='home-button popup' onClick={(e) => setIsOpenForm(2)}>
+                        ?   <button className='home-button popup' onClick={(e) => setIsOpenForm(2)}>
                                 <p className='home-button-text'>Start with new client</p>
-                            </IonButton>
-                        :   <IonButton className='home-button' onClick={() =>{
+                            </button>
+                        :   <button className='home-button' onClick={() =>{
                                 presentAlert({
                                     header: "Person's name",
                                     message: "Enter the person's name",
@@ -162,7 +165,7 @@ const Home = () => {
                                     ],
                                     })}}>
                                 <p className='home-button-text'>Start new scan</p>
-                            </IonButton>
+                            </button>
                     }
                 </div>
 

@@ -1,0 +1,150 @@
+.removeClientBtn{
+    width: 10px;
+}
+
+.client-header{
+    width: 100vw;
+    height: 88px;
+
+    background: rgba($color: #ffffff, $alpha: 1);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    color: black;
+    z-index: 2;
+
+
+    &-more{
+        position: absolute;
+        right: 20px;
+        filter: brightness(0%);
+
+        padding: 10px;
+    }
+
+    &-text{
+        position: relative;
+        color: #000;
+    }
+
+    .buttBack{
+        position: absolute;
+        left: 20px;
+        fill: black;
+        filter: brightness(0%);
+        transition: all 0.2s ease;
+        margin: 10px;
+
+        &:active{
+            opacity: 0.5;
+        }
+    }
+
+    .buttSave{
+        position: absolute;
+        right: 20px;
+        transform: rotate(90deg);
+        filter: brightness(0%);
+
+        margin: 10px 10px 0 10px;
+    }
+}
+
+.cardsBox-list{
+    width: 93vw;
+    max-width: 310px;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto ;
+
+    &-el{
+        list-style: none;
+        min-width: 58px;
+        min-height: 59px;
+
+        border-radius: 8px;
+        display: flex;
+        text-align: center;
+        justify-content: center;
+        border: 1px solid rgba($color: #dbdbdb, $alpha: 1);
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        transition: 0.2s ease;
+
+        background: white;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+
+        position: relative;
+        .blackPeople{
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            margin: 0 auto;
+            img{
+                height: 20px;
+            }
+            
+        }
+        &-statusIcon{
+            position: absolute;
+            right: 6px;
+            top: 6px;
+            width: 20px;
+            height: 20px;
+        }
+
+        &-manIcon{
+            height: 30px;
+        }
+
+        p{
+            margin: 0;
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 17px;
+            padding: 4px 0 0 0 ;
+            color: black;
+        }
+
+        &.selected{
+            border: 3px solid rgba($color: #00A499, $alpha: 1);
+        }
+
+        .greenText{
+            color: #00A499;
+        }
+        .blackText{
+            color: black;
+        }
+    }
+}
+
+.discription{
+    color: black;
+    width: 90vw;
+    margin: 0 auto;
+    display: flexbox;
+    
+    justify-content: space-around;
+    &-part{
+        .good{
+            color: #00A499;
+        }
+        .bad{
+            color: #d00000;
+        }
+    }
+}
+
+.disclamer{
+    font-size: 11px;
+    width: 90vw;
+    margin: 0 auto;
+}

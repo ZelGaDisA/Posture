@@ -39,7 +39,6 @@ export const clientSlice = createSlice({
             if(clients && JSON.parse(clients).length > 0){
                 let newClients = JSON.parse(clients)
                 newClients.push(newClient)
-                console.log(newClients);
                 localStorage.setItem('clients', JSON.stringify(newClients))
             }else{
                 localStorage.setItem('clients', JSON.stringify([newClient]));
@@ -58,15 +57,10 @@ export const clientSlice = createSlice({
                     break
                 }
             }
-
-            if(clients && clients.length >= 2){
-                state.clients = JSON.parse(clients)
-            } else if(clients && clients.length < 2) {
+            if(!clients || clients.length <= 2){
                 localStorage.setItem('clients','[]')
-            } else {
-                console.log('localerror');
-                console.log(localStorage);
-                console.count()
+            } else  {
+                state.clients = JSON.parse(clients)
             }
 
         },

@@ -12,6 +12,7 @@ export interface AppState {
     accel: Accel;
     resultSideNumber: number;
     isRetakeOnePhoto: boolean;
+    isOnboarding: boolean;
     isLoading: boolean;
     isReading: boolean;
     cameraUpdate: boolean
@@ -23,6 +24,7 @@ const initialState: AppState = {
     resultSideNumber: 0,
     isLoading: true,
     isReading: false,
+    isOnboarding: true,
     isRetakeOnePhoto: false,
     cameraUpdate: false,
     rerenderCounter: 0,
@@ -33,6 +35,9 @@ export const appSlice = createSlice({
     name: 'app',
     initialState,
     reducers: {
+        disableOnboarding: (state) => {
+            state.isOnboarding = false
+        },
         setResultSideNumber: (state, action: PayloadAction<number>) => {
             state.resultSideNumber = action.payload
         },
@@ -82,6 +87,6 @@ export const appSlice = createSlice({
 
 
 // Action creators are generated for each case reducer function
-export const { setResultSideNumber, setIsLoading, setIsReading, setAccel, setIsRetakeOnePhoto, cameraUpdate,rerenderResults} = appSlice.actions
+export const { disableOnboarding, setResultSideNumber, setIsLoading, setIsReading, setAccel, setIsRetakeOnePhoto, cameraUpdate,rerenderResults} = appSlice.actions
 
 export default appSlice.reducer

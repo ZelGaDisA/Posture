@@ -44,6 +44,13 @@ export const getCoords = (db:any, resultSideNumber: number | undefined) => {
     let centerBetweenAnkles = getCenter(leftAnkle, rightAnkle)
     let backAngle;
 
+    const convertBackSide = (angle:number) => {
+        if(angle > 90){
+            return Math.round((180 - angle) * 10) / 10
+        }else {
+            return angle
+        }
+    }
     switch (resultSideNumber) {
         case 0://front
             earsAngle = Math.atan2(rightEar.y - centerBetweenEars.y, centerBetweenEars.x - rightEar.x )
@@ -60,10 +67,10 @@ export const getCoords = (db:any, resultSideNumber: number | undefined) => {
             break;
 
         case 2://back
-            earsAngle = Math.atan2(leftEar.y - centerBetweenEars.y, centerBetweenEars.x - leftEar.x )
-            shouldersAngle = Math.atan2(leftShoulder.y - centerBetweenShoulders.y, centerBetweenShoulders.x - leftShoulder.x )
-            hipsAngle = Math.atan2(leftHip.y - centerBetweenHips.y, centerBetweenHips.x - leftHip.x )
-            backAngle = Math.abs(Math.atan2(Math.abs(centerBetweenAnkles.y - centerBetweenEars.y), Math.abs(centerBetweenAnkles.x - centerBetweenEars.x)))
+            earsAngle = convertBackSide(Math.atan2(rightEar.y - centerBetweenEars.y, centerBetweenEars.x - rightEar.x ))
+            shouldersAngle = convertBackSide(Math.atan2(rightShoulder.y - centerBetweenShoulders.y, centerBetweenShoulders.x - rightShoulder.x ))
+            hipsAngle = convertBackSide(Math.atan2(rightHip.y - centerBetweenHips.y, centerBetweenHips.x - rightHip.x ))
+            backAngle = convertBackSide(Math.abs(Math.atan2(Math.abs(centerBetweenAnkles.y - centerBetweenEars.y), Math.abs(centerBetweenAnkles.x - centerBetweenEars.x))))
             break;
         
         case 3://left

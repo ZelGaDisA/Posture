@@ -1,12 +1,10 @@
 .removeClientBtn{
     width: 10px;
 }
+
 .client-header{
     width: 100vw;
-    height: 50px;
-    
-    margin-top: 3vh;
-    margin-bottom: 30px;
+    height: 88px;
 
     background: rgba($color: #ffffff, $alpha: 1);
     border-bottom-left-radius: 8px;
@@ -14,16 +12,17 @@
 
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
     color: black;
     z-index: 2;
+    margin-bottom: 20px;
 
     &-more{
         position: absolute;
         right: 20px;
         filter: brightness(0%);
 
-        padding: 10px 10px 5px 10px;
+        padding: 10px;
     }
 
     &-text{
@@ -50,13 +49,13 @@
         transform: rotate(90deg);
         filter: brightness(0%);
 
-        padding: 10px;
+        margin: 10px 10px 0 10px;
     }
 }
 
 .cardsBox-list{
-    width: 90vw;
-    max-width: 400px;
+    width: 93vw;
+    max-width: 310px;
     padding: 0;
     display: flex;
     justify-content: space-between;
@@ -239,15 +238,13 @@
     }
 }
 
-
 .client-IonContent{
     background-color: rgb(255, 255, 255);
 }
 
-
 .comparisonBox{
     position: absolute;
-    bottom: 2vh;
+    bottom: 4vh;
     left: 2vw;
     color: black;
     width: 96vw;

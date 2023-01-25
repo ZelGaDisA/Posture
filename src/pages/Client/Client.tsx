@@ -140,8 +140,11 @@ const ClientPage = () => {
         dispatch(setSession(s))
         dispatch(setIsReading(true))
         dispatch(setResultSideNumber(selectedCardIndex > 0 ? selectedCardIndex + 1 : 0))
+
+        console.log(selectedCardIndex);
+
         history.push('/results')
-        selectedCardIndex >= 0 ?  history.push('/result') :  history.push('/results')
+        history.push('/result')
     }
 
     const getDateTime = (time: number) => {
@@ -211,7 +214,7 @@ const ClientPage = () => {
             if (selectedCardIndex === -1){//all results
                 return <li className='sessionsBox-list__el' key={i}>
                     <IonLabel className='sessionsBox-list__el-Label all'
-                        onClick={()=>goToSession(s)}
+                        // onClick={()=>goToSession(s)}
                     >{s.id ? getDateTime(s.id) : 0}</IonLabel>
 
                     <div className='deleteSession-Button black' >
@@ -346,12 +349,14 @@ const ClientPage = () => {
                             <p className='after'>{comparisonResult?.ears.after}°</p>
                             <p className={'comparison ' + comparisonResult?.ears.color}>{comparisonResult?.ears.comparison}°</p>
                         </div>
+
                         <div className="comparisonBox-el">
                             <p className='name'>Shoulders</p>
                             <p className='before'>{comparisonResult?.shoulders.before}°</p>
                             <p className='after'>{comparisonResult?.shoulders.after}°</p>
                             <p className={'comparison ' + comparisonResult?.shoulders.color}>{comparisonResult?.shoulders.comparison}°</p>
                         </div>
+                        
                         <div className="comparisonBox-el">
                             <p className='name'>Hips</p>
                             <p className='before'>{comparisonResult?.hips.before}°</p>

@@ -10,6 +10,10 @@ import './Result.scss'
 
 import {GridForResults}from "components/Grid/GridForResults";
 
+import frame1 from 'images/resultCards/Type=Front, State=Take photo.svg'
+import frame2 from 'images/resultCards/Type=Right, State=Take photo.svg'
+import frame3 from 'images/resultCards/Type=Back, State=Take photo.svg'
+import frame4 from 'images/resultCards/Type=Left, State=Take photo.svg'
 
 import back from "images/backGreen.svg";
 import save from 'images/icons/log-in.svg'
@@ -27,11 +31,10 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import { setResultSideNumber,setIsRetakeOnePhoto,setIsLoading } from 'store/slices/app';
-    
+import { rerenderResults,setResultSideNumber,setIsRetakeOnePhoto,setIsLoading } from 'store/slices/app';
+import { verify } from 'crypto';
 
-import {Screenshot} from "@ionic-native/screenshot";
-
+const emptyFrames = [frame1, frame2, frame3, frame4]
 
 
 const Results: React.FC = () => {
@@ -40,8 +43,10 @@ const Results: React.FC = () => {
     const dispatch = useDispatch()
 
     const resultSideNumber = useSelector((state: RootState) => state.app.resultSideNumber)//0-front, 1-right, 2-back, 3-left
-    const sideNames = ['Front side' ,'Back side', 'Right side' , 'Left side']
+    const sideNames = ['Front' , 'Right' ,'Back', 'Left']
     const images = useSelector((state: RootState) => state.sessions.images)//0-front, 1-right, 2-back, 3-left
+    const orderImages = [images.front, images.back, images.right, images.left]
+    const orderNumbers = [0,2,1,3]
     const isReading = useSelector((state: RootState) => state.app.isReading)
     const [slide,setSlide] = useState(0)
     const rerenderCounter = useSelector((state: RootState) => state.app.rerenderCounter);
@@ -54,6 +59,9 @@ const Results: React.FC = () => {
         }
     },[isReading])
 
+    console.log('====================================');
+    console.log(resultSideNumber);
+    console.log('====================================');
 
     const stupidSorting = (n: number) => {
         //0-1-2-3 to 0-2-1-3
@@ -65,12 +73,12 @@ const Results: React.FC = () => {
     const goToRedactoring = () => {
         history.push("/redactor");
     }
+
     const goToRetakePhoto = () => {
         dispatch(setIsRetakeOnePhoto(true))
         dispatch(setIsLoading(true))
         history.push("/camera");
     }
-
     
     return (
         <IonPage>
@@ -80,30 +88,31 @@ const Results: React.FC = () => {
                 <div className='result-header' >
 
                     <div className='buttBack' onClick={() => {
-                        history.goBack()
+                        if(isReading) history.push("/client")
+                        if(!isReading) history.goBack()
                     }}>
                         <img src={back} alt=""/>
                     </div>
 
-                    {!!(resultSideNumber >= 0) && <p className='result-header__text'>{sideNames[stupidSorting(resultSideNumber)]}</p>}
+                    {!!(resultSideNumber >= 0) && <p className='result-header__text'>{sideNames[stupidSorting(slide)]}</p>}
                 </div>
 
-                {(rerenderCounter >= 0) && <Swiper
+                {(slide >= 0) && (rerenderCounter >= 0) && (resultSideNumber >= 0) &&  <Swiper
                     modules={[Navigation, Pagination, Scrollbar, A11y]}
                     spaceBetween={0}
                     slidesPerView={1}
                     pagination={{ clickable: true }}
                     rewind = {true}
-                    initialSlide={resultSideNumber}
+                    initialSlide={stupidSorting(resultSideNumber)}
                     onSlideChange={(swiper) => {
                         setSlide(swiper.realIndex)
-                        dispatch(setResultSideNumber(stupidSorting(swiper.realIndex - 1)))
                     }}
                     >   {
-                            Object.entries(images)?.map(([name, image],index) => {
-                                return image?.status && <SwiperSlide virtualIndex={index} key={name}>
+                        orderImages.map((image,index) => {
+                                return <SwiperSlide virtualIndex={orderNumbers[index]} key={index}>
                                             <div className='safeLayout' />
-                                            <GridForResults  rerenderCounter={rerenderCounter} resultSideNumber={resultSideNumber} image={image}/>
+                                            {image.status && <GridForResults  rerenderCounter={rerenderCounter} resultSideNumber={index} image={image}/>}
+                                            {/* {!image.status && <img src={emptyFrames[index]}/>} */}
                                         </SwiperSlide>
                             })
                         }

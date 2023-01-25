@@ -9,9 +9,12 @@ import Result from 'pages/Result';
 import Camera from 'pages/Camera'
 import Results from 'pages/Results';
 import Redactor from 'pages/Redactor';
+import Onboarding from 'pages/Onboarding';
+import Discriptions from 'pages/Discriptions';
+import SessionsPage from 'pages/Sessions';
 
 import { updateClients } from 'store/slices/clients';
-import { createSessions } from "store/slices/sessions";
+import Sessions, { createSessions } from "store/slices/sessions";
 
 import {
     BrowserRouter,
@@ -20,6 +23,7 @@ import {
     Route,
     Link,
     useRouteMatch,
+    useHistory,
   } from "react-router-dom";
 
 /* Core CSS required for Ionic components to work properly */
@@ -38,15 +42,14 @@ import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 
-/* Theme variables */
-import './theme/variables.css';
-
 import { tryGetPose } from "functions/tryGetPose";
 import {Device} from '@capacitor/device'
 import {useDispatch, useSelector} from "react-redux";
 import { RootState } from 'store/store';
-import {setAccel,setIsLoading} from "store/slices/app";
+import {setAccel,setIsLoading, disableOnboarding} from "store/slices/app";
 import { CameraPreview } from '@capacitor-community/camera-preview';
+
+import { SplashScreen } from '@capacitor/splash-screen';
 
 
 setupIonicReact(
@@ -56,11 +59,12 @@ setupIonicReact(
     },
 );
 
-
 const App: React.FC = () => {
     const dispatch = useDispatch()
+    const history = useHistory()
     const [isLoadingPage, setIsLoadingPage] = useState(true)
     const [operatingSystem, setOperatingSystem] = useState<String>('none')
+
 
     useEffect(()=>{
         //@ts-ingnore
@@ -88,6 +92,7 @@ const App: React.FC = () => {
     
             {(async () =>{
                 await tryGetPose(new Image(window.innerWidth,  window.innerHeight)) //enable tensorflow
+                SplashScreen.hide()
                 console.log('Tensorflow is started!');
             })()}
             
@@ -106,6 +111,7 @@ const App: React.FC = () => {
             window.addEventListener('devicemotion', deviceMotionEvent, true) //add accel listener
 
             setIsLoadingPage(false)    
+
             return () =>  window.removeEventListener('devicemotion', deviceMotionEvent, true) //remove accel listener
         }else {
             console.log('device is false');
@@ -142,8 +148,20 @@ const App: React.FC = () => {
                             <Client />
                         </Route>
 
-                        <Route exact path="/">
-                            <Redirect to="/home" />
+                        <Route path="/sessions">
+                            <SessionsPage />
+                        </Route>
+
+                        <Route path="/discriptions">
+                            <Discriptions />
+                        </Route>
+
+                        <Route path="/onboarding">
+                            <Onboarding />
+                        </Route>
+
+                        <Route path="/">
+                            <Redirect to="/onboarding" />
                         </Route>
 
                     </Switch>

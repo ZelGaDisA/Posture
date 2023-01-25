@@ -381,7 +381,7 @@ ion-content {--overflow: hidden}
 
 
 .home-contentInner{
-    height: 78px;
+    height: 88px;
     width: 100vw;
     display: flex;
     justify-content: center;
@@ -427,6 +427,11 @@ ion-content {--overflow: hidden}
         --background: none;
         --border-radius: 100px;
         transition: all 0.2s ease;
+
+        &:active{
+            opacity: 0.5;
+        }
+
         
         &-text{
             color: #ffffff;
@@ -472,4 +477,13 @@ ion-content {--overflow: hidden}
 
 .hiddenBox{
     display: none;
+}
+
+.noresults{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }

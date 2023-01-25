@@ -1,0 +1,360 @@
+.removeClientBtn{
+    width: 10px;
+}
+
+.client-header{
+    width: 100vw;
+    height: 88px;
+
+    background: rgba($color: #ffffff, $alpha: 1);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    color: black;
+    z-index: 2;
+
+
+    &-more{
+        position: absolute;
+        right: 20px;
+        filter: brightness(0%);
+
+        padding: 10px;
+    }
+
+    &-text{
+        position: relative;
+        color: #000;
+    }
+
+    .buttBack{
+        position: absolute;
+        left: 20px;
+        fill: black;
+        filter: brightness(0%);
+        transition: all 0.2s ease;
+        margin: 10px;
+
+        &:active{
+            opacity: 0.5;
+        }
+    }
+
+    .buttSave{
+        position: absolute;
+        right: 20px;
+        transform: rotate(90deg);
+        filter: brightness(0%);
+
+        margin: 10px 10px 0 10px;
+    }
+}
+
+.cardsBox-list{
+    width: 93vw;
+    max-width: 310px;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto ;
+
+    &-el{
+        list-style: none;
+        min-width: 58px;
+        min-height: 59px;
+
+        border-radius: 8px;
+        display: flex;
+        text-align: center;
+        justify-content: center;
+        border: 1px solid rgba($color: #dbdbdb, $alpha: 1);
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        transition: 0.2s ease;
+
+        background: white;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+
+        position: relative;
+        .blackPeople{
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            margin: 0 auto;
+            img{
+                height: 20px;
+            }
+            
+        }
+        &-statusIcon{
+            position: absolute;
+            right: 6px;
+            top: 6px;
+            width: 20px;
+            height: 20px;
+        }
+
+        &-manIcon{
+            height: 30px;
+        }
+
+        p{
+            margin: 0;
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 17px;
+            padding: 4px 0 0 0 ;
+            color: black;
+        }
+
+        &.selected{
+            border: 3px solid rgba($color: #00A499, $alpha: 1);
+        }
+
+        .greenText{
+            color: #00A499;
+        }
+        .blackText{
+            color: black;
+        }
+    }
+}
+
+.sessionsPageBox-list{
+    height: calc(100vh - 182px);
+    margin-top: 20px;
+    width: 100vw;
+    padding: 0;
+    background: rgb(255, 255, 255);
+    overflow-y: scroll;
+
+    .emptySessions{
+        color: #000;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        p{
+            color: #000;
+        }
+    }
+
+    &__el{
+        color:rgb(0, 0, 0);
+        height: 85px;
+        display: flex;
+        align-items: center;
+        width: 100vw;
+        margin: 10px auto 0 auto;
+        .item-native{
+            background: none;
+        }
+        &-Item{
+            // --border: none;
+            width: 90%;
+            margin: 0 auto;
+            border-radius: 10px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.09);
+        }
+        
+        &-Label{
+            transition: 0.1s ease;
+            width: 100%;
+            padding: 22px 14px;
+
+            margin: 0;
+            display: flex;
+            align-items: center;
+            p{
+                color: #000;
+                font-weight: 600;
+                font-size: 14px;
+            }
+            &:active{
+                opacity: 0.2;
+            }
+            &.all{
+                padding-left: 30px;
+                width: calc(100vw - 70px);
+            }
+            
+        }
+        &-Discription{
+            color: #00A499;
+            background: none;
+            font-size: 15px;
+            &:active{
+                opacity: 0.5;
+            }
+        }
+        &-Options{
+            // filter: invert(1);
+            transition: all 0.2s ease;
+            align-items: center;
+            margin-right: 10px;
+
+            &_option{
+                height: 72px;
+                width: 72px;
+                border-radius: 10px;
+                background: rgba(255, 59, 48, 1);
+                box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.09);
+
+                &:active{
+                    opacity: 0.2;
+                }
+            }
+            
+        }
+
+        &-Checkbox{
+            color:rgb(0, 0, 0);
+            background: none;
+            --background:rgb(255, 255, 255);
+            --border-style: none;
+            margin-left: 16px;
+        }
+        .deleteSession-Button{
+            width: 50px;
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            &.black{
+                filter: brightness(0);
+            }
+            &:active{
+                img{
+                    width: 24px;
+                    height: 24px;
+                    opacity: 0.2;
+                }
+            }
+            img{
+                width: 24px;
+                height: 24px;
+                transition: 0.1s ease;
+            }
+        }
+    }
+    &__button {
+        color:rgba($color: #019086, $alpha: 0.9);
+        height: 72px;
+        display: flex;
+        align-items: center;
+
+        &:active{
+            opacity: 0.2;
+        }
+        &-Label{
+            transition: 0.1s ease;
+            padding-left: 30px;
+            width: calc(100vw - 70px);
+        }
+
+        &-Checkbox{
+            color:rgb(0, 0, 0);
+            background: none;
+            --background:rgb(255, 255, 255);
+            --border-style: none;
+            margin-left: 16px;
+        }
+        .deleteSession-Button{
+            width: 50px;
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            &.black{
+                filter: brightness(0);
+            }
+            &:active{
+                img{
+                    width: 24px;
+                    height: 24px;
+                    opacity: 0.2;
+                }
+            }
+            img{
+                width: 24px;
+                height: 24px;
+                transition: 0.1s ease;
+            }
+        }
+    }
+}
+
+.client-IonContent{
+    background-color: rgb(255, 255, 255);
+}
+
+.comparisonBox{
+    position: absolute;
+    bottom: 4vh;
+    left: 2vw;
+    color: black;
+    width: 96vw;
+    display: flex;
+    justify-content: space-around;
+
+    &-el{
+        width: 23%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        font-size: 13px;
+        color: rgb(0, 127, 119);
+        p{
+            text-align: center;
+            padding: 0;
+            margin: 10px 5px;
+            font-weight: 500;
+            overflow-wrap: normal;
+        }
+
+        &.names{
+            width: 27%;
+            p{
+                text-align: left;
+                padding: 0;
+                margin: 10px 5px;
+                font-weight: 600;
+            }
+        }
+        
+        .comparison{
+            &.red{
+                color: red;
+                &::before {
+                    content: "▲";
+                }
+            }
+            &.green{
+                color: green;
+                &::before {
+                    content: "▼";
+                }
+            }
+        }
+
+    }
+
+    &.min{
+        justify-content: space-between;
+        .comparisonBox-el{
+            p{
+                font-weight: 500;
+                font-size: 16px;
+            }
+        }
+    }
+}
+

@@ -1,4 +1,3 @@
-import { useEffect, useState, useRef } from 'react';
 import {
     IonContent,
     IonPage,
@@ -50,23 +49,19 @@ const Results = () => {
         else return n
     }
 
-    const selectResult = async (id) => {
-        if (images && images[sides[id]] && images[sides[id]].path && images[sides[id]].status) {
-            dispatch(setResultSideNumber(id))
-            history.push("/result")
-
-        } else {
-            console.log(`image ${id} is empty`);
-        }
-    }
-
     return (
         <IonPage>
             <IonContent fullscreen className='content'>
                 <div className='results-content-inner'>
-                    <h3 className='results-text'>My patient</h3>
+                    <h3 className='results-text'>{client.name}</h3>
                     <button className='buttBack' onClick={() => {
-                        history.push("/client")
+                        if (isReading) {
+                            history.push("/client")
+
+                        } else {
+                            history.goBack()
+                        }
+
                         dispatch(setResultSideNumber(0))
                         dispatch(setIsLoading(true))
                         dispatch(setIsReading(false))
@@ -79,17 +74,22 @@ const Results = () => {
                     {sides.map((name, index) => (
                         <li
                             className='frameList-li'
-                            key={verySmartSorting(index)}
+                            key={index}
                             onClick={() => {
-                                if (images[sides[verySmartSorting(index)]].status) {
-                                    selectResult(index)
-                                    dispatch(setResultSideNumber(index + 1))
-                                    dispatch(setIsLoading(false))
-                                } else {
-                                    history.push("/camera");
-                                    dispatch(setResultSideNumber(verySmartSorting(index)))
-                                    dispatch(setIsRetakeOnePhoto(true))
-                                    dispatch(setIsLoading(true))
+                                if (!isReading || images[sides[verySmartSorting(index)]].status === true) {
+                                    if (images && images[sides[verySmartSorting(index)]]
+                                        && images[sides[verySmartSorting(index)]].path
+                                        && images[sides[verySmartSorting(index)]].status
+                                    ) {
+                                        history.push("/result");
+                                        dispatch(setResultSideNumber(verySmartSorting(index)))
+                                        dispatch(setIsLoading(false))
+                                    } else {
+                                        history.push("/camera");
+                                        dispatch(setResultSideNumber(verySmartSorting(index)))
+                                        dispatch(setIsRetakeOnePhoto(true))
+                                        dispatch(setIsLoading(true))
+                                    }
                                 }
                             }}
                         >
@@ -97,7 +97,8 @@ const Results = () => {
                             {!isReading && images[sides[verySmartSorting(index)]].status === false && <img className='frameList-li-image bad' src={badFrames[verySmartSorting(index)]}></img>}
                             {!isReading && images[sides[verySmartSorting(index)]].status === null && <img className='frameList-li-image empty' src={emptyFrames[verySmartSorting(index)]}></img>}
                         </li>
-                    ))}
+                    )
+                    )}
                 </ul>
 
 
@@ -117,7 +118,7 @@ const Results = () => {
                                 dispatch(setResultSideNumber(0))
                                 dispatch(setIsLoading(true))
                                 dispatch(filterSessionsByClient(client.id))
-                                history.push("/client")
+                                history.push("/sessions")
                             }}
                         >
                                 <p className='results-button-text'>SAVE AND BACK</p>
