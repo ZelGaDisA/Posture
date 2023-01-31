@@ -3,28 +3,27 @@ import { useEffect,useState } from 'react';
 import { IonApp, IonRouterOutlet, setupIonicReact} from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
+import Set from 'pages/Set';
 import Home from 'pages/Home';
-import Client from 'pages/Client'
 import Result from 'pages/Result';
 import Camera from 'pages/Camera'
 import Results from 'pages/Results';
 import Redactor from 'pages/Redactor';
 import Onboarding from 'pages/Onboarding';
-import Discriptions from 'pages/Discriptions';
+import Comparison from 'pages/Comparison'
+import Descriptions from 'pages/Descriptions';
 import SessionsPage from 'pages/Sessions';
 
 import { updateClients } from 'store/slices/clients';
-import Sessions, { createSessions } from "store/slices/sessions";
+import { createSessions } from "store/slices/sessions";
 
 import {
     BrowserRouter,
     Redirect,
     Switch,
     Route,
-    Link,
-    useRouteMatch,
     useHistory,
-  } from "react-router-dom";
+} from "react-router-dom";
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -50,6 +49,7 @@ import {setAccel,setIsLoading, disableOnboarding} from "store/slices/app";
 import { CameraPreview } from '@capacitor-community/camera-preview';
 
 import { SplashScreen } from '@capacitor/splash-screen';
+import Notes from 'pages/Notes';
 
 
 setupIonicReact(
@@ -61,8 +61,6 @@ setupIonicReact(
 
 const App: React.FC = () => {
     const dispatch = useDispatch()
-    const history = useHistory()
-    const [isLoadingPage, setIsLoadingPage] = useState(true)
     const [operatingSystem, setOperatingSystem] = useState<String>('none')
 
 
@@ -85,7 +83,6 @@ const App: React.FC = () => {
     },[operatingSystem])
 
     useEffect(() => {     
-
         if((operatingSystem === 'ios' || operatingSystem === 'android' || operatingSystem === 'mac')){
             dispatch(createSessions())
             dispatch(updateClients())
@@ -110,8 +107,6 @@ const App: React.FC = () => {
 
             window.addEventListener('devicemotion', deviceMotionEvent, true) //add accel listener
 
-            setIsLoadingPage(false)    
-
             return () =>  window.removeEventListener('devicemotion', deviceMotionEvent, true) //remove accel listener
         }else {
             console.log('device is false');
@@ -126,6 +121,10 @@ const App: React.FC = () => {
                     <Switch>
                         <Route exact path="/home">
                             <Home />
+                        </Route>
+
+                        <Route exact path="/notes">
+                            <Notes />
                         </Route>
 
                         <Route exact path="/camera">
@@ -144,20 +143,24 @@ const App: React.FC = () => {
                             <Redactor />
                         </Route>
 
-                        <Route path="/client">
-                            <Client />
+                        <Route path="/comparison">
+                            <Comparison />
                         </Route>
 
                         <Route path="/sessions">
                             <SessionsPage />
                         </Route>
 
-                        <Route path="/discriptions">
-                            <Discriptions />
+                        <Route path="/descriptions">
+                            <Descriptions />
                         </Route>
 
                         <Route path="/onboarding">
                             <Onboarding />
+                        </Route>
+
+                        <Route path="/set">
+                            <Set />
                         </Route>
 
                         <Route path="/">
