@@ -1,4 +1,4 @@
-import './Client.scss'
+import './Comparison.scss'
 import {IonContent,IonPage,useIonAlert,IonButton,IonFab,IonToolbar,IonTitle,IonList,IonCheckbox,IonItem,IonLabel
 } from '@ionic/react';
 import {useEffect, useState} from "react";
@@ -6,7 +6,7 @@ import {useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import { RootState } from 'store/store';
 import { Client, updateClients } from 'store/slices/clients';
-import { Session,addNewSession, setSelectedSession, setSession, clearSessions} from 'store/slices/sessions';
+import { Session,addNewSession, setSelectedSession, setSession, clearSessions,clearSelectedSessions} from 'store/slices/sessions';
 import { setResultSideNumber, setIsReading } from "store/slices/app";
 import { Images,CGPoint } from 'store/types';
 import { findAngle } from 'functions/findAngle';
@@ -24,16 +24,12 @@ import blackFrontMan from 'images/frontSVG.svg';
 import blackLeftMan from 'images/leftSVG.svg';
 import blackRightMan from 'images/rightSVG.svg';
 
-import alertTriangle from '../../images/alert-triangle.svg';
-import checkCircle from '../../images/check-circle.svg';
-
-
 interface visibleCard {
     session: Session,
     images: Images[]
 }
 
-const ClientPage = () => {
+const Comparison = () => {
     //HOOKS
     const history = useHistory();
     const dispatch = useDispatch();
@@ -100,109 +96,20 @@ const ClientPage = () => {
 
     useEffect(()=>{
         if(selectSession && selectSession.length > 0){
+            console.log(selectedCardIndex);
+            
             setComparisonResults(findAngle(selectedSessions, sessions, selectedCardIndex))
         }
     },[selectedSessions])
-
-    const deleteSession = (s:Session) => presentAlert({
-        header: 'Warning!',
-        message: "Are you sure you want to delete<br/> this session?",
-        buttons: [
-            {
-                text: 'CANCEL',
-                role: 'cancel',
-                handler: () => {
-                },
-            },
-            {
-                text: 'REMOVE',
-                role: 'confirm',
-                cssClass: 'removeClientBtn',
-                handler: () => {
-
-                    let localSessions = localStorage.getItem('sessions')
-                    let parsedSessions = localSessions && JSON.parse(localSessions)
-
-                    if(localSessions && localSessions.length > 2){
-                        localStorage.removeItem(String(s.id))
-                        let newSessions = parsedSessions.filter((session:Session) => session.id !== s.id)
-                        let string = JSON.stringify(newSessions)
-                        localStorage.setItem('sessions', string)
-                        setUpdater(updater + 1)
-                        dispatch(updateClients())
-                    }
-                },
-            },
-        ]
-    })
-
-    const goToSession = (s:Session) => {
-        dispatch(setSession(s))
-        dispatch(setIsReading(true))
-        dispatch(setResultSideNumber(selectedCardIndex > 0 ? selectedCardIndex + 1 : 0))
-
-        console.log(selectedCardIndex);
-
-        history.push('/results')
-        history.push('/result')
-    }
 
     const getDateTime = (time: number) => {
         let date = new Date(time)
         return `${date.toLocaleDateString("en-US")}, ${date.toLocaleTimeString()}`
     }
 
-
     const selectSession = (session:Session) => {
         dispatch(setSelectedSession(session))
     }
-    
-    const deleteClient = () => presentAlert({
-        header: 'Warning!',
-        message: "Are you sure you want to delete this client?",
-        buttons: [
-            {
-                text: 'CANCEL',
-                role: 'cancel',
-                handler: () => {
-                    
-                },
-            },
-            {
-                text: 'REMOVE',
-                role: 'confirm',
-                cssClass: 'removeClientBtn',
-                handler: () => {
-                    let newClients = clients.clients.slice().map((c:Client)=> c.id !== clientInfo.id ? c : {})
-                    let localSessions = localStorage.getItem('sessions')
-                    let localParsed = localSessions ? JSON.parse(localSessions) : []
-                    let newSessions = localParsed.slice().filter((session:Session) => session.clientId !== clientInfo.id)
-                    
-                    sessions.slice().forEach((s:Session)=>{
-                        if(s.clientId === clientInfo.id){
-                            localStorage.removeItem(String(s.id))
-                        }
-                    })
-
-                    if(newSessions.length >= 0){
-                        let c = JSON.stringify(newSessions)
-                        localStorage.setItem('sessions', c)
-                    }
-                    if(newClients.length >= 0){
-                        let c = JSON.stringify(newClients)
-                        localStorage.setItem('clients', c)
-                        dispatch(updateClients())
-                        dispatch(clearSessions())
-                        history.push('/home')
-                    } else{
-                        console.log('====================================');
-                        console.log('error');
-                        console.log('====================================');
-                    }
-                },
-            },
-        ]
-    })
 
     const renderVisibleCards = () => {
         return visibleCards?.map((visCard:visibleCard, i:number)=>{
@@ -211,47 +118,16 @@ const ClientPage = () => {
             const s = visCard.session
             const images = visCard.images
 
-            if (selectedCardIndex === -1){//all results
-                return <li className='sessionsBox-list__el' key={i}>
-                    <IonLabel className='sessionsBox-list__el-Label all'
-                        // onClick={()=>goToSession(s)}
-                    >{s.id ? getDateTime(s.id) : 0}</IonLabel>
-
-                    <div className='deleteSession-Button black' >
-                        <img src={trash} alt="" onClick={()=> deleteSession(s)}/>
+            if (selectedSessions.length < 2) {
+                {/* @ts-ignore */}
+                return s.id && images[sides[selectedCardIndex]]?.status && <div key={i} className='sessionsBox-list__el'>
+                        <IonLabel className='sessionsBox-list__el-Label'>{i < 1? "Before: ": "After: "}{s.id ? getDateTime(s.id) : 0}</IonLabel>
                     </div>
-                </li>
             } else {
-                if (selectedSessions.length < 2) {
-                    {/* @ts-ignore */}
-                    return s.id && images[sides[selectedCardIndex]]?.status && <div key={i} className='sessionsBox-list__el'>
-                            <IonCheckbox 
-                                className='sessionsBox-list__el-Checkbox'
-                                slot="start"
-                                onClick={() => selectSession(s)}
-                                checked={selectedSessions.map(i => i.id).indexOf(s.id) >= 0}
-                            ></IonCheckbox>
-                            <IonLabel className='sessionsBox-list__el-Label'
-                                onClick={()=>goToSession(s)}
-                            >{s.id ? getDateTime(s.id) : 0}</IonLabel>
-                        </div>
-                } else {
-                    if(s && s.id && selectedSessions && selectedSessions.map(i => i.id).indexOf(s.id) !== -1){
-                        return <div key={i} className='sessionsBox-list__el'>
-
-                            <IonCheckbox 
-                                className='sessionsBox-list__el-Checkbox'
-                                slot="start"
-                                onClick={() => selectSession(s)}
-                                checked={true}
-                            ></IonCheckbox>
-
-                            <IonLabel className='sessionsBox-list__el-Label'
-                                onClick={()=>goToSession(s)}
-                            >{s.id ? getDateTime(s.id) : 0}</IonLabel>
-
-                            </div>
-                    }
+                if(s && s.id && selectedSessions && selectedSessions.map(i => i.id).indexOf(s.id) !== -1){
+                    return <div key={i} className='sessionsBox-list__el'>
+                        <IonLabel className='sessionsBox-list__el-Label'>{i < 1? "Before: ": "After: "}{s.id ? getDateTime(s.id) : 0}</IonLabel>
+                    </div>
                 }
             }
         })
@@ -263,34 +139,17 @@ const ClientPage = () => {
 
                 <div className='client-header' >
                     <button className='buttBack' onClick={() => {
-                        history.push("/")
-                        dispatch(clearSessions())
+                        history.goBack()
+                        dispatch(clearSelectedSessions())
                     }}>
                         <img src={back} alt=""/>
                     </button>
 
                     <h3 className='client-header-text'>{clientInfo.name}</h3>
-                    <div className='client-header-more' onClick={() => deleteClient()}>
-                        <img src={trash} alt="" />
-                    </div>
                 </div>
 
                 <div className='cardsBox'>
                     <ul className='cardsBox-list'>
-                            <li  
-                                className={"cardsBox-list-el" + (selectedCardIndex === -1 ? " selected" : "")}
-                                onClick={ ()=> {
-                                    setSelectedCardIndex(-1);
-                                    dispatch(setSelectedSession(null))
-                                    setComparisonResults(null)
-                                }}
-                            >   
-                                <div className='blackPeople'>
-                                    {blackMan.map((svg, key) => <img key={key} className="cardsBox-list-el-manIcon"src={svg} alt="" />)}
-                                </div>
-                                
-                                <p className='blackText'>All</p>
-                            </li>
                         {blackMan.map((svg,index)=>{
                             return (
                                 <li
@@ -378,4 +237,4 @@ const ClientPage = () => {
     );
 };
 
-export default ClientPage;
+export default Comparison;

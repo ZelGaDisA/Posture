@@ -68,7 +68,6 @@ export default function CapacitorCam() {
     }
 
     const capture = async () => {
-
         const result = await CameraPreview.capture({
             quality: 10,
         })
@@ -259,6 +258,7 @@ export default function CapacitorCam() {
                     <div className={`btn-toResults ${isAnyResults()}`} onClick={() => {
                         if (isAnyResults()) {
                             setSelectedMenuItemIndex(0)
+                            dispatch(setIsReading(false))
                             history.push('/results')
                         }
                     }}>

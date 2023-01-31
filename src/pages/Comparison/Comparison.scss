@@ -55,7 +55,7 @@
 
 .cardsBox-list{
     width: 93vw;
-    max-width: 310px;
+    max-width: 270px;
     padding: 0;
     display: flex;
     justify-content: space-between;
@@ -127,8 +127,8 @@
 }
 
 .sessionsBox-list{
-    height: calc(100vh - 182px);
-    margin-top: 20px;
+    height: 100px;
+    margin-top: 40px;
     width: 100vw;
     padding: 0;
     background: rgb(255, 255, 255);
@@ -144,17 +144,13 @@
     }
     &__el{
         color:rgb(0, 0, 0);
-        height: 50px;
+        height: 30px;
         display: flex;
         align-items: center;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         &-Label{
             padding-left: 16px;
             transition: 0.1s ease;
-            width: calc(100vw - 100px);
-            &:active{
-                opacity: 0.2;
-            }
+            width: 100vw;
             &.all{
                 padding-left: 30px;
                 width: calc(100vw - 70px);
@@ -198,43 +194,12 @@
         align-items: center;
         border-bottom: 2px solid rgba($color: #00A499, $alpha: 0.8);
 
-        &:active{
-            opacity: 0.2;
-        }
         &-Label{
             transition: 0.1s ease;
             padding-left: 30px;
             width: calc(100vw - 70px);
         }
-        &-Checkbox{
-            color:rgb(0, 0, 0);
-            background: none;
-            --background:rgb(255, 255, 255);
-            --border-style: none;
-            margin-left: 16px;
-        }
-        .deleteSession-Button{
-            width: 50px;
-            z-index: 999;
-            display: flex;
-            justify-content: center;
-            text-align: center;
-            &.black{
-                filter: brightness(0);
-            }
-            &:active{
-                img{
-                    width: 24px;
-                    height: 24px;
-                    opacity: 0.2;
-                }
-            }
-            img{
-                width: 24px;
-                height: 24px;
-                transition: 0.1s ease;
-            }
-        }
+
     }
 }
 
@@ -243,14 +208,11 @@
 }
 
 .comparisonBox{
-    position: absolute;
-    bottom: 4vh;
-    left: 2vw;
     color: black;
     width: 96vw;
     display: flex;
     justify-content: space-around;
-
+    margin: 0 auto;
     &-el{
         width: 23%;
         display: flex;

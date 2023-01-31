@@ -80,24 +80,19 @@ const Sessions = () => {
         }
     },[clientId, visibleCards, selectedCardIndex])
 
-    useEffect(()=>{
-        if(selectSession && selectSession.length > 0){
-            setComparisonResults(findAngle(selectedSessions, sessions, selectedCardIndex))
-        }
-    },[selectedSessions])
-
+    
     const deleteSession = (s:Session) => presentAlert({
-        header: 'Warning!',
-        message: "Are you sure you want to delete<br/> this session?",
+        header: 'Clear session',
+        message: "You are going to clear session. This will delete photos that have already been taken during this session. Are you sure?",
         buttons: [
             {
-                text: 'CANCEL',
+                text: 'No',
                 role: 'cancel',
                 handler: () => {
                 },
             },
             {
-                text: 'REMOVE',
+                text: 'Continue',
                 role: 'confirm',
                 cssClass: 'removeClientBtn',
                 handler: () => {
@@ -118,6 +113,19 @@ const Sessions = () => {
         ]
     })
 
+    const showAlertCompare = () => presentAlert({
+        header: 'Not enough sessions',
+        message: "Add new session to compare results",
+        buttons: [
+            {
+                text: 'OK',
+                role: 'cancel',
+                handler: () => {
+                },
+            },
+        ]
+    })
+
     const goToSession = (s:Session) => {
         dispatch(setSession(s))
         dispatch(setIsReading(true))
@@ -125,13 +133,12 @@ const Sessions = () => {
 
         console.log(selectedCardIndex);
 
-        history.push('/results')
         history.push('/result')
     }
 
     const getDateTime = (time: number) => {
         let date = new Date(time)
-        return `${date.toLocaleDateString("en-US")}`
+        return `${date.toLocaleDateString("en-US")}, ${date.toLocaleTimeString()}`
     }
 
     const selectSession = (session:Session) => {
@@ -194,15 +201,17 @@ const Sessions = () => {
             
             return  <IonItemSliding key={i} className='sessionsPageBox-list__el'>
                         <IonItem className='sessionsPageBox-list__el-Item'>
-                            <IonLabel className='sessionsPageBox-list__el-Label'>
+                            <IonLabel className='sessionsPageBox-list__el-Label' onClick={()=>{
+                                goToSession(s)
+                            }}>
                                 <p>{s.id ? getDateTime(s.id) : 0}</p>
                             </IonLabel>
-                            <button className='sessionsPageBox-list__el-Discription'
+                            <button className='sessionsPageBox-list__el-Description'
                                 onClick={()=>{
-                                    history.push("/discriptions")
+                                    history.push("/descriptions")
                                     dispatch(setSession(s))
                                 }}
-                            >Discription</button>
+                            >Description</button>
                         </IonItem>
 
                         <IonItemOptions side="end" className='sessionsPageBox-list__el-Options' >
@@ -214,6 +223,16 @@ const Sessions = () => {
                         </IonItemOptions>
                 </IonItemSliding>
         })
+    }
+
+    const compareSessions = () => {
+        console.log(visibleCards);
+        
+        if(visibleCards && visibleCards.length > 1 && visibleCards[0] && visibleCards[1]){
+            dispatch(setSelectedSession(visibleCards[0].session))
+            dispatch(setSelectedSession(visibleCards[1].session))
+            history.push("/comparison")
+        }
     }
 
     return (
@@ -248,7 +267,7 @@ const Sessions = () => {
                                     > +Add new session to compare</IonLabel>
                                 </li>}
                             </>
-                        :  <li className='sessionsPageBox-list__button'>discription
+                        :  <li className='sessionsPageBox-list__button'>
                                 <IonLabel className='sessionsPageBox-list__button-Label'
                                     onClick={()=>{
                                         clientInfo?.id && dispatch(addNewSession({clientId: clientInfo.id}))
@@ -258,7 +277,13 @@ const Sessions = () => {
                             </li>
                     }
                 </IonList>
-
+                
+                <div className='openCompare-box'>
+                    <button className={'openCompare-box__button' + (visibleCards && visibleCards?.length > 1 ? " full" : "")}onClick={()=> {
+                        visibleCards && visibleCards?.length > 1 ? compareSessions() : showAlertCompare()
+                    }}
+                >COMPARE RESULTS</button>
+                </div>
             </IonContent>
         </IonPage>
     );

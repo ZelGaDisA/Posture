@@ -1,0 +1,353 @@
+.removeClientBtn{
+    width: 10px;
+    
+}
+
+ion-textarea.custom-textarea {
+    --background: #ffffff;
+    --color: rgb(42, 42, 42);
+    --padding-end: 10px;
+    --padding-start: 10px;
+    --placeholder-color: rgb(106, 106, 106);
+    --placeholder-opacity: 0.8;
+    overflow-y: scroll;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    margin: 0 auto;
+    max-width: 100%;
+}
+
+.descriptions-IonContent{
+    &__ScrollBox{
+        height: 100%;
+        overflow-y: auto;
+        background: none;
+        padding-bottom: 20px;
+    }
+}
+
+.description-header{
+    width: 100vw;
+    height: 98px;
+
+    background: rgba($color: #ffffff, $alpha: 1);
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    color: black;
+    z-index: 2;
+    padding-bottom: 10px;
+
+    &-more{
+        position: absolute;
+        right: 20px;
+        filter: brightness(0%);
+
+        padding: 10px;
+
+        &__button{
+            background: none;
+            &:active{
+                opacity: 0.5;
+            }
+        }
+    }
+
+    &-text{
+        position: relative;
+        color: #000;
+    }
+
+    .buttBack{
+        position: absolute;
+        left: 20px;
+        fill: black;
+        filter: brightness(0%);
+        transition: all 0.2s ease;
+        margin: 10px;
+
+        &:active{
+            opacity: 0.5;
+        }
+    }
+
+    .buttSave{
+        position: absolute;
+        right: 20px;
+        transform: rotate(90deg);
+        filter: brightness(0%);
+
+        margin: 10px 10px 0 10px;
+    }
+}
+
+.cardsBox-list{
+    width: 93vw;
+    max-width: 310px;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto ;
+
+    &-el{
+        list-style: none;
+        min-width: 58px;
+        min-height: 59px;
+
+        border-radius: 8px;
+        display: flex;
+        text-align: center;
+        justify-content: center;
+        border: 1px solid rgba($color: #dbdbdb, $alpha: 1);
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        transition: 0.2s ease;
+
+        background: white;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+
+        position: relative;
+        .blackPeople{
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            margin: 0 auto;
+            img{
+                height: 20px;
+            }
+            
+        }
+        &-statusIcon{
+            position: absolute;
+            right: 6px;
+            top: 6px;
+            width: 20px;
+            height: 20px;
+        }
+
+        &-manIcon{
+            height: 30px;
+        }
+
+        p{
+            margin: 0;
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 17px;
+            padding: 4px 0 0 0 ;
+            color: black;
+        }
+
+        &.selected{
+            border: 3px solid rgba($color: #00A499, $alpha: 1);
+        }
+
+        .greenText{
+            color: #00A499;
+        }
+        .blackText{
+            color: black;
+        }
+    }
+}
+
+.description{
+    color: black;
+    width: 90vw;
+    margin: 0 auto;
+    display: flexbox;
+    
+    justify-content: space-around;
+    &-part{
+        margin: 0;
+        .good{
+            color: #00A499;
+        }
+        .bad{
+            color: #d00000;
+        }
+        .angleName{
+            font-weight: 700;
+            margin: 0;
+            margin-bottom: 5px;
+        }
+        .paragraph{
+            margin: 0;
+            margin-bottom: 10px;
+        }
+    }
+}
+
+.description_buttons{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+    position: absolute;
+    bottom: 50px;
+    & .add{
+        width: 90vw;
+        height: 50px;
+        border: 2px solid #00A499;
+        background: none;
+        color: #00A499;
+        border-radius: 30px;
+        margin-bottom: 10px;
+        font-size: 16px;
+        &:active{
+            opacity: 0.5;
+        }
+    }
+    & .how{
+        width: 90vw;
+        height: 50px;
+        border: 2px solid #00A499;
+        background: #00A499;
+        color: #ffffff;
+        border-radius: 30px;
+        font-size: 16px;
+        &:active{
+            opacity: 0.5;
+        }
+    }
+}
+
+.disclamer{
+    font-size: 11px;
+    width: 90vw;
+    margin: 0 auto;
+}
+
+.description__ion-card{
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    position: absolute;
+    z-index: 100;
+    bottom: 0;
+    left: 0;
+    margin: 0;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+
+    &-back{
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: none;
+    }
+    &-form{
+        position: relative;
+        width: 80vw;
+        height: 250px;
+        background-color: rgb(255, 255, 255);
+        margin: 0;
+        scroll-padding-left: 0;
+        --padding-inline-start: 0px;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        
+        &__iconBox{
+            width: 100%;
+            height: 38px;
+            &:active{
+                opacity: 0.5;
+            }
+            &-icon{
+                height: 24px;
+                position: absolute;
+                right: 10px;
+                top: 10px;
+                filter: brightness(0);
+            }
+            &-text{
+                position: absolute;
+                left: 10px;
+                top: 0;
+                color: rgb(208,0,0);
+                
+
+            }
+            &-lengtgh-text{
+                position: absolute;
+                left: 10px;
+                top: 0;
+                color: rgb(94, 94, 94);
+                font-size: 12px;
+            }
+        }
+        &-box{
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            align-items: center;
+            width: 90%;
+            &-header{
+                margin: 10px 0;
+                margin-bottom: 0px;
+                font-family: 'Inter';
+                font-style: normal;
+                font-weight: 600;
+                font-size: 17px;
+                line-height: 22px;
+                /* or 129% */
+
+                text-align: center;
+                letter-spacing: -0.408px;
+
+                color: #000000;
+            }
+            &-text{
+                margin: 5px 0;
+                font-family: 'Inter';
+                font-style: normal;     
+                font-weight: 500;
+                font-size: 14px;
+                line-height: 130%;
+                /* or 18px */
+
+                text-align: center;
+
+                /* Text - Medium */
+
+                color: #666666;
+            }
+        }
+    }
+
+    .email-button{
+        position: relative;
+        width: 100%;
+        height: 40px;
+        margin-top: 20px;
+        padding:  20px 0 30px 0;
+        display: flex;
+        justify-content: center;
+        background: white;
+
+        align-items: center;
+        font-weight: 700;
+        transition: 0.1s ease;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+        font-weight: 400;
+        font-size: 17px;
+        line-height: 22px;
+        color: #007AFF;
+        &:active{
+            opacity: 0.5;
+        }
+    }
+
+}

@@ -88,7 +88,7 @@ const Home = () => {
 
             <IonContent fullscreen className='home-IonContent'>
                 <div className='home-contentInner'>
-                    {(results && results.length > 0) && <h3 className='header-text'>List of results</h3>}
+                    {(results && results.length > 0) && <h3 className='header-text'>List of scans</h3>}
                 </div>
 
                 {/* <div className='home-betaLabel'>
@@ -128,7 +128,7 @@ const Home = () => {
                 <div id="newPatient__form" className='home-bottom'>
                     {   clientsData.clients.filter(c => c.id).length === 3 
                         ?   <button className='home-button popup' onClick={(e) => setIsOpenForm(2)}>
-                                <p className='home-button-text'>Start with new client</p>
+                                <p className='home-button-text'>Start new scan</p>
                             </button>
                         :   <button className='home-button' onClick={() =>{
                                 presentAlert({

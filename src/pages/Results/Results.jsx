@@ -42,13 +42,6 @@ const Results = () => {
     const goodFrames = [goodPhotoFront, goodPhotoRight, goodPhotoBack, goodPhotoLeft]
     const badFrames = [badPhotoFront, badPhotoRight, badPhotoBack, badPhotoLeft]
 
-    const verySmartSorting = (n) => {
-        //change order 0-1-2-3 to 0-2-1-3
-        if (n === 2) return 1
-        else if (n === 1) return 2
-        else return n
-    }
-
     return (
         <IonPage>
             <IonContent fullscreen className='content'>
@@ -76,31 +69,30 @@ const Results = () => {
                             className='frameList-li'
                             key={index}
                             onClick={() => {
-                                if (!isReading || images[sides[verySmartSorting(index)]].status === true) {
-                                    if (images && images[sides[verySmartSorting(index)]]
-                                        && images[sides[verySmartSorting(index)]].path
-                                        && images[sides[verySmartSorting(index)]].status
+                                if (!isReading || images[sides[index]].status === true) {
+                                    if (images && images[sides[index]]
+                                        && images[sides[index]].path
+                                        && images[sides[index]].status
                                     ) {
                                         history.push("/result");
-                                        dispatch(setResultSideNumber(verySmartSorting(index)))
+                                        dispatch(setResultSideNumber(index))
                                         dispatch(setIsLoading(false))
                                     } else {
                                         history.push("/camera");
-                                        dispatch(setResultSideNumber(verySmartSorting(index)))
+                                        dispatch(setResultSideNumber(index))
                                         dispatch(setIsRetakeOnePhoto(true))
                                         dispatch(setIsLoading(true))
                                     }
                                 }
                             }}
                         >
-                            {images[sides[verySmartSorting(index)]].status === true && <img className='frameList-li-image good' src={goodFrames[verySmartSorting(index)]}></img>}
-                            {!isReading && images[sides[verySmartSorting(index)]].status === false && <img className='frameList-li-image bad' src={badFrames[verySmartSorting(index)]}></img>}
-                            {!isReading && images[sides[verySmartSorting(index)]].status === null && <img className='frameList-li-image empty' src={emptyFrames[verySmartSorting(index)]}></img>}
+                            {images[sides[index]].status === true && <img className='frameList-li-image good' src={goodFrames[index]}></img>}
+                            {!isReading && images[sides[index]].status === false && <img className='frameList-li-image bad' src={badFrames[index]}></img>}
+                            {!isReading && images[sides[index]].status === null && <img className='frameList-li-image empty' src={emptyFrames[index]}></img>}
                         </li>
                     )
                     )}
                 </ul>
-
 
 
                 <div className='results-bottom'>
@@ -121,7 +113,7 @@ const Results = () => {
                                 history.push("/sessions")
                             }}
                         >
-                                <p className='results-button-text'>SAVE AND BACK</p>
+                                <p className='results-button-text'>GO TO RESULTS</p>
                             </IonButton>}
                         <IonButton
                             fill="clear" expand="block" shape="round"
@@ -130,10 +122,10 @@ const Results = () => {
                             onClick={() => {
                                 dispatch(setResultSideNumber(0))
                                 dispatch(setIsLoading(true))
-                                history.push("/client")
+                                history.push("/sessions")
                             }}
                         >
-                            <p className='results-button-text'>EXIT WITHOUT SAVE</p>
+                            <p className='results-button-text'>CLEAR SESSION</p>
                         </IonButton>
                     </>}
                 </div>
