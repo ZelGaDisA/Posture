@@ -15,8 +15,14 @@ export interface AppState {
     isOnboarding: boolean;
     isLoading: boolean;
     isReading: boolean;
-    cameraUpdate: boolean
+    cameraUpdate: boolean;
     rerenderCounter: number;
+    deviationAngles: {
+        ears: number;
+        ankles: number;
+        shoulders: number;
+        hips: number;
+    }
 }
 
 const initialState: AppState = {
@@ -28,13 +34,26 @@ const initialState: AppState = {
     isRetakeOnePhoto: false,
     cameraUpdate: false,
     rerenderCounter: 0,
-
+    deviationAngles: {
+        ears: 0,
+        ankles: 0,
+        shoulders: 0,
+        hips: 0
+    }
 };
 
 export const appSlice = createSlice({
     name: 'app',
     initialState,
     reducers: {
+        setDeviationAngles:(state, action: PayloadAction<{
+            ears: any;
+            ankles: any;
+            shoulders: any;
+            hips: any;
+        }>)  => {
+            state.deviationAngles = action.payload
+        },
         disableOnboarding: (state) => {
             state.isOnboarding = false
         },
@@ -87,6 +106,6 @@ export const appSlice = createSlice({
 
 
 // Action creators are generated for each case reducer function
-export const { disableOnboarding, setResultSideNumber, setIsLoading, setIsReading, setAccel, setIsRetakeOnePhoto, cameraUpdate,rerenderResults} = appSlice.actions
+export const { disableOnboarding,setDeviationAngles, setResultSideNumber, setIsLoading, setIsReading, setAccel, setIsRetakeOnePhoto, cameraUpdate,rerenderResults} = appSlice.actions
 
 export default appSlice.reducer

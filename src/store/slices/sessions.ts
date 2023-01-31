@@ -35,7 +35,10 @@ const initialState: SessionData = {
 export const sessionSlice = createSlice({
     name: 'session',
     initialState,
-    reducers: {
+    reducers: {        
+        pushToLocalNote: (state, action: PayloadAction<{sessionId:number, note: string}>) => {
+            localStorage.setItem(`N-${action.payload.sessionId}`, action.payload.note)
+        },
         
         clearSessions: (state) => {
                 state.images = {
@@ -51,6 +54,10 @@ export const sessionSlice = createSlice({
                 }
                 state.sessions = []
                 state.selectedSessions = []
+        },
+
+        clearSelectedSessions: (state) => {
+            state.selectedSessions = []
         },
 
         //СОХРАНИТЬ ИЗОБРАЖЕНИЯ ОТДЕЛЬНО ОТ СЕССИЙ
@@ -185,11 +192,13 @@ export const {
     setSession,
     clearSessions,
     setSelectedSession,
+    clearSelectedSessions,
     saveSessionToLocal ,
     addNewSession,
     createSessions,
     filterSessionsByClient,
-    addImage
+    addImage,
+    pushToLocalNote
 } = sessionSlice.actions
 
 export default sessionSlice.reducer
