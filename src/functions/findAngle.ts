@@ -83,10 +83,10 @@ export const findAngle = (selectedSessions: Session[], sessions:Session[], sideN
             color: comparison(b?.hips?.angle, a?.hips?.angle).color
         },
         ankles: {
-            before: a ? Math.round(toGradus(Math.PI/2 - a?.ankles?.angle) * 100) / 100 : 0,
-            after: b ? Math.round(toGradus(Math.PI/2 - b?.ankles?.angle) * 100) / 100 : 0,
-            comparison: comparison((Math.PI/2 - b?.ankles?.angle), (Math.PI/2 - a?.ankles?.angle)).value,
-            color: comparison((Math.PI/2 - b?.ankles?.angle), (Math.PI/2 - a?.ankles?.angle)).color
+            before: a ? Math.round(toGradus(Math.abs(Math.PI/2 - a?.ankles?.angle)) * 100) / 100 : 0,
+            after: b ? Math.round(toGradus(Math.abs(Math.PI/2 -  b?.ankles?.angle)) * 100) / 100 : 0,
+            comparison: comparison((Math.PI/2 -  b?.ankles?.angle), (Math.PI/2 -  a?.ankles?.angle)).value,
+            color: comparison((Math.PI/2 -  b?.ankles?.angle), (Math.PI/2 -  a?.ankles?.angle)).color
         }
     }
 
