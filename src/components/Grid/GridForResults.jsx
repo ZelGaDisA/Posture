@@ -182,116 +182,6 @@ export const GridForResults = ({ resultSideNumber, image, rerenderCounter }) => 
                 .style('stroke-width', 2)
                 .style('fill', "none")
 
-            for (const [name, value] of Object.entries(coords)) {//Angles
-                let angle = Math.abs(Math.floor((value.angle * (180 / Math.PI)) * 100) / 100)
-                let backAngle = Math.abs(Math.floor((90 - Math.abs(value.angle * (180 / Math.PI))) * 100) / 100)
-
-                let textColor = "rgba(46, 84, 130, 1)"
-
-                switch (name) {
-                    case 'ears':
-                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 1)";
-                        textColor = angle > 5 ? "rgba(236, 0, 0, 1)" : "rgba(46, 84, 130, 1)";
-                        break;
-                    case 'shoulders':
-                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 1)";
-                        textColor = angle > 5 ? "rgba(236, 0, 0, 1)" : "rgba(46, 84, 130, 1)";
-                        break;
-                    case 'hips':
-                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 1)";
-                        textColor = angle > 5 ? "rgba(236, 0, 0, 1)" : "rgba(46, 84, 130, 1)";
-                        break;
-                    case 'ankles':
-                        lineColor = backAngle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 1)";
-                        textColor = backAngle > 5 ? "rgba(236, 0, 0, 1)" : "rgba(46, 84, 130, 1)";
-                        break;
-                    default:
-                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 1)";
-                        textColor = angle > 5 ? "rgba(236, 0, 0, 1)" : "rgba(46, 84, 130, 1)";
-                        break;
-                }
-
-
-
-                const textBox = svg.append("g")
-
-
-
-                if (!(name === 'ears' && name === 'shoulders')) {
-                    if (resultSideNumber === 0 || resultSideNumber === 2) {
-                        textBox.append("rect")
-                            .attr("x", name === 'ankles' ? value.center.x - 40 : 14)
-                            .attr("y", name === 'ankles' ? value.center.y + 10 : name === 'ears' ? value.center.y - 80 : value.center.y + 20)
-                            .attr('width', 76)
-                            .attr('height', 64)
-                            .attr('rx', 10)
-                            .attr('rx', 10)
-                            .attr('fill', 'rgb(255,255,255)')
-                        // .attr("filter", "url(#shadow)")
-
-                        if (name !== 'ankles') {
-                            textBox.append("text")
-                                .attr('class', 'textBox angle')
-                                .attr("x", 55)
-                                .attr("y", name === 'ears' ? value.center.y - 35 : value.center.y + 65)
-                                .text(`${Math.floor((value.angle * (180 / Math.PI)) * 100) / 100}°`)
-                                .attr('text-anchor', 'middle')
-                                .style('fill', textColor)
-                            textBox.append("text")
-                                .attr('class', 'textBox')
-                                .attr("x", 55)
-                                .attr("y", name === 'ears' ? value.center.y - 60 : value.center.y + 40)
-                                .text(`${name.split('').map((e, i) => i === 0 ? e.toUpperCase() : e).join('')}`)
-                                .attr('text-anchor', 'middle')
-                                .style('fill', textColor)
-                        } else {
-
-                            textBox.append("text")
-                                .attr('class', 'textBox angle')
-                                .attr("x", value.center.x)
-                                .attr("y", value.center.y + 55)
-                                .text(`${Math.abs(Math.floor((90 - Math.abs(value.angle * (180 / Math.PI))) * 100) / 100)}°`)
-                                .attr('text-anchor', 'middle')
-                                .style('fill', textColor)
-
-                            textBox.append("text")
-                                .attr('class', 'textBox')
-                                .attr("x", value.center.x)
-                                .attr("y", value.center.y + 32)
-                                .text(`${name.split('').map((e, i) => i === 0 ? e.toUpperCase() : e).join('')}`)
-                                .attr('text-anchor', 'middle')
-                                .style('fill', textColor)
-                        }
-                    } else if (name === 'ankles') {
-                        textBox.append("rect")
-                            .attr("x", name === 'ankles' ? value.center.x - 40 : 14)
-                            .attr("y", name === 'ankles' ? value.center.y + 10 : value.center.y - 15)
-                            .attr('width', 80)
-                            .attr('height', 48)
-                            .attr('rx', 10)
-                            .attr('rx', 10)
-                            .style('fill', 'white')
-                        // .attr("filter", "url(#shadow)")
-
-                        textBox.append("text")
-                            .attr('class', 'textBox angle')
-                            .attr("x", value.center.x)
-                            .attr("y", value.center.y + 47)
-                            .text(`${Math.abs(Math.floor((90 - Math.abs(value.angle * (180 / Math.PI))) * 100) / 100)}°`)
-                            .attr('text-anchor', 'middle')
-                            .style('fill', textColor)
-
-                        textBox.append("text")
-                            .attr('class', 'textBox')
-                            .attr("x", value.center.x)
-                            .attr("y", value.center.y + 28)
-                            .text(`${name.split('').map((e, i) => i === 0 ? e.toUpperCase() : e).join('')}`)
-                            .attr('text-anchor', 'middle')
-                            .style('fill', textColor)
-                    }
-                }
-            }
-
             for (const [name, value] of Object.entries(coords)) {//Dots
                 let angle = Math.abs(Math.floor((value.angle * (180 / Math.PI)) * 100) / 100)
                 let backAngle = Math.abs(Math.floor((90 - Math.abs(value.angle * (180 / Math.PI))) * 100) / 100)
@@ -347,16 +237,7 @@ export const GridForResults = ({ resultSideNumber, image, rerenderCounter }) => 
                             ]))
                             .style('stroke', lineColor)
                             .style('fill', "none")
-
-                    } else if (name === 'ears' || name === 'ankles') {
-                        svg.append('path').attr('class', 'subLine')
-                            .attr('d', () => d3.line()([
-                                [value.left.x, line.left], [value.right.x, line.right]
-                            ]))
-                            .style('stroke', lineColor)
-                            .style('fill', "none")
                     }
-
 
                     //ANGLES POLYGON
                     if (resultSideNumber === 0 || resultSideNumber === 2) {
@@ -409,55 +290,57 @@ export const GridForResults = ({ resultSideNumber, image, rerenderCounter }) => 
                             .style('stroke-width', '30px')
                             .style('stroke', 'rgba(0,0,0,0)')
 
-                        value.right && svg.append("circle")
-                            .attr("r", selectedCircleId === rightCircleName ? selectedPointScale : centerPointScale)
-                            .attr("id", rightCircleName)
-                            .style('fill', selectedCircleId === rightCircleName ? 'orange' : 'white')
-                            .attr("cx", value.right.x)
-                            .attr("cy", value.right.y)
-                            .style('stroke-width', '30px')
-                            .style('stroke', 'rgba(0,0,0,0)')
-                            .on('touchstart touchmove', (e) => {
-                                if (selectedCircleId !== rightCircleName) {
-                                    setSelectedCircleId(rightCircleName)
-                                }
-                                let newData = { ...db }
-                                let newLandCoord = changePoint(e, image)
-                                if (newLandCoord && Object.entries(newLandCoord).length > 0) {
-                                    newData[rightCircleName] = newLandCoord
-                                    setDb(newData)
-                                }
-                            })
-                            .on('touchend', () => {
-                                setSelectedCircleId('')
-                                hideLens()
-                            })
+                        if (resultSideNumber !== 1 && resultSideNumber !== 3) {
+                            value.right && svg.append("circle")
+                                .attr("r", selectedCircleId === rightCircleName ? selectedPointScale : centerPointScale)
+                                .attr("id", rightCircleName)
+                                .style('fill', selectedCircleId === rightCircleName ? 'orange' : 'yellow')
+                                .attr("cx", value.right.x)
+                                .attr("cy", value.right.y)
+                                .style('stroke-width', '30px')
+                                .style('stroke', 'rgba(0,0,0,0)')
+                                .on('touchstart touchmove', (e) => {
+                                    if (selectedCircleId !== rightCircleName) {
+                                        setSelectedCircleId(rightCircleName)
+                                    }
+                                    let newData = { ...db }
+                                    let newLandCoord = changePoint(e, image)
+                                    if (newLandCoord && Object.entries(newLandCoord).length > 0) {
+                                        newData[rightCircleName] = newLandCoord
+                                        setDb(newData)
+                                    }
+                                })
+                                .on('touchend', () => {
+                                    setSelectedCircleId('')
+                                    hideLens()
+                                })
 
-                        value.left && svg.append("circle")
-                            .attr("r", selectedCircleId === leftCircleName ? selectedPointScale : centerPointScale)
-                            .attr("id", leftCircleName)
-                            .style('fill', selectedCircleId === leftCircleName ? 'orange' : 'white')
-                            .attr("cx", value.left.x)
-                            .attr("cy", value.left.y)
-                            .style('stroke-width', '30px')
-                            .style('stroke', 'rgba(0,0,0,0)')
-                            .on('touchstart touchmove', (e) => {
-                                if (selectedCircleId !== leftCircleName) {
-                                    setSelectedCircleId(leftCircleName)
-                                }
+                            value.left && svg.append("circle")
+                                .attr("r", selectedCircleId === leftCircleName ? selectedPointScale : centerPointScale)
+                                .attr("id", leftCircleName)
+                                .style('fill', selectedCircleId === leftCircleName ? 'orange' : 'green')
+                                .attr("cx", value.left.x)
+                                .attr("cy", value.left.y)
+                                .style('stroke-width', '30px')
+                                .style('stroke', 'rgba(0,0,0,0)')
+                                .on('touchstart touchmove', (e) => {
+                                    if (selectedCircleId !== leftCircleName) {
+                                        setSelectedCircleId(leftCircleName)
+                                    }
 
-                                let newData = { ...db }
+                                    let newData = { ...db }
 
-                                let newLandCoord = changePoint(e, image)
-                                if (newLandCoord && Object.entries(newLandCoord).length > 0) {
-                                    newData[leftCircleName] = newLandCoord
-                                    setDb(newData)
-                                }
-                            })
-                            .on('touchend', () => {
-                                setSelectedCircleId('')
-                                hideLens()
-                            })
+                                    let newLandCoord = changePoint(e, image)
+                                    if (newLandCoord && Object.entries(newLandCoord).length > 0) {
+                                        newData[leftCircleName] = newLandCoord
+                                        setDb(newData)
+                                    }
+                                })
+                                .on('touchend', () => {
+                                    setSelectedCircleId('')
+                                    hideLens()
+                                })
+                        }
 
 
                     } else if (resultSideNumber === 0 || resultSideNumber === 2) {
@@ -467,7 +350,7 @@ export const GridForResults = ({ resultSideNumber, image, rerenderCounter }) => 
                         value.right && svg.append("circle")
                             .attr("r", selectedCircleId === rightCircleName ? selectedPointScale : centerPointScale)
                             .attr("id", rightCircleName)
-                            .style('fill', selectedCircleId === rightCircleName ? 'orange' : 'white')
+                            .style('fill', selectedCircleId === rightCircleName ? 'orange' : 'yellow')
                             .attr("cx", value.right.x)
                             .attr("cy", value.right.y)
                             .style('stroke-width', '30px')
@@ -491,7 +374,7 @@ export const GridForResults = ({ resultSideNumber, image, rerenderCounter }) => 
                         value.left && svg.append("circle")
                             .attr("r", selectedCircleId === leftCircleName ? selectedPointScale : centerPointScale)
                             .attr("id", leftCircleName)
-                            .style('fill', selectedCircleId === leftCircleName ? 'orange' : 'white')
+                            .style('fill', selectedCircleId === leftCircleName ? 'orange' : 'green')
                             .attr("cx", value.left.x)
                             .attr("cy", value.left.y)
                             .style('stroke-width', '30px')
@@ -516,6 +399,126 @@ export const GridForResults = ({ resultSideNumber, image, rerenderCounter }) => 
                     }
                 }
             }
+            for (const [name, value] of Object.entries(coords)) {//Angles
+                let angle = Math.abs(Math.floor((value.angle * (180 / Math.PI)) * 100) / 100)
+                let backAngle = Math.abs(Math.floor((90 - Math.abs(value.angle * (180 / Math.PI))) * 100) / 100)
+
+                let textColor = "rgba(46, 84, 130, 1)"
+
+                switch (name) {
+                    case 'ears':
+                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 1)";
+                        textColor = angle > 5 ? "rgba(236, 0, 0, 1)" : "rgba(46, 84, 130, 1)";
+                        break;
+                    case 'shoulders':
+                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 1)";
+                        textColor = angle > 5 ? "rgba(236, 0, 0, 1)" : "rgba(46, 84, 130, 1)";
+                        break;
+                    case 'hips':
+                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 1)";
+                        textColor = angle > 5 ? "rgba(236, 0, 0, 1)" : "rgba(46, 84, 130, 1)";
+                        break;
+                    case 'ankles':
+                        lineColor = backAngle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 1)";
+                        textColor = backAngle > 5 ? "rgba(236, 0, 0, 1)" : "rgba(46, 84, 130, 1)";
+                        break;
+                    default:
+                        lineColor = angle > 5 ? "rgba(236, 0, 0, 0.5)" : "rgba(37, 179, 145, 1)";
+                        textColor = angle > 5 ? "rgba(236, 0, 0, 1)" : "rgba(46, 84, 130, 1)";
+                        break;
+                }
+
+
+
+                const textBox = svg.append("g")
+
+
+
+                if (!(name === 'ears' && name === 'shoulders')) {
+                    if (resultSideNumber === 0 || resultSideNumber === 2) {
+
+                        // .attr("filter", "url(#shadow)")
+
+                        if (name !== 'ankles') {
+                            textBox.append("rect")
+                                .attr("x", name === 'ankles' ? value.center.x - 40 : 14)
+                                .attr("y", name === 'ankles' ? value.center.y - 80 : name === 'ears' ? value.center.y - 80 : value.center.y + 20)
+                                .attr('width', 76)
+                                .attr('height', 64)
+                                .attr('rx', 10)
+                                .attr('rx', 10)
+                                .attr('fill', 'rgb(255,255,255)')
+
+                            textBox.append("text")
+                                .attr('class', 'textBox angle')
+                                .attr("x", 55)
+                                .attr("y", name === 'ears' ? value.center.y - 35 : value.center.y + 65)
+                                .text(`${Math.floor((value.angle * (180 / Math.PI)) * 100) / 100}°`)
+                                .attr('text-anchor', 'middle')
+                                .style('fill', textColor)
+                            textBox.append("text")
+                                .attr('class', 'textBox')
+                                .attr("x", 55)
+                                .attr("y", name === 'ears' ? value.center.y - 60 : value.center.y + 40)
+                                .text(`${name.split('').map((e, i) => i === 0 ? e.toUpperCase() : e).join('')}`)
+                                .attr('text-anchor', 'middle')
+                                .style('fill', textColor)
+                        } else {
+                            textBox.append("rect")
+                                .attr("x", name === 'ankles' ? value.center.x - 40 : 14)
+                                .attr("y", name === 'ankles' ? value.center.y - 80 : name === 'ears' ? value.center.y - 80 : value.center.y + 20)
+                                .attr('width', 76)
+                                .attr('height', 54)
+                                .attr('rx', 10)
+                                .attr('rx', 10)
+                                .attr('fill', 'rgb(255,255,255)')
+
+                            textBox.append("text")
+                                .attr('class', 'textBox angle')
+                                .attr("x", value.center.x)
+                                .attr("y", value.center.y - 38)
+                                .text(`${Math.abs(Math.floor((90 - Math.abs(value.angle * (180 / Math.PI))) * 100) / 100)}°`)
+                                .attr('text-anchor', 'middle')
+                                .style('fill', textColor)
+
+                            textBox.append("text")
+                                .attr('class', 'textBox')
+                                .attr("x", value.center.x)
+                                .attr("y", value.center.y - 62)
+                                .text(`${name.split('').map((e, i) => i === 0 ? e.toUpperCase() : e).join('')}`)
+                                .attr('text-anchor', 'middle')
+                                .style('fill', textColor)
+                        }
+                    } else if (name === 'ankles') {
+                        textBox.append("rect")
+                            .attr("x", name === 'ankles' ? value.center.x - 40 : 14)
+                            .attr("y", name === 'ankles' ? value.center.y - 70 : value.center.y - 15)
+                            .attr('width', 80)
+                            .attr('height', 54)
+                            .attr('rx', 10)
+                            .attr('rx', 10)
+                            .style('fill', 'white')
+                        // .attr("filter", "url(#shadow)")
+                        textBox.append("text")
+                            .attr('class', 'textBox angle')
+                            .attr("x", value.center.x)
+                            .attr("y", value.center.y - 29)
+                            .text(`${Math.abs(Math.floor((90 - Math.abs(value.angle * (180 / Math.PI))) * 100) / 100)}°`)
+                            .attr('text-anchor', 'middle')
+                            .style('fill', textColor)
+
+                        textBox.append("text")
+                            .attr('class', 'textBox')
+                            .attr("x", value.center.x)
+                            .attr("y", value.center.y - 50)
+                            .text(`${name.split('').map((e, i) => i === 0 ? e.toUpperCase() : e).join('')}`)
+                            .attr('text-anchor', 'middle')
+                            .style('fill', textColor)
+                    }
+                }
+            }
+
+
         }
     }
 

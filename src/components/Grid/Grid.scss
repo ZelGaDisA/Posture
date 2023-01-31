@@ -14,10 +14,6 @@ svg text::selection {
     background: none;
 }
 
-circle{
-    // pointer-events: none;
-}
-
 *{
     -webkit-touch-callout:none;
     -webkit-user-select:none;
@@ -25,9 +21,7 @@ circle{
     -moz-user-drag:none;
     -moz-user-select:none;
     -o-user-drag:none;
-    user-drag:none;
     user-select: none;
-    touch-action: none;
 	-khtml-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
